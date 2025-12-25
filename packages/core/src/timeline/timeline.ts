@@ -43,7 +43,8 @@ export interface TimelineOptions {
 export class Timeline {
     private actions: Action[] = [];
     private entities: Map<string, Animatable> = new Map();
-    private currentTime = 0;
+    private currentTime: number = 0;
+    private capturedActions: Set<Action> = new Set();
     private scheduledEndTime = 0;
     private state: TimelineState = 'idle';
     private fps: number;
@@ -103,6 +104,7 @@ export class Timeline {
         actionData: Omit<Action, 'startTime' | 'startValue'>,
         entity: Animatable
     ): void {
+        void entity; // satisfies TypeScript void entity;()
         const isParallel = this.scheduleMode === 'parallel';
         const currentGroup = this.parallelGroupStack[this.parallelGroupStack.length - 1];
 
@@ -118,10 +120,12 @@ export class Timeline {
             startTime = this.scheduledEndTime;
         }
 
+        // Don't capture startValue now - it will be captured when the action first runs
+        // This ensures chained animations use the correct starting position
         const action: Action = {
             ...actionData,
             startTime,
-            startValue: entity.captureState(actionData.type),
+            startValue: undefined, // Will be captured lazily
         };
 
         this.actions.push(action);
@@ -276,6 +280,13 @@ export class Timeline {
             if (time < action.startTime) {
                 // Action hasn't started yet - stay at start value
                 continue;
+            }
+
+            // Capture startValue lazily on first run of this action
+            // This ensures chained animations start from the correct position
+            if (!this.capturedActions.has(action)) {
+                action.startValue = entity.captureState(action.type);
+                this.capturedActions.add(action);
             }
 
             if (time >= actionEndTime) {

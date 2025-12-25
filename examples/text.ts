@@ -3,6 +3,9 @@
  * 
  * Demonstrates text rendering with various fonts,
  * sizes, and animation effects.
+ * 
+ * Note: Text entities now use the built-in Roboto font by default.
+ * No manual font loading required!
  */
 
 import { scene, text } from '@anima/core';
@@ -10,11 +13,10 @@ import { scene, text } from '@anima/core';
 // Create the scene
 const myScene = scene({ width: 800, height: 600, background: '#0d1117' });
 
-// Create text elements
+// Create text elements - no fontFace needed, uses default Roboto!
 const title = myScene.add(text({
     content: 'Hello, Anima!',
     fontSize: 48,
-    fontFamily: 'Arial',
     fontWeight: 'bold',
 }))
     .fill('#58a6ff');
@@ -22,7 +24,6 @@ const title = myScene.add(text({
 const subtitle = myScene.add(text({
     content: 'Animation made simple',
     fontSize: 24,
-    fontFamily: 'Arial',
 }))
     .fill('#8b949e');
 

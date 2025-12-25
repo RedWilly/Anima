@@ -25,8 +25,11 @@ export interface Action {
     ease: EasingName;
     /** Start time on the timeline (set when scheduled) */
     startTime?: number;
-    /** Starting value (captured when action begins) */
-    startValue?: Point | number | null;
+    /**
+     * Starting value (captured lazily when action begins).
+     * Undefined allowed due to exactOptionalPropertyTypes tsconfig setting.
+     */
+    startValue?: Point | number | null | undefined;
 }
 
 /**

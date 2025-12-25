@@ -20,11 +20,11 @@ const myRect = myScene.add(rectangle({ width: 80, height: 50, cornerRadius: 8 })
     .fill('#0f3460')
     .stroke('#16213e');
 
-const myLine = myScene.add(line({ x1: 0, y1: 0, x2: 100, y2: 0 }))
+const myLine = myScene.add(line({ from: { x: -50, y: 0 }, to: { x: 50, y: 0 } }))
     .stroke('#00fff5')
     .strokeWidth(3);
 
-const myArrow = myScene.add(arrow({ x1: 0, y1: 0, x2: 80, y2: 0 }))
+const myArrow = myScene.add(arrow({ from: { x: -40, y: 0 }, to: { x: 40, y: 0 } }))
     .stroke('#ff6b6b')
     .strokeWidth(2);
 

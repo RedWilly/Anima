@@ -71,7 +71,8 @@ export type TextBaseline = 'top' | 'middle' | 'bottom' | 'alphabetic';
 export interface ActionInfo {
     type: string;
     target: Point | number | null;
-    startValue?: Point | number | null;
+    /** Undefined allowed due to exactOptionalPropertyTypes tsconfig setting. */
+    startValue?: Point | number | null | undefined;
 }
 
 /**

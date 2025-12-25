@@ -226,11 +226,11 @@ describe('Parallel Animations', () => {
             expect(c.scale.x).toBeCloseTo(1.5);
             expect(c.opacity).toBeCloseTo(0.5);
 
-            // At t=1.25 (middle of last move), position should be 50
-            // Note: startValue is captured at schedule time (when entity is at 0,0)
-            // The last moveTo goes from 0 to 100, so at 50% progress = 50
+            // At t=1.25 (middle of last move), position should be 75
+            // With lazy capture: first moveTo ends at 50, second moveTo goes from 50 to 100
+            // At 50% progress: 50 + (100-50)*0.5 = 75
             s.timeline.seek(1.25);
-            expect(c.position.x).toBeCloseTo(50);
+            expect(c.position.x).toBeCloseTo(75);
         });
     });
 

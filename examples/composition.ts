@@ -55,8 +55,8 @@ myScene.add(robot);
 const star = group();
 
 // Add 5 circles in a star pattern
+// TODO: Position circles using angle when Group supports child positioning
 for (let i = 0; i < 5; i++) {
-    const angle = (i * Math.PI * 2) / 5 - Math.PI / 2;
     const c = circle({ radius: 8 })
         .fill('#ffd93d');
     star.addChild(c);

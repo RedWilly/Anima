@@ -3,13 +3,64 @@
  * Inspired by Manim's Text/VGroup pattern.
  */
 
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import type { Point, AnimationOptions, FontWeight, TextAlign, TextBaseline, Style, ActionInfo } from '../../types';
 import type { Timeline, ParallelOptions } from '../../timeline/timeline';
 import type { Action } from '../../timeline/action';
-import type { FontMetrics } from '../../font';
+import { FontMetrics } from '../../font';
 import { Vector2 } from '../../math';
 import { TextCharacter } from './text-character';
 import type { TextOptions } from './types';
+
+/** Bundled fonts directory path. */
+function getBundledFontsDir(): string {
+    const currentDir = dirname(fileURLToPath(import.meta.url));
+    return join(currentDir, '..', '..', '..', 'assets', 'fonts');
+}
+
+/** Cached font faces by name/path. */
+const fontCache = new Map<string, FontMetrics>();
+
+/**
+ * Resolve a font family name or path to a FontMetrics object.
+ * - If path ends with .ttf/.otf/.woff, loads from that file.
+ * - Otherwise, looks up bundled font by name (e.g., 'Roboto' → Roboto-Regular.ttf).
+ * - Falls back to Roboto if the specified font is not found.
+ */
+function resolveFontFamily(fontFamily: string): FontMetrics {
+    // Check cache first
+    if (fontCache.has(fontFamily)) {
+        return fontCache.get(fontFamily)!;
+    }
+
+    const lowerFamily = fontFamily.toLowerCase();
+    const bundledDir = getBundledFontsDir();
+    const robotoPath = join(bundledDir, 'Roboto-Regular.ttf');
+
+    let fontPath: string;
+
+    // Check if it's a file path
+    if (lowerFamily.endsWith('.ttf') || lowerFamily.endsWith('.otf') || lowerFamily.endsWith('.woff')) {
+        fontPath = fontFamily;
+    } else {
+        // Look up bundled font
+        fontPath = join(bundledDir, `${fontFamily}-Regular.ttf`);
+    }
+
+    try {
+        const metrics = FontMetrics.fromFileSync(fontPath);
+        fontCache.set(fontFamily, metrics);
+        return metrics;
+    } catch {
+        // Font not found, fallback to Roboto
+        if (fontFamily !== 'Roboto' && !fontCache.has('Roboto')) {
+            const robotoMetrics = FontMetrics.fromFileSync(robotoPath);
+            fontCache.set('Roboto', robotoMetrics);
+        }
+        return fontCache.get('Roboto') ?? FontMetrics.fromFileSync(robotoPath);
+    }
+}
 
 let textIdCounter = 0;
 
@@ -57,7 +108,7 @@ export class Text {
     protected textBaseline: TextBaseline;
     protected letterSpacing: number;
     protected style: Style;
-    protected fontMetrics: FontMetrics | null = null;
+    protected fontFace: FontMetrics;
 
     protected currentPosition: Point;
     protected currentScale: Point;
@@ -68,14 +119,14 @@ export class Text {
     constructor(options?: TextOptions) {
         this.id = generateTextId();
         this.content = options?.content ?? '';
-        this.fontFamily = options?.fontFamily ?? 'sans-serif';
+        this.fontFamily = options?.fontFamily ?? 'Roboto';
         this.fontSize = options?.fontSize ?? 24;
         this.fontWeight = options?.fontWeight ?? 'normal';
         this.textAlign = options?.textAlign ?? 'left';
         this.textBaseline = options?.textBaseline ?? 'middle';
         this.letterSpacing = options?.letterSpacing ?? 0;
         this.style = { ...TEXT_DEFAULT_STYLE, ...options?.style };
-        this.fontMetrics = options?.fontMetrics ?? null;
+        this.fontFace = resolveFontFamily(this.fontFamily);
 
         this.currentPosition = Vector2.zero();
         this.currentScale = Vector2.one();
@@ -157,12 +208,17 @@ export class Text {
         return this.fontFamily;
     }
 
-    /** Applies to all characters. */
+    /**
+     * Set font family (name or path).
+     * Re-resolves FontMetrics and recalculates character positions.
+     */
     setFontFamily(value: string): this {
         this.fontFamily = value;
+        this.fontFace = resolveFontFamily(value);
         for (let i = 0, len = this.characters.length; i < len; i++) {
             this.characters[i].setFontFamily(value);
         }
+        this.recalculatePositions();
         return this;
     }
 
@@ -213,16 +269,9 @@ export class Text {
         return this;
     }
 
-    /** Set FontMetrics for accurate character positioning. */
-    setFontMetrics(metrics: FontMetrics | null): this {
-        this.fontMetrics = metrics;
-        this.recalculatePositions();
-        return this;
-    }
-
-    /** Get the current FontMetrics (or null if using estimates). */
-    getFontMetrics(): FontMetrics | null {
-        return this.fontMetrics;
+    /** Get the current font face (FontMetrics). */
+    getFontFace(): FontMetrics {
+        return this.fontFace;
     }
 
     /** Applies to all characters. */
@@ -470,27 +519,23 @@ export class Text {
         this.recalculatePositions();
     }
 
-    /** Uses FontMetrics if available, otherwise falls back to estimates. */
+    /**
+     * Uses fontFace to calculate character positions.
+     * Relies solely on fontkit metrics for accurate layout.
+     */
     protected recalculatePositions(): void {
         let totalWidth = 0;
 
-        if (this.fontMetrics) {
+        if (this.fontFace) {
             // Use accurate metrics from fontkit
-            const layout = this.fontMetrics.layout(this.content);
+            const layout = this.fontFace.layout(this.content);
             for (let i = 0, len = this.characters.length; i < len; i++) {
                 if (i < layout.positions.length) {
                     const pos = layout.positions[i];
-                    const widthPx = this.fontMetrics.unitsToPixels(pos.xAdvance, this.fontSize);
+                    const widthPx = this.fontFace.unitsToPixels(pos.xAdvance, this.fontSize);
                     this.characters[i].charWidth = widthPx;
                     totalWidth += widthPx + this.letterSpacing;
                 }
-            }
-        } else {
-            // Fallback: estimate width as 0.6 * fontSize
-            const avgCharWidth = this.fontSize * 0.6;
-            for (let i = 0, len = this.characters.length; i < len; i++) {
-                this.characters[i].charWidth = avgCharWidth;
-                totalWidth += avgCharWidth + this.letterSpacing;
             }
         }
 
@@ -513,6 +558,8 @@ export class Text {
             currentX += this.characters[i].charWidth + this.letterSpacing;
         }
     }
+
+
 
     protected scheduleAction(action: Omit<Action, 'startTime' | 'startValue'>): void {
         if (!this.timeline) {

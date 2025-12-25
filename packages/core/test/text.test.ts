@@ -10,7 +10,7 @@ describe('Text', () => {
         it('should create with default values', () => {
             const t = new Text();
             expect(t.getContent()).toBe('');
-            expect(t.getFontFamily()).toBe('sans-serif');
+            expect(t.getFontFamily()).toBe('Roboto');
             expect(t.getFontSize()).toBe(24);
             expect(t.getFontWeight()).toBe('normal');
             expect(t.getTextAlign()).toBe('left');
