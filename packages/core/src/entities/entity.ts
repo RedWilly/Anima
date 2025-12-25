@@ -3,7 +3,7 @@
  */
 
 import type { Point, AnimationOptions } from '../types';
-import type { Timeline } from '../timeline/timeline';
+import type { Timeline, ParallelOptions } from '../timeline/timeline';
 import type { Action } from '../timeline/action';
 import { Vector2 } from '../math';
 
@@ -159,17 +159,32 @@ export abstract class Entity {
 
     /**
      * Execute multiple animations on this entity simultaneously.
-     * All animations within the parallel block start at the same time.
-     * The parallel block completes when the longest animation finishes.
+     * All animations within the parallel block start at the same time,
+     * optionally staggered by a delay between each.
+     *
+     * @param animations - Animation functions to execute in parallel
+     * @param options - Optional configuration including stagger delay
      *
      * @example
+     * // All animations start together
      * circle.parallel(
      *   c => c.moveTo(100, 200, { duration: 1 }),
      *   c => c.scaleTo(2, 2, { duration: 0.5 })
      * );
-     * // Circle moves and scales at the same time
+     *
+     * @example
+     * // Staggered start (each 0.2s after previous)
+     * circle.parallel(
+     *   c => c.moveTo(100, 0),
+     *   c => c.scaleTo(2, 2),
+     *   c => c.fadeOut(),
+     *   { stagger: 0.2 }
+     * );
      */
-    parallel(...animations: Array<(entity: this) => void>): this {
+    parallel(
+        animations: Array<(entity: this) => void>,
+        options?: ParallelOptions
+    ): this {
         if (!this.timeline) {
             throw new Error(
                 `Entity "${this.id}" is not bound to a timeline. ` +
@@ -177,9 +192,9 @@ export abstract class Entity {
             );
         }
 
-        this.timeline.beginParallel();
-        for (const animation of animations) {
-            animation(this);
+        this.timeline.beginParallel(options);
+        for (let i = 0, len = animations.length; i < len; i++) {
+            animations[i](this);
         }
         this.timeline.endParallel();
 

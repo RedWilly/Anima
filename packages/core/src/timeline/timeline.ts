@@ -18,6 +18,18 @@ export interface ParallelGroup {
     startTime: number;
     /** Maximum duration of any action in the group */
     maxDuration: number;
+    /** Stagger delay between each animation start */
+    stagger: number;
+    /** Current action index for stagger calculation */
+    actionIndex: number;
+    /** Latest end time of any action in the group */
+    maxEndTime: number;
+}
+
+/** Options for parallel animation groups */
+export interface ParallelOptions {
+    /** Delay between each animation start in seconds (default: 0) */
+    stagger?: number;
 }
 
 export interface TimelineOptions {
@@ -94,11 +106,17 @@ export class Timeline {
         const isParallel = this.scheduleMode === 'parallel';
         const currentGroup = this.parallelGroupStack[this.parallelGroupStack.length - 1];
 
-        // In parallel mode, use the group's start time
-        // In sequential mode, use scheduledEndTime as before
-        const startTime = isParallel && currentGroup
-            ? currentGroup.startTime
-            : this.scheduledEndTime;
+        let startTime: number;
+
+        if (isParallel && currentGroup) {
+            // Parallel mode: base time + stagger offset
+            const staggerOffset = currentGroup.actionIndex * currentGroup.stagger;
+            startTime = currentGroup.startTime + staggerOffset;
+            currentGroup.actionIndex++;
+        } else {
+            // Sequential mode: use scheduledEndTime
+            startTime = this.scheduledEndTime;
+        }
 
         const action: Action = {
             ...actionData,
@@ -109,7 +127,10 @@ export class Timeline {
         this.actions.push(action);
 
         if (isParallel && currentGroup) {
-            // Track max duration for the parallel group
+            // Track max end time for correct duration calculation with stagger
+            const actionEndTime = startTime + action.duration;
+            currentGroup.maxEndTime = Math.max(currentGroup.maxEndTime, actionEndTime);
+            // Keep maxDuration for backward compatibility
             currentGroup.maxDuration = Math.max(currentGroup.maxDuration, action.duration);
         } else {
             // Sequential: advance timeline by action duration
@@ -119,19 +140,31 @@ export class Timeline {
 
     /**
      * Enter parallel scheduling mode.
-     * All actions scheduled until endParallel() will start at the same time.
+     * All actions scheduled until endParallel() will start at the same time,
+     * optionally staggered by a delay between each.
      */
-    beginParallel(): void {
+    beginParallel(options?: ParallelOptions): void {
+        const stagger = options?.stagger ?? 0;
+        if (stagger < 0) {
+            throw new Error(
+                `Stagger must be non-negative (received: ${stagger}). ` +
+                'Use a positive number, e.g., { stagger: 0.1 }.'
+            );
+        }
+
         this.contextStack.push('parallel');
         this.parallelGroupStack.push({
             startTime: this.scheduledEndTime,
             maxDuration: 0,
+            stagger,
+            actionIndex: 0,
+            maxEndTime: this.scheduledEndTime,
         });
     }
 
     /**
      * Exit parallel scheduling mode.
-     * Advances the timeline by the longest action in the parallel group.
+     * Advances the timeline to the latest end time in the parallel group.
      */
     endParallel(): void {
         if (this.contextStack.length <= 1) {
@@ -145,8 +178,8 @@ export class Timeline {
 
         const group = this.parallelGroupStack.pop();
         if (group) {
-            // Advance timeline by the longest action in the group
-            this.scheduledEndTime = group.startTime + group.maxDuration;
+            // Use maxEndTime which accounts for stagger offsets
+            this.scheduledEndTime = group.maxEndTime;
         }
     }
 

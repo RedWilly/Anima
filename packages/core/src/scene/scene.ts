@@ -4,6 +4,7 @@
 
 import type { Entity } from '../entities/entity';
 import { Timeline } from '../timeline/timeline';
+import type { ParallelOptions } from '../timeline/timeline';
 
 export interface SceneOptions {
     /** Width of the scene in pixels (default: 800) */
@@ -64,20 +65,31 @@ export class Scene {
 
     /**
      * Execute multiple animation callbacks simultaneously.
-     * All animations within the parallel block start at the same time.
-     * The parallel block completes when the longest animation finishes.
+     * All animations within the parallel block start at the same time,
+     * optionally staggered by a delay between each.
+     *
+     * @param animations - Animation functions to execute in parallel
+     * @param options - Optional configuration including stagger delay
      *
      * @example
-     * scene.parallel(
+     * // All animations start together
+     * scene.parallel([
      *   () => circle.moveTo(100, 200),
-     *   () => rect.fadeOut(),
-     *   () => scene.wait(0.5)  // Parallel wait acts as minimum duration
-     * );
+     *   () => rect.fadeOut()
+     * ]);
+     *
+     * @example
+     * // Staggered start (each 0.1s after previous)
+     * scene.parallel([
+     *   () => circle1.fadeIn(),
+     *   () => circle2.fadeIn(),
+     *   () => circle3.fadeIn()
+     * ], { stagger: 0.1 });
      */
-    parallel(...animations: Array<() => void>): this {
-        this.timeline.beginParallel();
-        for (const animation of animations) {
-            animation();
+    parallel(animations: Array<() => void>, options?: ParallelOptions): this {
+        this.timeline.beginParallel(options);
+        for (let i = 0, len = animations.length; i < len; i++) {
+            animations[i]();
         }
         this.timeline.endParallel();
         return this;
