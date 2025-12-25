@@ -21,8 +21,12 @@
         "format": "bunx gts fix"
     },
     "devDependencies": {
+        "@types/fontkit": "^2.0.8",
+        "bun-types": "latest",
         "gts": "^6.0.2",
-        "typescript": "^5.7.2",
-        "bun-types": "latest"
+        "typescript": "^5.7.2"
+    },
+    "dependencies": {
+        "fontkit": "^2.0.4"
     }
 }

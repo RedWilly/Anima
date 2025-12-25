@@ -18,6 +18,9 @@ export {
     circle,
     Rectangle,
     rectangle,
+    Text,
+    text,
+    TextCharacter,
     linear,
     easeIn,
     easeOut,
@@ -30,6 +33,8 @@ export type {
     SceneOptions,
     CircleOptions,
     RectangleOptions,
+    TextOptions,
+    TextCharacterOptions,
     AnimationOptions,
     EasingName,
 } from '@anima/core';

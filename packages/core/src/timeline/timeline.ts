@@ -3,7 +3,7 @@
  */
 
 import type { Action } from './action';
-import type { Entity } from '../entities/entity';
+import type { Animatable } from '../types';
 import { getEasing } from '../easing';
 import { clamp } from '../math';
 
@@ -42,7 +42,7 @@ export interface TimelineOptions {
  */
 export class Timeline {
     private actions: Action[] = [];
-    private entities: Map<string, Entity> = new Map();
+    private entities: Map<string, Animatable> = new Map();
     private currentTime = 0;
     private scheduledEndTime = 0;
     private state: TimelineState = 'idle';
@@ -88,20 +88,20 @@ export class Timeline {
     }
 
     /**
-     * Register an entity with the timeline.
+     * Register an animatable entity with the timeline.
      */
-    registerEntity(entity: Entity): void {
+    registerEntity(entity: Animatable): void {
         this.entities.set(entity.id, entity);
         entity.bindTimeline(this);
     }
 
     /**
-     * Schedule an action for an entity.
+     * Schedule an action for an animatable entity.
      * Behavior depends on current scheduling mode (sequential or parallel).
      */
     scheduleAction(
         actionData: Omit<Action, 'startTime' | 'startValue'>,
-        entity: Entity
+        entity: Animatable
     ): void {
         const isParallel = this.scheduleMode === 'parallel';
         const currentGroup = this.parallelGroupStack[this.parallelGroupStack.length - 1];
@@ -295,7 +295,7 @@ export class Timeline {
     /**
      * Get all entities registered with this timeline.
      */
-    getEntities(): Entity[] {
+    getEntities(): Animatable[] {
         return Array.from(this.entities.values());
     }
 

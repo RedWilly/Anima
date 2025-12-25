@@ -2,7 +2,7 @@
  * Scene - the main container for animations.
  */
 
-import type { Entity } from '../entities/entity';
+import type { Animatable } from '../types';
 import { Timeline } from '../timeline/timeline';
 import type { ParallelOptions } from '../timeline/timeline';
 
@@ -26,7 +26,7 @@ export class Scene {
     readonly background: string;
     readonly timeline: Timeline;
 
-    private entities: Entity[] = [];
+    private entities: Animatable[] = [];
 
     constructor(options?: SceneOptions) {
         this.width = options?.width ?? 800;
@@ -36,9 +36,9 @@ export class Scene {
     }
 
     /**
-     * Add an entity to the scene.
+     * Add an animatable entity to the scene.
      */
-    add<T extends Entity>(entity: T): T {
+    add<T extends Animatable>(entity: T): T {
         this.entities.push(entity);
         this.timeline.registerEntity(entity);
         return entity;
@@ -47,7 +47,7 @@ export class Scene {
     /**
      * Get all entities in the scene.
      */
-    getEntities(): readonly Entity[] {
+    getEntities(): readonly Animatable[] {
         return this.entities;
     }
 

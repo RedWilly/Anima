@@ -48,3 +48,41 @@ export type EasingName =
  * Takes normalized time (0-1) and returns eased value (0-1).
  */
 export type EasingFunction = (t: number) => number;
+
+/**
+ * Font weight for text rendering.
+ */
+export type FontWeight = 'normal' | 'bold' | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+
+/**
+ * Horizontal text alignment.
+ */
+export type TextAlign = 'left' | 'center' | 'right';
+
+/**
+ * Vertical text baseline alignment.
+ */
+export type TextBaseline = 'top' | 'middle' | 'bottom' | 'alphabetic';
+
+/**
+ * Minimal action info needed for applyAction.
+ * Full Action interface is in timeline/action.ts.
+ */
+export interface ActionInfo {
+    type: string;
+    target: Point | number | null;
+    startValue?: Point | number | null;
+}
+
+/**
+ * Interface for objects that can be animated on a timeline.
+ * Both Entity and Text implement this interface.
+ */
+export interface Animatable {
+    readonly id: string;
+    captureState(actionType: string): Point | number | null;
+    applyAction(action: ActionInfo, progress: number): void;
+    render(ctx: CanvasRenderingContext2D): void;
+    bindTimeline(timeline: unknown): this;
+    wait(seconds: number): this;
+}

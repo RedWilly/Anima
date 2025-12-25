@@ -14,3 +14,5 @@ export { Arrow, arrow } from './arrow';
 export type { ArrowOptions, ArrowHeads, ArrowHeadStyle } from './arrow';
 export { Polygon, polygon } from './polygon';
 export type { PolygonOptions } from './polygon';
+export { Text, text, TextCharacter } from './text';
+export type { TextOptions, TextCharacterOptions, FontConfig } from './text';

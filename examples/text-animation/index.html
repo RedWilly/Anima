@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anima - Text Animation Demo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #fff;
+    }
+    h1 { margin-bottom: 1rem; font-weight: 300; letter-spacing: 0.1em; color: #e94560; }
+    .controls { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+    button {
+      padding: 0.5rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      background: #e94560;
+      color: white;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    button:hover { background: #ff6b6b; transform: translateY(-2px); }
+    button:active { transform: translateY(0); }
+    canvas { border-radius: 8px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4); }
+    .info { margin-top: 1rem; font-size: 0.875rem; opacity: 0.7; }
+  </style>
+</head>
+
+<body>
+  <h1>✨ TEXT ANIMATION</h1>
+  <div class="controls">
+    <button id="playBtn">▶ Play</button>
+    <button id="pauseBtn">⏸ Pause</button>
+    <button id="resetBtn">↺ Reset</button>
+  </div>
+  <canvas id="canvas"></canvas>
+  <p class="info">Staggered character animation with the Text entity</p>
+
+  <script type="module">
+    // Import from built packages (run `bun run build` first)
+    // For demo, we inline a simplified version
+
+    const WIDTH = 800;
+    const HEIGHT = 400;
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = WIDTH;
+    canvas.height = HEIGHT;
+
+    // Simple easing
+    const easeOut = t => t * (2 - t);
+    const easeInOut = t => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+
+    // Text character state
+    class AnimChar {
+      constructor(char, x, y, fontSize, delay) {
+        this.char = char;
+        this.baseX = x;
+        this.baseY = y;
+        this.fontSize = fontSize;
+        this.delay = delay;
+        this.opacity = 0;
+        this.offsetY = 30;
+        this.time = 0;
+        this.duration = 0.5;
+      }
+
+      update(dt) {
+        this.time += dt;
+        const t = Math.max(0, Math.min(1, (this.time - this.delay) / this.duration));
+        const eased = easeOut(t);
+        this.opacity = eased;
+        this.offsetY = 30 * (1 - eased);
+      }
+
+      render(ctx) {
+        if (this.opacity <= 0) return;
+        ctx.save();
+        ctx.globalAlpha = this.opacity;
+        ctx.font = `bold ${this.fontSize}px Arial`;
+        ctx.fillStyle = '#e94560';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(this.char, this.baseX, this.baseY + this.offsetY);
+        ctx.restore();
+      }
+
+      reset() {
+        this.time = 0;
+        this.opacity = 0;
+        this.offsetY = 30;
+      }
+    }
+
+    // Create text characters with stagger
+    const content = 'ANIMA';
+    const fontSize = 72;
+    const charWidth = fontSize * 0.7;
+    const totalWidth = content.length * charWidth;
+    const startX = (WIDTH - totalWidth) / 2 + charWidth / 2;
+    const stagger = 0.1;
+
+    const chars = [];
+    for (let i = 0; i < content.length; i++) {
+      chars.push(new AnimChar(
+        content[i],
+        startX + i * charWidth,
+        HEIGHT / 2,
+        fontSize,
+        i * stagger
+      ));
+    }
+
+    // Playback
+    let playing = false;
+    let lastTime = 0;
+
+    function render(timestamp) {
+      const dt = lastTime ? (timestamp - lastTime) / 1000 : 0;
+      lastTime = timestamp;
+
+      // Clear
+      ctx.fillStyle = '#1a1a2e';
+      ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+      // Update and render
+      if (playing) {
+        for (let i = 0; i < chars.length; i++) chars[i].update(dt);
+      }
+      for (let i = 0; i < chars.length; i++) chars[i].render(ctx);
+
+      requestAnimationFrame(render);
+    }
+
+    // Controls
+    document.getElementById('playBtn').onclick = () => { playing = true; };
+    document.getElementById('pauseBtn').onclick = () => { playing = false; };
+    document.getElementById('resetBtn').onclick = () => {
+      for (let i = 0; i < chars.length; i++) chars[i].reset();
+      playing = true;
+    };
+
+    // Start
+    requestAnimationFrame(render);
+    playing = true;
+  </script>
+</body>
+
+</html>
+

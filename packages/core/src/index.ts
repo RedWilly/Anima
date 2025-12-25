@@ -5,7 +5,7 @@
  */
 
 // Types
-export type { Point, Style, AnimationOptions, EasingName, EasingFunction } from './types';
+export type { Point, Style, AnimationOptions, EasingName, EasingFunction, FontWeight, TextAlign, TextBaseline, Animatable, ActionInfo } from './types';
 
 // Entities
 export { Entity } from './entities/entity';
@@ -20,6 +20,8 @@ export { Arrow, arrow } from './entities/arrow';
 export type { ArrowOptions, ArrowHeads, ArrowHeadStyle } from './entities/arrow';
 export { Polygon, polygon } from './entities/polygon';
 export type { PolygonOptions } from './entities/polygon';
+export { Text, text, TextCharacter } from './entities/text';
+export type { TextOptions, TextCharacterOptions, FontConfig } from './entities/text';
 
 // Timeline
 export { Timeline } from './timeline/timeline';
@@ -37,4 +39,14 @@ export { linear, easeIn, easeOut, easeInOut, elastic, bounce, getEasing } from '
 
 // Math utilities
 export { lerp, clamp, Vector2 } from './math';
+
+// Font metrics
+export { FontMetrics } from './font';
+export type {
+    FontInfo,
+    FontLoadOptions,
+    GlyphMetrics,
+    GlyphPosition,
+    LayoutResult,
+} from './font';
 

@@ -2,7 +2,7 @@
  * Base Entity class for all visual objects in the scene.
  */
 
-import type { Point, AnimationOptions } from '../types';
+import type { Point, AnimationOptions, ActionInfo } from '../types';
 import type { Timeline, ParallelOptions } from '../timeline/timeline';
 import type { Action } from '../timeline/action';
 import { Vector2 } from '../math';
@@ -205,7 +205,7 @@ export abstract class Entity {
      * Apply an action to update entity state.
      * Called by the timeline during playback.
      */
-    applyAction(action: Action, progress: number): void {
+    applyAction(action: ActionInfo, progress: number): void {
         switch (action.type) {
             case 'moveTo':
                 if (action.startValue && typeof action.target === 'object' && action.target !== null) {
