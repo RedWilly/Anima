@@ -2,6 +2,10 @@
  * FontMetrics - Service for accurate font measurement using fontkit.
  *
  * Provides deterministic glyph metrics independent of browser/OS.
+ *
+ * fontkit.create() returns Font | FontCollection union.
+ * When postscriptName is provided or buffer contains a single font,
+ * the result is always Font. Cast is safe and necessary.   
  */
 
 import * as fontkit from 'fontkit';

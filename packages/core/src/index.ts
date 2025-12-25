@@ -22,6 +22,8 @@ export { Polygon, polygon } from './entities/polygon';
 export type { PolygonOptions } from './entities/polygon';
 export { Text, text, TextCharacter } from './entities/text';
 export type { TextOptions, TextCharacterOptions, FontConfig } from './entities/text';
+export { Group, group } from './entities/group';
+export type { GroupOptions } from './entities/group';
 
 // Timeline
 export { Timeline } from './timeline/timeline';

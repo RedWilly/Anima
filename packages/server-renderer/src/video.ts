@@ -39,6 +39,9 @@ export class VideoEncoder {
      * Encode the scene to a video file.
      */
     async encode(): Promise<void> {
+        // Check if FFmpeg is available
+        await this.checkFFmpegAvailable();
+
         const exporter = new FrameExporter(this.scene, { fps: this.options.fps });
         const result = await exporter.exportFrames();
 
@@ -64,6 +67,35 @@ export class VideoEncoder {
             throw new Error(`FFmpeg exited with code ${exitCode}`);
         }
     }
+
+    /**
+     * Check if FFmpeg is available on the system.
+     * Throws a helpful error if not found.
+     */
+    private async checkFFmpegAvailable(): Promise<void> {
+        try {
+            const proc = Bun.spawn(['ffmpeg', '-version'], {
+                stdout: 'pipe',
+                stderr: 'pipe',
+            });
+            await proc.exited;
+        } catch {
+            const isWindows = process.platform === 'win32';
+            const installHint = isWindows
+                ? 'Install via: winget install FFmpeg.FFmpeg\n  Or download from: https://ffmpeg.org/download.html'
+                : process.platform === 'darwin'
+                    ? 'Install via: brew install ffmpeg'
+                    : 'Install via: sudo apt install ffmpeg (or your package manager)';
+
+            throw new Error(
+                'FFmpeg not found.\n\n' +
+                'FFmpeg is required to encode video files.\n' +
+                `${installHint}\n\n` +
+                'After installing, make sure "ffmpeg" is in your PATH.'
+            );
+        }
+    }
+
 
     /**
      * Get FFmpeg arguments for the specified format.

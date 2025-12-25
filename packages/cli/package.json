@@ -1,0 +1,21 @@
+{
+    "name": "@anima/cli",
+    "version": "0.1.0",
+    "description": "Command-line interface for Anima animation engine",
+    "type": "module",
+    "bin": {
+        "anima": "./src/index.ts"
+    },
+    "scripts": {
+        "build": "bun build ./src/index.ts --outdir ./dist --target bun",
+        "test": "bun test"
+    },
+    "dependencies": {
+        "@anima/core": "workspace:*",
+        "@anima/server-renderer": "workspace:*"
+    },
+    "devDependencies": {
+        "bun-types": "latest",
+        "typescript": "^5.0.0"
+    }
+}

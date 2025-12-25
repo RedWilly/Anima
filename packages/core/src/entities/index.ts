@@ -16,3 +16,5 @@ export { Polygon, polygon } from './polygon';
 export type { PolygonOptions } from './polygon';
 export { Text, text, TextCharacter } from './text';
 export type { TextOptions, TextCharacterOptions, FontConfig } from './text';
+export { Group, group } from './group';
+export type { GroupOptions } from './group';
