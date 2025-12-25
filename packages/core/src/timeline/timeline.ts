@@ -9,6 +9,17 @@ import { clamp } from '../math';
 
 export type TimelineState = 'idle' | 'playing' | 'paused' | 'complete';
 
+/** Scheduling mode for actions */
+export type ScheduleMode = 'sequential' | 'parallel';
+
+/** Represents a group of parallel actions */
+export interface ParallelGroup {
+    /** Time when the parallel group starts */
+    startTime: number;
+    /** Maximum duration of any action in the group */
+    maxDuration: number;
+}
+
 export interface TimelineOptions {
     /** Frames per second for rendering (default: 60) */
     fps?: number;
@@ -27,8 +38,20 @@ export class Timeline {
     private onFrameCallback?: (time: number) => void;
     private onCompleteCallback?: () => void;
 
+    /** Stack to track scheduling context (sequential or parallel) */
+    private contextStack: ScheduleMode[] = ['sequential'];
+    /** Stack of active parallel groups being built */
+    private parallelGroupStack: ParallelGroup[] = [];
+
     constructor(options?: TimelineOptions) {
         this.fps = options?.fps ?? 60;
+    }
+
+    /**
+     * Get the current scheduling mode.
+     */
+    get scheduleMode(): ScheduleMode {
+        return this.contextStack[this.contextStack.length - 1];
     }
 
     /**
@@ -62,19 +85,76 @@ export class Timeline {
 
     /**
      * Schedule an action for an entity.
+     * Behavior depends on current scheduling mode (sequential or parallel).
      */
     scheduleAction(
         actionData: Omit<Action, 'startTime' | 'startValue'>,
         entity: Entity
     ): void {
+        const isParallel = this.scheduleMode === 'parallel';
+        const currentGroup = this.parallelGroupStack[this.parallelGroupStack.length - 1];
+
+        // In parallel mode, use the group's start time
+        // In sequential mode, use scheduledEndTime as before
+        const startTime = isParallel && currentGroup
+            ? currentGroup.startTime
+            : this.scheduledEndTime;
+
         const action: Action = {
             ...actionData,
-            startTime: this.scheduledEndTime,
+            startTime,
             startValue: entity.captureState(actionData.type),
         };
 
         this.actions.push(action);
-        this.scheduledEndTime += action.duration;
+
+        if (isParallel && currentGroup) {
+            // Track max duration for the parallel group
+            currentGroup.maxDuration = Math.max(currentGroup.maxDuration, action.duration);
+        } else {
+            // Sequential: advance timeline by action duration
+            this.scheduledEndTime += action.duration;
+        }
+    }
+
+    /**
+     * Enter parallel scheduling mode.
+     * All actions scheduled until endParallel() will start at the same time.
+     */
+    beginParallel(): void {
+        this.contextStack.push('parallel');
+        this.parallelGroupStack.push({
+            startTime: this.scheduledEndTime,
+            maxDuration: 0,
+        });
+    }
+
+    /**
+     * Exit parallel scheduling mode.
+     * Advances the timeline by the longest action in the parallel group.
+     */
+    endParallel(): void {
+        if (this.contextStack.length <= 1) {
+            throw new Error('Cannot call endParallel() without matching beginParallel()');
+        }
+
+        const mode = this.contextStack.pop();
+        if (mode !== 'parallel') {
+            throw new Error('Context mismatch: expected parallel mode');
+        }
+
+        const group = this.parallelGroupStack.pop();
+        if (group) {
+            // Advance timeline by the longest action in the group
+            this.scheduledEndTime = group.startTime + group.maxDuration;
+        }
+    }
+
+    /**
+     * Check if currently in parallel scheduling mode.
+     */
+    get isParallelMode(): boolean {
+        return this.scheduleMode === 'parallel';
     }
 
     /**

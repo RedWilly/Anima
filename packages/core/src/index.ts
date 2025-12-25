@@ -17,7 +17,7 @@ export type { RectangleOptions } from './entities/rectangle';
 
 // Timeline
 export { Timeline } from './timeline/timeline';
-export type { TimelineState, TimelineOptions } from './timeline/timeline';
+export type { TimelineState, TimelineOptions, ScheduleMode, ParallelGroup } from './timeline/timeline';
 export { createAction } from './timeline/action';
 export type { Action, ActionType } from './timeline/action';
 

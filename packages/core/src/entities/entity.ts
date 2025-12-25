@@ -158,6 +158,35 @@ export abstract class Entity {
     }
 
     /**
+     * Execute multiple animations on this entity simultaneously.
+     * All animations within the parallel block start at the same time.
+     * The parallel block completes when the longest animation finishes.
+     *
+     * @example
+     * circle.parallel(
+     *   c => c.moveTo(100, 200, { duration: 1 }),
+     *   c => c.scaleTo(2, 2, { duration: 0.5 })
+     * );
+     * // Circle moves and scales at the same time
+     */
+    parallel(...animations: Array<(entity: this) => void>): this {
+        if (!this.timeline) {
+            throw new Error(
+                `Entity "${this.id}" is not bound to a timeline. ` +
+                'Add the entity to a scene first.'
+            );
+        }
+
+        this.timeline.beginParallel();
+        for (const animation of animations) {
+            animation(this);
+        }
+        this.timeline.endParallel();
+
+        return this;
+    }
+
+    /**
      * Apply an action to update entity state.
      * Called by the timeline during playback.
      */

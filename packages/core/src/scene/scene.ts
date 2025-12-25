@@ -63,6 +63,27 @@ export class Scene {
     }
 
     /**
+     * Execute multiple animation callbacks simultaneously.
+     * All animations within the parallel block start at the same time.
+     * The parallel block completes when the longest animation finishes.
+     *
+     * @example
+     * scene.parallel(
+     *   () => circle.moveTo(100, 200),
+     *   () => rect.fadeOut(),
+     *   () => scene.wait(0.5)  // Parallel wait acts as minimum duration
+     * );
+     */
+    parallel(...animations: Array<() => void>): this {
+        this.timeline.beginParallel();
+        for (const animation of animations) {
+            animation();
+        }
+        this.timeline.endParallel();
+        return this;
+    }
+
+    /**
      * Start playback.
      */
     play(): this {
