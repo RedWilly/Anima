@@ -1,0 +1,32 @@
+{
+    "name": "@anima/server-renderer",
+    "version": "0.0.1",
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "bun build ./src/index.ts --outdir ./dist --target bun",
+        "test": "bun test",
+        "typecheck": "tsc --noEmit",
+        "lint": "bunx gts lint",
+        "format": "bunx gts fix"
+    },
+    "dependencies": {
+        "@anima/core": "workspace:*",
+        "@napi-rs/canvas": "^0.1.65"
+    },
+    "devDependencies": {
+        "gts": "^6.0.2",
+        "typescript": "^5.7.2",
+        "bun-types": "latest"
+    }
+}

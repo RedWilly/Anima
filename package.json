@@ -1,0 +1,19 @@
+{
+    "name": "anima",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "build": "bun run --filter '*' build",
+        "test": "bun run --filter '*' test",
+        "typecheck": "bun run --filter '*' typecheck",
+        "lint": "bun run --filter '*' lint",
+        "format": "bun run --filter '*' format"
+    },
+    "devDependencies": {
+        "typescript": "^5.7.2"
+    }
+}

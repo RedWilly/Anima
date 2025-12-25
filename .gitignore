@@ -1,0 +1,20 @@
+# Dependencies (ignore everywhere, including monorepos)
+node_modules/
+**/node_modules/
+
+# Bun
+bun.lockb
+
+# Build outputs
+dist/
+build/
+.out/
+
+# Logs
+*.log
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

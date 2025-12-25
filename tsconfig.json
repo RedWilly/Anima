@@ -1,0 +1,48 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "exactOptionalPropertyTypes": true,
+        "noFallthroughCasesInSwitch": true,
+        "useDefineForClassFields": true,
+        "isolatedModules": true,
+        "verbatimModuleSyntax": true,
+        "resolveJsonModule": true,
+        "lib": [
+            "ESNext",
+            "DOM",
+            "DOM.Iterable"
+        ],
+        "types": [
+            "bun-types"
+        ],
+        "paths": {
+            "@anima/core": [
+                "./packages/core/src/index.ts"
+            ],
+            "@anima/browser-renderer": [
+                "./packages/browser-renderer/src/index.ts"
+            ],
+            "@anima/server-renderer": [
+                "./packages/server-renderer/src/index.ts"
+            ]
+        },
+        "baseUrl": "."
+    },
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}
