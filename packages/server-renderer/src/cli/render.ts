@@ -3,11 +3,11 @@
  */
 
 import { resolve, basename, extname } from 'path';
-import { logger, Spinner } from '../utils/logger';
-import { getString, getNumber } from '../utils/args';
+import { logger, Spinner } from './utils/logger';
+import { getString, getNumber } from './utils/args';
 import type { Scene } from '@anima/core';
-import { VideoEncoder } from '@anima/server-renderer';
-import type { VideoFormat } from '@anima/server-renderer';
+import { VideoEncoder } from '../video';
+import type { VideoFormat } from '../video';
 
 export interface RenderOptions {
     flags: Record<string, string | boolean>;

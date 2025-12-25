@@ -3,8 +3,8 @@
  */
 
 import { resolve, join } from 'path';
-import { logger } from '../utils/logger';
-import { getString } from '../utils/args';
+import { logger } from './utils/logger';
+import { getString } from './utils/args';
 
 export interface NewOptions {
     flags: Record<string, string | boolean>;
@@ -24,11 +24,9 @@ function getPackageJson(name: string): string {
                 build: 'anima render src/animation.ts',
             },
             dependencies: {
-                '@anima/core': '^0.1.0',
-                '@anima/browser-renderer': '^0.1.0',
+                '@anima/server-renderer': '^0.1.0',
             },
             devDependencies: {
-                '@anima/cli': '^0.1.0',
                 typescript: '^5.0.0',
             },
         },
@@ -69,7 +67,7 @@ function getAnimationTemplate(): string {
  * Export a Scene as the default export.
  */
 
-import { scene, circle, rectangle, group } from '@anima/core';
+import { scene, circle, rectangle, group } from '@anima/server-renderer';
 
 // Create the scene
 const myScene = scene({ width: 800, height: 600, background: '#1a1a2e' });
@@ -100,7 +98,7 @@ export default myScene;
  * Minimal animation file template.
  */
 function getMinimalTemplate(): string {
-    return `import { scene, circle } from '@anima/core';
+    return `import { scene, circle } from '@anima/server-renderer';
 
 const s = scene({ width: 800, height: 600 });
 const c = s.add(circle());
@@ -142,8 +140,7 @@ export async function newCommand(projectName: string, options: NewOptions): Prom
 
     // Check if directory already exists
     try {
-        const dir = Bun.file(projectPath);
-        const stat = await dir.exists();
+        const stat = await Bun.file(join(projectPath, 'package.json')).exists();
         if (stat) {
             logger.error(`Directory '${projectName}' already contains a project.`);
             process.exit(1);

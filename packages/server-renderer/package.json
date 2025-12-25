@@ -4,6 +4,9 @@
     "type": "module",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
+    "bin": {
+        "anima": "./src/cli/index.ts"
+    },
     "exports": {
         ".": {
             "import": "./dist/index.js",

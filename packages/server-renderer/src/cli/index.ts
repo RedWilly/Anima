@@ -1,18 +1,18 @@
 #!/usr/bin/env bun
 /**
- * @anima/cli - Command-line interface for Anima animation engine.
+ * @anima/server-renderer CLI - Command-line interface for Anima animation engine.
  *
  * Commands:
  *   anima render <file>   - Render animation to video
- *   anima preview <file>  - Start preview server
+ *   anima preview <file>  - Preview animation in system player
  *   anima new <name>      - Create new project
  */
 
 import { parseArgs, getBoolean } from './utils/args';
 import { logger } from './utils/logger';
-import { renderCommand, showRenderHelp } from './commands/render';
-import { previewCommand, showPreviewHelp } from './commands/preview';
-import { newCommand, showNewHelp } from './commands/new';
+import { renderCommand, showRenderHelp } from './render';
+import { previewCommand, showPreviewHelp } from './preview';
+import { newCommand, showNewHelp } from './new';
 
 const VERSION = '0.1.0';
 
@@ -25,7 +25,7 @@ function showHelp(): void {
     console.log('Usage: anima <command> [options]\n');
     console.log('Commands:');
     console.log('  render <file>    Render animation to video');
-    console.log('  preview <file>   Start local preview server');
+    console.log('  preview <file>   Preview animation in system player');
     console.log('  new <name>       Create new animation project');
     console.log();
     console.log('Options:');
