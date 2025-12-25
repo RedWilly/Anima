@@ -14,6 +14,12 @@ export { Circle, circle } from './entities/circle';
 export type { CircleOptions } from './entities/circle';
 export { Rectangle, rectangle } from './entities/rectangle';
 export type { RectangleOptions } from './entities/rectangle';
+export { Line, line } from './entities/line';
+export type { LineOptions } from './entities/line';
+export { Arrow, arrow } from './entities/arrow';
+export type { ArrowOptions, ArrowHeads, ArrowHeadStyle } from './entities/arrow';
+export { Polygon, polygon } from './entities/polygon';
+export type { PolygonOptions } from './entities/polygon';
 
 // Timeline
 export { Timeline } from './timeline/timeline';
