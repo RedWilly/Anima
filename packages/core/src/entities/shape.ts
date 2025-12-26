@@ -2,7 +2,7 @@
  * Shape base class for visual primitives.
  */
 
-import type { Style } from '../types';
+import type { Point, Style } from '../types';
 import { Entity } from './entity';
 
 /**
@@ -71,4 +71,10 @@ export abstract class Shape extends Entity {
         ctx.scale(this.currentScale.x, this.currentScale.y);
         ctx.globalAlpha = this.currentOpacity;
     }
+
+    /**
+     * Get vector points for morphing.
+     * @param segments - Number of segments for curved shapes
+     */
+    abstract getMorphPoints(segments?: number): Point[];
 }

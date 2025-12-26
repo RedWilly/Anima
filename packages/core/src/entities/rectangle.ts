@@ -2,7 +2,7 @@
  * Rectangle shape entity.
  */
 
-import type { Style } from '../types';
+import type { Point, Style } from '../types';
 import { Shape } from './shape';
 
 export interface RectangleOptions {
@@ -61,9 +61,17 @@ export class Rectangle extends Shape {
         return { width: this.width, height: this.height };
     }
 
-    /**
-     * Render the rectangle to a canvas context.
-     */
+    getMorphPoints(): Point[] {
+        const hw = this.width / 2;
+        const hh = this.height / 2;
+        return [
+            { x: -hw, y: -hh },
+            { x: hw, y: -hh },
+            { x: hw, y: hh },
+            { x: -hw, y: hh },
+        ];
+    }
+
     render(ctx: CanvasRenderingContext2D): void {
         ctx.save();
         this.applyTransform(ctx);

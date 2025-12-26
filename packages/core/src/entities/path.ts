@@ -247,6 +247,14 @@ export class Path extends Shape {
         return { x: currentX, y: currentY };
     }
 
+    getMorphPoints(segments = 64): Point[] {
+        const pts: Point[] = [];
+        for (let i = 0; i <= segments; i++) {
+            pts.push(this.getPointAt(i / segments));
+        }
+        return pts;
+    }
+
     render(ctx: CanvasRenderingContext2D): void {
         ctx.save();
         this.applyTransform(ctx);

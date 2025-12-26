@@ -4,6 +4,7 @@
 
 import type { Point, Style } from '../types';
 import { Shape } from './shape';
+import type { EasingName } from '../types';
 
 export interface PolygonOptions {
     /** Array of vertices (minimum 3 points required) */
@@ -85,9 +86,6 @@ export class Polygon extends Shape {
         return { x: sumX / len, y: sumY / len };
     }
 
-    /**
-     * Render the polygon to a canvas context.
-     */
     render(ctx: CanvasRenderingContext2D): void {
         if (this.points.length < 3) return;
 
@@ -115,19 +113,23 @@ export class Polygon extends Shape {
     }
 
     /**
-     * Morph to another set of points over time.
-     * Points are interpolated linearly. If counts differ, extra points are added.
+     * Morph to another shape or set of points over time.
      *
      * @example
+     * // Morph to another shape
+     * triangle.morphTo(circle({ radius: 50 }), { duration: 1 })
+     *
+     * // Morph to explicit points
      * triangle.morphTo([{x:0,y:-75}, {x:75,y:75}, {x:-75,y:75}], { duration: 1 })
      */
-    morphTo(targetPoints: Point[], options?: { duration?: number; ease?: import('../types').EasingName }): this {
+    morphTo(target: Shape | Point[], options?: { duration?: number; ease?: EasingName }): this {
         if (!this.timeline) {
             throw new Error(
                 `Entity "${this.id}" is not bound to a timeline. ` +
                 'Add the entity to a scene first.'
             );
         }
+        const targetPoints = Array.isArray(target) ? target : target.getMorphPoints();
         this.timeline.scheduleAction({
             type: 'morphTo',
             targetId: this.id,

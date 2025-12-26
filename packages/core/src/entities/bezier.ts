@@ -134,12 +134,10 @@ export class Bezier extends Shape {
         }
     }
 
-    /** Returns normalized direction vector at position t. */
     getTangentAt(t: number): Point {
         const mt = 1 - t;
 
         if (this.control2Point) {
-            // Derivative of cubic bezier
             const dx = 3 * mt * mt * (this.control1Point.x - this.startPoint.x) +
                 6 * mt * t * (this.control2Point.x - this.control1Point.x) +
                 3 * t * t * (this.endPoint.x - this.control2Point.x);
@@ -149,7 +147,6 @@ export class Bezier extends Shape {
             const len = Math.sqrt(dx * dx + dy * dy);
             return len > 0 ? { x: dx / len, y: dy / len } : { x: 1, y: 0 };
         } else {
-            // Derivative of quadratic bezier
             const dx = 2 * mt * (this.control1Point.x - this.startPoint.x) +
                 2 * t * (this.endPoint.x - this.control1Point.x);
             const dy = 2 * mt * (this.control1Point.y - this.startPoint.y) +
@@ -157,6 +154,14 @@ export class Bezier extends Shape {
             const len = Math.sqrt(dx * dx + dy * dy);
             return len > 0 ? { x: dx / len, y: dy / len } : { x: 1, y: 0 };
         }
+    }
+
+    getMorphPoints(segments = 32): Point[] {
+        const pts: Point[] = [];
+        for (let i = 0; i <= segments; i++) {
+            pts.push(this.getPointAt(i / segments));
+        }
+        return pts;
     }
 
     render(ctx: CanvasRenderingContext2D): void {

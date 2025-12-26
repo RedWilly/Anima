@@ -182,16 +182,20 @@ export class Arc extends Shape {
             ? this.arcStartAngle - t * (this.arcStartAngle - this.arcEndAngle)
             : this.arcStartAngle + t * (this.arcEndAngle - this.arcStartAngle);
         const direction = this.arcCounterclockwise ? -1 : 1;
-        // Tangent is perpendicular to radius
         const dx = -this.arcRadiusX * Math.sin(angle) * direction;
         const dy = this.arcRadiusY * Math.cos(angle) * direction;
         const len = Math.sqrt(dx * dx + dy * dy);
         return len > 0 ? { x: dx / len, y: dy / len } : { x: 1, y: 0 };
     }
 
-    /**
-     * Render the arc to a canvas context.
-     */
+    getMorphPoints(segments = 32): Point[] {
+        const pts: Point[] = [];
+        for (let i = 0; i <= segments; i++) {
+            pts.push(this.getPointAt(i / segments));
+        }
+        return pts;
+    }
+
     render(ctx: CanvasRenderingContext2D): void {
         ctx.save();
         this.applyTransform(ctx);

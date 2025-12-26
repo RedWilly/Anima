@@ -2,7 +2,7 @@
  * Circle shape entity.
  */
 
-import type { Style } from '../types';
+import type { Point, Style } from '../types';
 import { Shape } from './shape';
 
 export interface CircleOptions {
@@ -44,9 +44,18 @@ export class Circle extends Shape {
         return this.radius;
     }
 
-    /**
-     * Render the circle to a canvas context.
-     */
+    getMorphPoints(segments = 32): Point[] {
+        const pts: Point[] = [];
+        for (let i = 0; i < segments; i++) {
+            const angle = (i / segments) * Math.PI * 2;
+            pts.push({
+                x: Math.cos(angle) * this.radius,
+                y: Math.sin(angle) * this.radius,
+            });
+        }
+        return pts;
+    }
+
     render(ctx: CanvasRenderingContext2D): void {
         ctx.save();
         this.applyTransform(ctx);

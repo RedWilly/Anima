@@ -87,9 +87,10 @@ export class Line extends Shape {
         return Math.atan2(dy, dx);
     }
 
-    /**
-     * Render the line to a canvas context.
-     */
+    getMorphPoints(): Point[] {
+        return [{ ...this.fromPoint }, { ...this.toPoint }];
+    }
+
     render(ctx: CanvasRenderingContext2D): void {
         ctx.save();
         this.applyTransform(ctx);
