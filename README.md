@@ -11,6 +11,8 @@ A next-generation animation engine that brings the narrative power and mathemati
 - **Composition** — Group shapes to transform as a unit
 - **Timeline Orchestration** — Sequential and parallel animations
 
+> Anima uses named imports as the primary API. The `anima` namespace exists for convenience and quick demos, but core and production code should use named imports.
+
 ## 📦 Packages
 
 | Package | Description |

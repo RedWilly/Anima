@@ -3,12 +3,12 @@
  */
 
 import { describe, expect, it } from 'bun:test';
-import { Bezier, bezier, Arc, arc, Path, path } from '../src';
+import { bezier, arc, path } from '../src';
 
 describe('Bezier', () => {
     describe('Creation', () => {
         it('should create quadratic bezier with default values', () => {
-            const b = new Bezier();
+            const b = bezier();
             expect(b.isCubic()).toBe(false);
             expect(b.getStart()).toEqual({ x: -50, y: 0 });
             expect(b.getEnd()).toEqual({ x: 50, y: 0 });
@@ -64,7 +64,7 @@ describe('Bezier', () => {
 describe('Arc', () => {
     describe('Creation', () => {
         it('should create with default values', () => {
-            const a = new Arc();
+            const a = arc();
             expect(a.getCenter()).toEqual({ x: 0, y: 0 });
             expect(a.getRadiusX()).toBe(50);
             expect(a.getStartAngle()).toBe(0);
@@ -112,7 +112,7 @@ describe('Arc', () => {
 describe('Path', () => {
     describe('Creation', () => {
         it('should create empty path', () => {
-            const p = new Path();
+            const p = path();
             expect(p.getCommands().length).toBe(0);
         });
 
@@ -138,7 +138,6 @@ describe('Path', () => {
                 .lineTo(100, 0)
                 .lineTo(50, 50)
                 .close();
-            // Triangle: 100 + ~70 + ~70 ≈ 240
             expect(p.getLength()).toBeGreaterThan(200);
         });
     });

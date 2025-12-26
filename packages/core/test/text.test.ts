@@ -3,12 +3,12 @@
  */
 
 import { describe, expect, it } from 'bun:test';
-import { Text, text, TextCharacter, Scene } from '../src';
+import { text, TextCharacter, Scene } from '../src';
 
 describe('Text', () => {
     describe('Creation', () => {
         it('should create with default values', () => {
-            const t = new Text();
+            const t = text();
             expect(t.getContent()).toBe('');
             expect(t.getFontFamily()).toBe('Roboto');
             expect(t.getFontSize()).toBe(24);
@@ -19,7 +19,7 @@ describe('Text', () => {
         });
 
         it('should create with custom options', () => {
-            const t = new Text({
+            const t = text({
                 content: 'Hello World',
                 fontFamily: 'Georgia',
                 fontSize: 48,
@@ -33,18 +33,17 @@ describe('Text', () => {
             expect(t.getFontWeight()).toBe('bold');
             expect(t.getTextAlign()).toBe('center');
             expect(t.getTextBaseline()).toBe('top');
-            expect(t.length).toBe(11); // "Hello World" = 11 chars
+            expect(t.length).toBe(11);
         });
 
         it('should have unique ids', () => {
-            const t1 = new Text();
-            const t2 = new Text();
+            const t1 = text();
+            const t2 = text();
             expect(t1.id).not.toBe(t2.id);
         });
 
         it('should work with factory function', () => {
             const t = text({ content: 'Factory Test', fontSize: 32 });
-            expect(t).toBeInstanceOf(Text);
             expect(t.getContent()).toBe('Factory Test');
             expect(t.getFontSize()).toBe(32);
             expect(t.length).toBe(12);
@@ -104,7 +103,7 @@ describe('Text', () => {
 
     describe('Fluent Setters', () => {
         it('should allow chaining setContent and rebuild characters', () => {
-            const t = new Text({ content: 'Hi' });
+            const t = text({ content: 'Hi' });
             expect(t.length).toBe(2);
             const result = t.setContent('Hello');
             expect(result).toBe(t);
@@ -114,42 +113,42 @@ describe('Text', () => {
         });
 
         it('should allow chaining setFontFamily', () => {
-            const t = new Text();
+            const t = text();
             const result = t.setFontFamily('Arial');
             expect(result).toBe(t);
             expect(t.getFontFamily()).toBe('Arial');
         });
 
         it('should allow chaining setFontSize', () => {
-            const t = new Text();
+            const t = text();
             const result = t.setFontSize(36);
             expect(result).toBe(t);
             expect(t.getFontSize()).toBe(36);
         });
 
         it('should allow chaining setFontWeight', () => {
-            const t = new Text();
+            const t = text();
             const result = t.setFontWeight(700);
             expect(result).toBe(t);
             expect(t.getFontWeight()).toBe(700);
         });
 
         it('should allow chaining setTextAlign', () => {
-            const t = new Text();
+            const t = text();
             const result = t.setTextAlign('right');
             expect(result).toBe(t);
             expect(t.getTextAlign()).toBe('right');
         });
 
         it('should allow chaining setTextBaseline', () => {
-            const t = new Text();
+            const t = text();
             const result = t.setTextBaseline('bottom');
             expect(result).toBe(t);
             expect(t.getTextBaseline()).toBe('bottom');
         });
 
         it('should allow chaining multiple setters', () => {
-            const t = new Text()
+            const t = text()
                 .setContent('Chained')
                 .setFontFamily('Helvetica')
                 .setFontSize(18)
@@ -168,43 +167,43 @@ describe('Text', () => {
 
     describe('Validation', () => {
         it('should throw on invalid fontSize in constructor', () => {
-            expect(() => new Text({ fontSize: 0 })).toThrow();
-            expect(() => new Text({ fontSize: -10 })).toThrow();
+            expect(() => text({ fontSize: 0 })).toThrow();
+            expect(() => text({ fontSize: -10 })).toThrow();
         });
 
         it('should throw on invalid fontSize in setter', () => {
-            const t = new Text();
+            const t = text();
             expect(() => t.setFontSize(0)).toThrow();
             expect(() => t.setFontSize(-5)).toThrow();
         });
 
         it('should allow empty content', () => {
-            const t = new Text({ content: '' });
+            const t = text({ content: '' });
             expect(t.getContent()).toBe('');
         });
     });
 
     describe('Style Methods', () => {
         it('should allow setting fill color', () => {
-            const t = new Text().fill('#e74c3c');
-            expect(t).toBeInstanceOf(Text);
+            const t = text().fill('#e74c3c');
+            expect(t.getFontSize()).toBe(24);
         });
 
         it('should allow setting stroke color', () => {
-            const t = new Text().stroke('#c0392b');
-            expect(t).toBeInstanceOf(Text);
+            const t = text().stroke('#c0392b');
+            expect(t.getFontSize()).toBe(24);
         });
 
         it('should allow setting strokeWidth', () => {
-            const t = new Text().strokeWidth(2);
-            expect(t).toBeInstanceOf(Text);
+            const t = text().strokeWidth(2);
+            expect(t.getFontSize()).toBe(24);
         });
     });
 
     describe('Integration with Scene', () => {
         it('should add Text to scene and animate position', () => {
             const s = new Scene();
-            const t = s.add(new Text({ content: 'Animated' }));
+            const t = s.add(text({ content: 'Animated' }));
 
             t.moveTo(100, 100, { duration: 1, ease: 'linear' });
 
@@ -215,7 +214,7 @@ describe('Text', () => {
 
         it('should add Text to scene and animate scale', () => {
             const s = new Scene();
-            const t = s.add(new Text({ content: 'Scale Test' }));
+            const t = s.add(text({ content: 'Scale Test' }));
 
             t.scaleTo(2, 2, { duration: 1, ease: 'linear' });
 
@@ -226,7 +225,7 @@ describe('Text', () => {
 
         it('should add Text to scene and animate opacity', () => {
             const s = new Scene();
-            const t = s.add(new Text({ content: 'Fade Test' }));
+            const t = s.add(text({ content: 'Fade Test' }));
 
             t.fadeOut({ duration: 1, ease: 'linear' });
 
@@ -236,7 +235,7 @@ describe('Text', () => {
 
         it('should add Text to scene and animate rotation', () => {
             const s = new Scene();
-            const t = s.add(new Text({ content: 'Rotate' }));
+            const t = s.add(text({ content: 'Rotate' }));
 
             t.rotateTo(Math.PI, { duration: 1, ease: 'linear' });
 
@@ -287,4 +286,3 @@ describe('TextCharacter', () => {
         expect(c.getFontString()).toBe('bold 24px Arial');
     });
 });
-
