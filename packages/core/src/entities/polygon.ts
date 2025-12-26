@@ -8,6 +8,15 @@ import { Shape } from './shape';
 import type { EasingName } from '../types';
 import { interpolateColor, interpolateNumber } from '../utils/color';
 
+/**
+ * Default style for polygons.
+ */
+const POLYGON_DEFAULT_STYLE: Style = {
+    fill: '#3498db',
+    stroke: '#2980b9',
+    strokeWidth: 2,
+};
+
 export interface PolygonOptions {
     /** Array of vertices (minimum 3 points required) */
     points?: Point[];
@@ -39,7 +48,7 @@ export class Polygon extends Shape {
     protected subPaths: Point[][] | null = null;
 
     constructor(options?: PolygonOptions) {
-        super(options?.style);
+        super(options?.style ?? POLYGON_DEFAULT_STYLE);
 
         // Default to a triangle if no points provided
         const defaultPoints: Point[] = [

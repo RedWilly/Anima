@@ -10,8 +10,8 @@ import { Entity } from './entity';
  */
 const DEFAULT_STYLE: Required<Style> = {
     fill: '#3498db',
-    stroke: '#2980b9',
-    strokeWidth: 2,
+    stroke: '',
+    strokeWidth: 0,
 };
 
 /**

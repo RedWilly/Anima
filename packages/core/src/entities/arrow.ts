@@ -2,6 +2,7 @@
  * Arrow shape entity - a line with arrowhead(s).
  */
 
+import type { Style } from '../types';
 import { Line, type LineOptions } from './line';
 
 /** Where to draw arrowheads */
@@ -9,6 +10,15 @@ export type ArrowHeads = 'start' | 'end' | 'both';
 
 /** Arrowhead visual style */
 export type ArrowHeadStyle = 'filled' | 'outline';
+
+/**
+ * Default style for arrows.
+ */
+const ARROW_DEFAULT_STYLE: Style = {
+    fill: '',
+    stroke: '#3498db',
+    strokeWidth: 2,
+};
 
 export interface ArrowOptions extends LineOptions {
     /** Size of the arrowhead in pixels (default: 10) */
@@ -29,7 +39,7 @@ export class Arrow extends Line {
     protected heads: ArrowHeads;
 
     constructor(options?: ArrowOptions) {
-        super(options);
+        super({ ...options, style: options?.style ?? ARROW_DEFAULT_STYLE });
         this.headSize = options?.headSize ?? 10;
         this.headStyle = options?.headStyle ?? 'filled';
         this.heads = options?.heads ?? 'end';
