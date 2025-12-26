@@ -275,23 +275,28 @@ export class Text {
     }
 
     /**
-     * Get vector points for all characters combined.
+     * Get vector points for all characters as sub-paths.
      * Used for morphing the entire text into a shape.
+     * Returns an array of sub-paths to preserve character boundaries.
      */
-    getMorphPoints(segments = 8): Point[] {
-        const allPoints: Point[] = [];
+    getMorphPoints(segments = 8): Point[][] {
+        const allSubPaths: Point[][] = [];
         for (let i = 0; i < this.characters.length; i++) {
             const char = this.characters[i];
-            const charPoints = char.getMorphPoints(segments);
-            // Offset each character's points by their position
-            for (const pt of charPoints) {
-                allPoints.push({
-                    x: pt.x + char.offsetX,
-                    y: pt.y,
-                });
+            const charSubPaths = char.getMorphPoints(segments);
+            // Offset each character's sub-paths by their position
+            for (const subPath of charSubPaths) {
+                const offsetSubPath: Point[] = [];
+                for (const pt of subPath) {
+                    offsetSubPath.push({
+                        x: pt.x + char.offsetX,
+                        y: pt.y,
+                    });
+                }
+                allSubPaths.push(offsetSubPath);
             }
         }
-        return allPoints;
+        return allSubPaths;
     }
 
     /** Applies to all characters. */

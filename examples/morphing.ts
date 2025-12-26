@@ -19,6 +19,12 @@ const shape = myScene.add(polygon({
 }));
 shape.moveTo(400, 300, { duration: 0 });
 
+const title = myScene.add(text({
+    content: 'Anima',
+    fontSize: 80
+})).fill('#ff6b6b');
+title.moveTo(400, 50, { duration: 0 });
+
 // === Morph sequence - just pass shapes directly! ===
 
 shape

@@ -84,7 +84,7 @@ export class TextCharacter extends Shape {
         return `${this.fontWeight} ${this.fontSize}px ${this.fontFamily}`;
     }
 
-    getMorphPoints(segments = 8): Point[] {
+    getMorphPoints(segments = 8): Point[][] {
         const font = resolveFontFamily(this.fontFamily);
         return font.getGlyphPath(this.char, this.fontSize, segments);
     }

@@ -13,13 +13,22 @@ export interface CircleOptions {
 }
 
 /**
+ * Default style for circles.
+ */
+const CIRCLE_DEFAULT_STYLE: Style = {
+    fill: '#e74c3c', // Red like rectangle
+    stroke: '',
+    strokeWidth: 0,
+};
+
+/**
  * A circle shape with configurable radius and style.
  */
 export class Circle extends Shape {
     private radius: number;
 
     constructor(options?: CircleOptions) {
-        super(options?.style);
+        super(options?.style ?? CIRCLE_DEFAULT_STYLE);
         this.radius = options?.radius ?? 50;
     }
 

@@ -167,9 +167,10 @@ export class FontMetrics {
 
     /**
      * Get vector points from a glyph path for morphing.
-     * Samples curves to produce a list of points.
+     * Returns an array of sub-paths, where each sub-path is an array of points.
+     * This preserves the structure needed for proper rendering (no connecting lines).
      */
-    getGlyphPath(char: string, fontSize: number, curveSegments = 8): { x: number; y: number }[] {
+    getGlyphPath(char: string, fontSize: number, curveSegments = 8): { x: number; y: number }[][] {
         const run = this.font.layout(char);
         if (run.glyphs.length === 0) {
             return [];
@@ -182,21 +183,27 @@ export class FontMetrics {
         }
 
         const scale = fontSize / this.info.unitsPerEm;
-        const points: { x: number; y: number }[] = [];
+        const subPaths: { x: number; y: number }[][] = [];
+        let currentSubPath: { x: number; y: number }[] = [];
         let currentX = 0;
         let currentY = 0;
 
         for (const cmd of path.commands) {
             switch (cmd.command) {
                 case 'moveTo':
+                    // Start a new sub-path
+                    if (currentSubPath.length > 0) {
+                        subPaths.push(currentSubPath);
+                    }
+                    currentSubPath = [];
                     currentX = cmd.args[0] * scale;
                     currentY = -cmd.args[1] * scale;
-                    points.push({ x: currentX, y: currentY });
+                    currentSubPath.push({ x: currentX, y: currentY });
                     break;
                 case 'lineTo':
                     currentX = cmd.args[0] * scale;
                     currentY = -cmd.args[1] * scale;
-                    points.push({ x: currentX, y: currentY });
+                    currentSubPath.push({ x: currentX, y: currentY });
                     break;
                 case 'quadraticCurveTo': {
                     const cx = cmd.args[0] * scale;
@@ -208,7 +215,7 @@ export class FontMetrics {
                         const mt = 1 - t;
                         const x = mt * mt * currentX + 2 * mt * t * cx + t * t * ex;
                         const y = mt * mt * currentY + 2 * mt * t * cy + t * t * ey;
-                        points.push({ x, y });
+                        currentSubPath.push({ x, y });
                     }
                     currentX = ex;
                     currentY = ey;
@@ -226,18 +233,24 @@ export class FontMetrics {
                         const mt = 1 - t;
                         const x = mt * mt * mt * currentX + 3 * mt * mt * t * c1x + 3 * mt * t * t * c2x + t * t * t * ex;
                         const y = mt * mt * mt * currentY + 3 * mt * mt * t * c1y + 3 * mt * t * t * c2y + t * t * t * ey;
-                        points.push({ x, y });
+                        currentSubPath.push({ x, y });
                     }
                     currentX = ex;
                     currentY = ey;
                     break;
                 }
                 case 'closePath':
+                    // Path is implicitly closed, no action needed
                     break;
             }
         }
 
-        return points;
+        // Don't forget the last sub-path
+        if (currentSubPath.length > 0) {
+            subPaths.push(currentSubPath);
+        }
+
+        return subPaths;
     }
 }
 

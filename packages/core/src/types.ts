@@ -81,6 +81,10 @@ export interface ActionInfo {
     morphPoints?: Point[];
     /** Start points for morphTo actions */
     morphStartPoints?: Point[];
+    /** Target sub-paths for morphTo actions (text/complex shapes) */
+    morphSubPaths?: Point[][] | undefined;
+    /** Start sub-paths for morphTo actions */
+    morphStartSubPaths?: Point[][] | undefined;
 }
 
 /**

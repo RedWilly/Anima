@@ -148,45 +148,47 @@ describe('getMorphPoints', () => {
     });
 
     describe('TextCharacter', () => {
-        test('should return array of points', () => {
+        test('should return array of sub-paths', () => {
             const t = text({ content: 'A', fontSize: 48 });
             const char = t.charAt(0);
-            const points = char.getMorphPoints();
-            expect(Array.isArray(points)).toBe(true);
+            const subPaths = char.getMorphPoints();
+            expect(Array.isArray(subPaths)).toBe(true);
         });
 
-        test('should return non-empty array for letter', () => {
+        test('should return non-empty sub-paths for letter', () => {
             const t = text({ content: 'A', fontSize: 48 });
             const char = t.charAt(0);
-            const points = char.getMorphPoints();
-            expect(points.length).toBeGreaterThan(0);
+            const subPaths = char.getMorphPoints();
+            expect(subPaths.length).toBeGreaterThan(0);
+            // Each sub-path should be an array of points
+            expect(Array.isArray(subPaths[0])).toBe(true);
         });
 
-        test('should return points with x and y properties', () => {
+        test('should return sub-paths with points having x and y properties', () => {
             const t = text({ content: 'A', fontSize: 48 });
             const char = t.charAt(0);
-            const points = char.getMorphPoints();
-            if (points.length > 0) {
-                expect(typeof points[0].x).toBe('number');
-                expect(typeof points[0].y).toBe('number');
+            const subPaths = char.getMorphPoints();
+            if (subPaths.length > 0 && subPaths[0].length > 0) {
+                expect(typeof subPaths[0][0].x).toBe('number');
+                expect(typeof subPaths[0][0].y).toBe('number');
             }
         });
     });
 
     describe('Text', () => {
-        test('should return array of points', () => {
+        test('should return array of sub-paths', () => {
             const t = text({ content: 'Hi', fontSize: 48 });
-            const points = t.getMorphPoints();
-            expect(Array.isArray(points)).toBe(true);
+            const subPaths = t.getMorphPoints();
+            expect(Array.isArray(subPaths)).toBe(true);
         });
 
-        test('should combine points from all characters', () => {
+        test('should combine sub-paths from all characters', () => {
             const single = text({ content: 'A', fontSize: 48 });
             const double = text({ content: 'AB', fontSize: 48 });
-            const singlePoints = single.getMorphPoints();
-            const doublePoints = double.getMorphPoints();
-            // More characters = more points
-            expect(doublePoints.length).toBeGreaterThan(singlePoints.length);
+            const singleSubPaths = single.getMorphPoints();
+            const doubleSubPaths = double.getMorphPoints();
+            // More characters = more sub-paths
+            expect(doubleSubPaths.length).toBeGreaterThan(singleSubPaths.length);
         });
     });
 });

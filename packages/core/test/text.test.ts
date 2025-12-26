@@ -13,7 +13,7 @@ describe('Text', () => {
             expect(t.getFontFamily()).toBe('Roboto');
             expect(t.getFontSize()).toBe(24);
             expect(t.getFontWeight()).toBe('normal');
-            expect(t.getTextAlign()).toBe('left');
+            expect(t.getTextAlign()).toBe('center');
             expect(t.getTextBaseline()).toBe('middle');
             expect(t.length).toBe(0);
         });

@@ -74,7 +74,8 @@ export abstract class Shape extends Entity {
 
     /**
      * Get vector points for morphing.
+     * Returns either flat points or sub-paths depending on shape type.
      * @param segments - Number of segments for curved shapes
      */
-    abstract getMorphPoints(segments?: number): Point[];
+    abstract getMorphPoints(segments?: number): Point[] | Point[][];
 }

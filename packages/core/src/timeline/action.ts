@@ -46,6 +46,10 @@ export interface Action {
     morphPoints?: { x: number; y: number }[];
     /** Start points for morphTo actions (captured lazily) */
     morphStartPoints?: { x: number; y: number }[];
+    /** Target sub-paths for morphTo actions (text/complex shapes) */
+    morphSubPaths?: { x: number; y: number }[][] | undefined;
+    /** Start sub-paths for morphTo actions (captured lazily) */
+    morphStartSubPaths?: { x: number; y: number }[][] | undefined;
 }
 
 /**

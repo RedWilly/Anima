@@ -288,8 +288,16 @@ export class Timeline {
                 action.startValue = entity.captureState(action.type);
                 // Capture morph start points for morphTo actions
                 if (action.type === 'morphTo' && 'getMorphPoints' in entity) {
-                    const morphable = entity as unknown as { getMorphPoints(): { x: number; y: number }[] };
+                    const morphable = entity as unknown as {
+                        getMorphPoints(): { x: number; y: number }[];
+                        getMorphSubPaths?(): { x: number; y: number }[][] | null;
+                    };
                     action.morphStartPoints = morphable.getMorphPoints();
+                    // Also capture sub-paths if the entity has them
+                    if (morphable.getMorphSubPaths) {
+                        const subPaths = morphable.getMorphSubPaths();
+                        action.morphStartSubPaths = subPaths ?? undefined;
+                    }
                 }
                 this.capturedActions.add(action);
             }
