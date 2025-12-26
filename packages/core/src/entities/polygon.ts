@@ -6,6 +6,7 @@
 import type { Point, Style } from '../types';
 import { Shape } from './shape';
 import type { EasingName } from '../types';
+import { interpolateColor, interpolateNumber } from '../utils/color';
 
 export interface PolygonOptions {
     /** Array of vertices (minimum 3 points required) */
@@ -172,8 +173,8 @@ export class Polygon extends Shape {
      * triangle.morphTo([{x:0,y:-75}, {x:75,y:75}, {x:-75,y:75}], { duration: 1 })
      */
     morphTo(
-        target: { getMorphPoints: (segments?: number) => Point[] | Point[][] } | Point[] | Point[][],
-        options?: { duration?: number; ease?: EasingName }
+        target: { getMorphPoints: (segments?: number) => Point[] | Point[][]; getStyle?: () => Style } | Point[] | Point[][],
+        options?: { duration?: number; ease?: EasingName; style?: Style }
     ): this {
         if (!this.timeline) {
             throw new Error(
@@ -183,10 +184,16 @@ export class Polygon extends Shape {
         }
 
         let targetPoints: Point[] | Point[][];
+        let targetStyle: Style | undefined;
+
         if (Array.isArray(target)) {
             targetPoints = target;
+            // For raw points, use explicit style option or undefined
+            targetStyle = options?.style;
         } else {
             targetPoints = target.getMorphPoints();
+            // Extract target's style if available, allow user override
+            targetStyle = options?.style ?? (target.getStyle ? target.getStyle() : undefined);
         }
 
         // Determine if target uses sub-paths
@@ -200,6 +207,7 @@ export class Polygon extends Shape {
             ease: options?.ease ?? 'easeInOut',
             morphPoints: hasSubPaths ? (targetPoints as Point[][]).flat() : targetPoints as Point[],
             morphSubPaths: hasSubPaths ? (targetPoints as Point[][]).map(sp => sp.map(p => ({ ...p }))) : undefined,
+            morphStyle: targetStyle,
         }, this);
         return this;
     }
@@ -259,6 +267,30 @@ export class Polygon extends Shape {
                 }
             } else {
                 this.subPaths = null;
+            }
+
+            // Interpolate style if target style is specified
+            if (action.morphStyle && action.morphStartStyle) {
+                const startStyle = action.morphStartStyle;
+                const endStyle = action.morphStyle;
+
+                if (startStyle.fill && endStyle.fill) {
+                    this.style.fill = interpolateColor(startStyle.fill, endStyle.fill, progress);
+                } else if (endStyle.fill && progress >= 1) {
+                    this.style.fill = endStyle.fill;
+                }
+
+                if (startStyle.stroke && endStyle.stroke) {
+                    this.style.stroke = interpolateColor(startStyle.stroke, endStyle.stroke, progress);
+                } else if (endStyle.stroke && progress >= 1) {
+                    this.style.stroke = endStyle.stroke;
+                }
+
+                if (startStyle.strokeWidth !== undefined && endStyle.strokeWidth !== undefined) {
+                    this.style.strokeWidth = interpolateNumber(startStyle.strokeWidth, endStyle.strokeWidth, progress);
+                } else if (endStyle.strokeWidth !== undefined && progress >= 1) {
+                    this.style.strokeWidth = endStyle.strokeWidth;
+                }
             }
         } else {
             super.applyAction(action, progress);

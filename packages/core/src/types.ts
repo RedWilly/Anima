@@ -85,6 +85,10 @@ export interface ActionInfo {
     morphSubPaths?: Point[][] | undefined;
     /** Start sub-paths for morphTo actions */
     morphStartSubPaths?: Point[][] | undefined;
+    /** Target style for morphTo actions */
+    morphStyle?: Style | undefined;
+    /** Start style for morphTo actions */
+    morphStartStyle?: Style | undefined;
 }
 
 /**

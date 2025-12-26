@@ -5,6 +5,15 @@
 import type { Point, Style } from '../types';
 import { Shape } from './shape';
 
+/**
+ * Default style for rectangles.
+ */
+const RECTANGLE_DEFAULT_STYLE: Style = {
+    fill: '#3498db',
+    stroke: '#2980b9',
+    strokeWidth: 2,
+};
+
 export interface RectangleOptions {
     /** Width in pixels (default: 100) */
     width?: number;
@@ -25,7 +34,7 @@ export class Rectangle extends Shape {
     private cornerRadius: number;
 
     constructor(options?: RectangleOptions) {
-        super(options?.style);
+        super(options?.style ?? RECTANGLE_DEFAULT_STYLE);
         this.width = options?.width ?? 100;
         this.height = options?.height ?? 100;
         this.cornerRadius = options?.cornerRadius ?? 0;

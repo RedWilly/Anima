@@ -291,12 +291,17 @@ export class Timeline {
                     const morphable = entity as unknown as {
                         getMorphPoints(): { x: number; y: number }[];
                         getMorphSubPaths?(): { x: number; y: number }[][] | null;
+                        getStyle?(): { fill?: string; stroke?: string; strokeWidth?: number };
                     };
                     action.morphStartPoints = morphable.getMorphPoints();
                     // Also capture sub-paths if the entity has them
                     if (morphable.getMorphSubPaths) {
                         const subPaths = morphable.getMorphSubPaths();
                         action.morphStartSubPaths = subPaths ?? undefined;
+                    }
+                    // Capture start style for style interpolation
+                    if (morphable.getStyle) {
+                        action.morphStartStyle = morphable.getStyle();
                     }
                 }
                 this.capturedActions.add(action);

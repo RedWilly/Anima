@@ -274,6 +274,11 @@ export class Text {
         return this.fontFace;
     }
 
+    /** Get the current style. */
+    getStyle(): Style {
+        return { ...this.style };
+    }
+
     /**
      * Get vector points for all characters as sub-paths.
      * Used for morphing the entire text into a shape.

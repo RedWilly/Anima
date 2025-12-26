@@ -50,6 +50,10 @@ export interface Action {
     morphSubPaths?: { x: number; y: number }[][] | undefined;
     /** Start sub-paths for morphTo actions (captured lazily) */
     morphStartSubPaths?: { x: number; y: number }[][] | undefined;
+    /** Target style for morphTo actions */
+    morphStyle?: { fill?: string; stroke?: string; strokeWidth?: number } | undefined;
+    /** Start style for morphTo actions (captured lazily) */
+    morphStartStyle?: { fill?: string; stroke?: string; strokeWidth?: number } | undefined;
 }
 
 /**

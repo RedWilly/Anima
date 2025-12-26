@@ -73,6 +73,23 @@ export abstract class Shape extends Entity {
     }
 
     /**
+     * Get the current style.
+     */
+    getStyle(): Required<Style> {
+        return { ...this.style };
+    }
+
+    /**
+     * Set the style directly.
+     */
+    setStyle(style: Style): this {
+        if (style.fill !== undefined) this.style.fill = style.fill;
+        if (style.stroke !== undefined) this.style.stroke = style.stroke;
+        if (style.strokeWidth !== undefined) this.style.strokeWidth = style.strokeWidth;
+        return this;
+    }
+
+    /**
      * Get vector points for morphing.
      * Returns either flat points or sub-paths depending on shape type.
      * @param segments - Number of segments for curved shapes
