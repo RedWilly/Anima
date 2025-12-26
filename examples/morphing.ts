@@ -40,7 +40,7 @@ shape
     .wait(0.3)
     // Arc to the letter "A" - morphing into text!
     .morphTo(text({ content: 'Anima', fontSize: 80 }), { duration: 1.2, ease: 'easeInOut' })
-    .wait(0.3)
+    .wait(0.9)
     // Letter "A" to bezier curve
     .morphTo(bezier({ start: { x: -50, y: 0 }, control1: { x: -25, y: -50 }, control2: { x: 25, y: 50 }, end: { x: 50, y: 0 } }), { duration: 1, ease: 'easeInOut' })
     .wait(0.3)

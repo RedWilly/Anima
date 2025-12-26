@@ -252,8 +252,59 @@ export function interpolatePoints(
 }
 
 /**
+ * Distribute a single path's points to create multiple initial sub-paths.
+ * This creates a "bloom" effect where sub-paths emerge from the source.
+ * 
+ * @param sourcePath - The single source path to distribute
+ * @param targetCount - Number of target sub-paths to create
+ * @param targetCentroids - Centroids of each target sub-path for direction hints
+ * @param progress - Animation progress (0-1)
+ */
+function distributePathToSubPaths(
+    sourcePath: Point[],
+    targetCount: number,
+    targetCentroids: Point[],
+    progress: number
+): Point[][] {
+    if (sourcePath.length === 0 || targetCount === 0) return [];
+
+    const sourceCentroid = getCentroid(sourcePath);
+    const pointsPerSubPath = Math.max(8, Math.floor(sourcePath.length / targetCount));
+    const result: Point[][] = [];
+
+    for (let i = 0; i < targetCount; i++) {
+        const subPath: Point[] = [];
+        const targetCenter = targetCentroids[i] || sourceCentroid;
+
+        // Create points for this sub-path
+        for (let j = 0; j < pointsPerSubPath; j++) {
+            const srcIdx = (i * pointsPerSubPath + j) % sourcePath.length;
+            const srcPoint = sourcePath[srcIdx];
+
+            // At progress=0: all points at source centroid
+            // At progress=1: points move toward target centroid
+            // This creates a "spawn from center" effect
+            const spawnProgress = Math.min(1, progress * 2); // Spawn faster in first half
+
+            subPath.push({
+                x: sourceCentroid.x + (srcPoint.x - sourceCentroid.x) * spawnProgress +
+                    (targetCenter.x - sourceCentroid.x) * progress * 0.3,
+                y: sourceCentroid.y + (srcPoint.y - sourceCentroid.y) * spawnProgress +
+                    (targetCenter.y - sourceCentroid.y) * progress * 0.3,
+            });
+        }
+        result.push(subPath);
+    }
+
+    return result;
+}
+
+/**
  * Interpolate between two sub-path arrays.
- * Normalizes each sub-path pair for smooth results.
+ * Handles special cases:
+ * - Single source to many targets: distributes and blooms outward
+ * - Many sources to single target: collapses inward  
+ * - Otherwise: normalizes each sub-path pair for smooth results
  */
 export function interpolateSubPaths(
     startSubs: Point[][],
@@ -264,6 +315,75 @@ export function interpolateSubPaths(
     if (startSubs.length === 0) return endSubs.map(sp => sp.map(p => ({ ...p })));
     if (endSubs.length === 0) return startSubs.map(sp => sp.map(p => ({ ...p })));
 
+    // Special case: single source sub-path to many target sub-paths (shape → text)
+    if (startSubs.length === 1 && endSubs.length > 1) {
+        const sourcePath = startSubs[0];
+        const targetCentroids = endSubs.map(sub => getCentroid(sub));
+
+        // Distribute source into initial sub-paths
+        const distributedStart = distributePathToSubPaths(
+            sourcePath,
+            endSubs.length,
+            targetCentroids,
+            progress
+        );
+
+        // Now interpolate each distributed sub-path to its target
+        const result: Point[][] = [];
+        for (let i = 0; i < endSubs.length; i++) {
+            const startSub = distributedStart[i];
+            const endSub = endSubs[i];
+
+            const sampleCount = Math.max(startSub.length, endSub.length, 32);
+            const { start: s, end: e } = prepareMorphPaths(startSub, endSub, sampleCount);
+
+            const newPath: Point[] = [];
+            for (let j = 0; j < s.length; j++) {
+                newPath.push({
+                    x: s[j].x + (e[j].x - s[j].x) * progress,
+                    y: s[j].y + (e[j].y - s[j].y) * progress,
+                });
+            }
+            result.push(newPath);
+        }
+        return result;
+    }
+
+    // Special case: many source sub-paths to single target (text → shape)
+    if (startSubs.length > 1 && endSubs.length === 1) {
+        const targetPath = endSubs[0];
+        const targetCentroid = getCentroid(targetPath);
+
+        // Reverse the bloom: collapse inward
+        const result: Point[][] = [];
+        for (let i = 0; i < startSubs.length; i++) {
+            const startSub = startSubs[i];
+
+            const sampleCount = Math.max(startSub.length, targetPath.length, 32);
+            const normalizedStart = normalizePointCount(startSub, sampleCount);
+            const normalizedEnd = normalizePointCount(targetPath, sampleCount);
+
+            const newPath: Point[] = [];
+            const collapseProgress = Math.max(0, (progress - 0.5) * 2); // Collapse in second half
+
+            for (let j = 0; j < normalizedStart.length; j++) {
+                const sp = normalizedStart[j];
+                const ep = normalizedEnd[j];
+
+                // Move toward target, with extra pull toward centroid
+                newPath.push({
+                    x: sp.x + (ep.x - sp.x) * progress +
+                        (targetCentroid.x - sp.x) * collapseProgress * 0.3,
+                    y: sp.y + (ep.y - sp.y) * progress +
+                        (targetCentroid.y - sp.y) * collapseProgress * 0.3,
+                });
+            }
+            result.push(newPath);
+        }
+        return result;
+    }
+
+    // Default case: same count or wrapping (normalize and interpolate each pair)
     const subLen = Math.max(startSubs.length, endSubs.length);
     const result: Point[][] = [];
 
