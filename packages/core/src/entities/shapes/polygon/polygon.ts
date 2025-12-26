@@ -3,10 +3,15 @@
  * Supports both simple polygons (single path) and complex shapes with sub-paths.
  */
 
-import type { Point, Style } from '../types';
-import { Shape } from './shape';
-import type { EasingName } from '../types';
-import { interpolateColor, interpolateNumber } from '../utils/color';
+import type { Point, Style, ActionInfo } from '../../../types';
+import { Shape } from '../../shape';
+import type { PolygonOptions, MorphTarget, MorphOptions } from './types';
+import {
+    isSubPaths,
+    interpolatePoints,
+    interpolateSubPaths,
+    interpolateStyle,
+} from './morph';
 
 /**
  * Default style for polygons.
@@ -16,24 +21,6 @@ const POLYGON_DEFAULT_STYLE: Style = {
     stroke: '#2980b9',
     strokeWidth: 2,
 };
-
-export interface PolygonOptions {
-    /** Array of vertices (minimum 3 points required) */
-    points?: Point[];
-    /** Visual style */
-    style?: Style;
-}
-
-/**
- * Check if a value is a 2D array (sub-paths structure).
- */
-function isSubPaths(value: Point[] | Point[][]): value is Point[][] {
-    if (value.length === 0) {
-        return false;
-    }
-    const first = value[0];
-    return Array.isArray(first);
-}
 
 /**
  * A polygon shape defined by an array of vertices.
@@ -181,10 +168,7 @@ export class Polygon extends Shape {
      * // Morph to explicit points
      * triangle.morphTo([{x:0,y:-75}, {x:75,y:75}, {x:-75,y:75}], { duration: 1 })
      */
-    morphTo(
-        target: { getMorphPoints: (segments?: number) => Point[] | Point[][]; getStyle?: () => Style } | Point[] | Point[][],
-        options?: { duration?: number; ease?: EasingName; style?: Style }
-    ): this {
+    morphTo(target: MorphTarget, options?: MorphOptions): this {
         if (!this.timeline) {
             throw new Error(
                 `Entity "${this.id}" is not bound to a timeline. ` +
@@ -224,49 +208,14 @@ export class Polygon extends Shape {
     /**
      * Override applyAction to handle morphTo with sub-paths.
      */
-    applyAction(action: import('../types').ActionInfo, progress: number): void {
+    applyAction(action: ActionInfo, progress: number): void {
         if (action.type === 'morphTo' && action.morphPoints && action.morphStartPoints) {
-            const start = action.morphStartPoints;
-            const end = action.morphPoints;
-            const len = Math.max(start.length, end.length);
-            const newPoints: Point[] = [];
-
-            for (let i = 0; i < len; i++) {
-                const s = start[i % start.length];
-                const e = end[i % end.length];
-                newPoints.push({
-                    x: s.x + (e.x - s.x) * progress,
-                    y: s.y + (e.y - s.y) * progress,
-                });
-            }
-
-            this.points = newPoints;
+            // Interpolate flat points
+            this.points = interpolatePoints(action.morphStartPoints, action.morphPoints, progress);
 
             // Handle sub-paths interpolation
             if (action.morphSubPaths && action.morphStartSubPaths) {
-                const startSubs = action.morphStartSubPaths;
-                const endSubs = action.morphSubPaths;
-                const subLen = Math.max(startSubs.length, endSubs.length);
-                const newSubPaths: Point[][] = [];
-
-                for (let si = 0; si < subLen; si++) {
-                    const startSub = startSubs[si % startSubs.length];
-                    const endSub = endSubs[si % endSubs.length];
-                    const pathLen = Math.max(startSub.length, endSub.length);
-                    const newPath: Point[] = [];
-
-                    for (let pi = 0; pi < pathLen; pi++) {
-                        const sp = startSub[pi % startSub.length];
-                        const ep = endSub[pi % endSub.length];
-                        newPath.push({
-                            x: sp.x + (ep.x - sp.x) * progress,
-                            y: sp.y + (ep.y - sp.y) * progress,
-                        });
-                    }
-                    newSubPaths.push(newPath);
-                }
-
-                this.subPaths = newSubPaths;
+                this.subPaths = interpolateSubPaths(action.morphStartSubPaths, action.morphSubPaths, progress);
             } else if (action.morphSubPaths) {
                 // Transitioning from flat to sub-paths at end
                 if (progress >= 1) {
@@ -280,26 +229,10 @@ export class Polygon extends Shape {
 
             // Interpolate style if target style is specified
             if (action.morphStyle && action.morphStartStyle) {
-                const startStyle = action.morphStartStyle;
-                const endStyle = action.morphStyle;
-
-                if (startStyle.fill && endStyle.fill) {
-                    this.style.fill = interpolateColor(startStyle.fill, endStyle.fill, progress);
-                } else if (endStyle.fill && progress >= 1) {
-                    this.style.fill = endStyle.fill;
-                }
-
-                if (startStyle.stroke && endStyle.stroke) {
-                    this.style.stroke = interpolateColor(startStyle.stroke, endStyle.stroke, progress);
-                } else if (endStyle.stroke && progress >= 1) {
-                    this.style.stroke = endStyle.stroke;
-                }
-
-                if (startStyle.strokeWidth !== undefined && endStyle.strokeWidth !== undefined) {
-                    this.style.strokeWidth = interpolateNumber(startStyle.strokeWidth, endStyle.strokeWidth, progress);
-                } else if (endStyle.strokeWidth !== undefined && progress >= 1) {
-                    this.style.strokeWidth = endStyle.strokeWidth;
-                }
+                const interpolated = interpolateStyle(action.morphStartStyle, action.morphStyle, progress);
+                if (interpolated.fill !== undefined) this.style.fill = interpolated.fill;
+                if (interpolated.stroke !== undefined) this.style.stroke = interpolated.stroke;
+                if (interpolated.strokeWidth !== undefined) this.style.strokeWidth = interpolated.strokeWidth;
             }
         } else {
             super.applyAction(action, progress);
@@ -338,5 +271,3 @@ export class Polygon extends Shape {
 export function polygon(options?: PolygonOptions): Polygon {
     return new Polygon(options);
 }
-
-

@@ -2,8 +2,8 @@
  * Circle shape entity.
  */
 
-import type { Point, Style } from '../types';
-import { Shape } from './shape';
+import type { Point, Style } from '../../types';
+import { Shape } from '../shape';
 
 export interface CircleOptions {
     /** Radius in pixels (default: 50) */

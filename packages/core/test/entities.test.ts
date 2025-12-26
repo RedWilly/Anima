@@ -3,8 +3,8 @@
  */
 
 import { describe, expect, it } from 'bun:test';
-import { Circle } from '../src/entities/circle';
-import { Rectangle } from '../src/entities/rectangle';
+import { Circle } from '../src/entities/shapes/circle';
+import { Rectangle } from '../src/entities/shapes/rectangle';
 
 describe('Entities', () => {
     describe('Circle', () => {

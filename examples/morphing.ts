@@ -36,7 +36,7 @@ shape
     .morphTo(polygon({ points: [{ x: 0, y: -50 }, { x: 43, y: 25 }, { x: -43, y: 25 }] }), { duration: 1, ease: 'easeInOut' })
     .wait(0.3)
     // Triangle to arc
-    .morphTo(arc({ radius: 50, startAngle: 0, endAngle: Math.PI * 1.5 }), { duration: 1, ease: 'easeInOut' })
+    .morphTo(arc({ radius: 50, startAngle: 0, endAngle: Math.PI * 1.5 }), { duration: 1, ease: 'linear' })
     .wait(0.3)
     // Arc to the letter "A" - morphing into text!
     .morphTo(text({ content: 'Anima', fontSize: 80 }), { duration: 1.2, ease: 'easeInOut' })

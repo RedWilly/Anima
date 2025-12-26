@@ -4,8 +4,8 @@
 
 import { describe, expect, it } from 'bun:test';
 import { Group, group } from '../src/entities/group';
-import { Circle, circle } from '../src/entities/circle';
-import { Rectangle, rectangle } from '../src/entities/rectangle';
+import { circle } from '../src/entities/shapes/circle';
+import { rectangle } from '../src/entities/shapes/rectangle';
 import { Scene } from '../src/scene/scene';
 
 describe('Group', () => {

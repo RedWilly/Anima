@@ -2,8 +2,8 @@
  * Path shape entity - SVG-like path with chainable commands.
  */
 
-import type { Point, Style } from '../types';
-import { Shape } from './shape';
+import type { Point, Style } from '../../types';
+import { Shape } from '../shape';
 
 /** Path command types */
 type PathCommand =

@@ -2,8 +2,8 @@
  * Bezier curve shape entity - cubic and quadratic bezier curves.
  */
 
-import type { Point, Style } from '../types';
-import { Shape } from './shape';
+import type { Point, Style } from '../../types';
+import { Shape } from '../shape';
 
 export interface BezierOptions {
     /** Starting point (default: { x: 0, y: 0 }) */

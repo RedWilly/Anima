@@ -2,8 +2,8 @@
  * Line shape entity - a line segment between two points.
  */
 
-import type { Point, Style } from '../types';
-import { Shape } from './shape';
+import type { Point, Style } from '../../types';
+import { Shape } from '../shape';
 
 export interface LineOptions {
     /** Starting point (default: { x: 0, y: 0 }) */

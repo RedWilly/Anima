@@ -2,8 +2,8 @@
  * Rectangle shape entity.
  */
 
-import type { Point, Style } from '../types';
-import { Shape } from './shape';
+import type { Point, Style } from '../../types';
+import { Shape } from '../shape';
 
 /**
  * Default style for rectangles.

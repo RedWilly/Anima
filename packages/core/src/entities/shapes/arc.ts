@@ -2,8 +2,8 @@
  * Arc shape entity - a portion of a circle or ellipse.
  */
 
-import type { Point, Style } from '../types';
-import { Shape } from './shape';
+import type { Point, Style } from '../../types';
+import { Shape } from '../shape';
 
 export interface ArcOptions {
     /** Center point (default: { x: 0, y: 0 }) */

@@ -2,7 +2,7 @@
  * Arrow shape entity - a line with arrowhead(s).
  */
 
-import type { Style } from '../types';
+import type { Style } from '../../types';
 import { Line, type LineOptions } from './line';
 
 /** Where to draw arrowheads */

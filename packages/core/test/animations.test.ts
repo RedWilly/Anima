@@ -81,7 +81,17 @@ describe('morphTo', () => {
 
         s.timeline.seek(1);
         const points = p.getPoints();
-        expect(points.length).toBe(4);
+        // With normalization, point count may increase for smooth morphing
+        // The important thing is that points exist and form the target shape
+        expect(points.length).toBeGreaterThanOrEqual(4);
+        // Check that the shape approximates the square at the end
+        // Find corners by checking approximate positions
+        const hasCornerNear = (x: number, y: number, tolerance: number = 10) =>
+            points.some(pt => Math.abs(pt.x - x) < tolerance && Math.abs(pt.y - y) < tolerance);
+        expect(hasCornerNear(-50, -50)).toBe(true);
+        expect(hasCornerNear(50, -50)).toBe(true);
+        expect(hasCornerNear(50, 50)).toBe(true);
+        expect(hasCornerNear(-50, 50)).toBe(true);
     });
 });
 
