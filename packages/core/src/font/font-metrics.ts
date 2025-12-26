@@ -164,5 +164,80 @@ export class FontMetrics {
     getLineHeightPx(fontSize: number): number {
         return this.unitsToPixels(this.getLineHeight(), fontSize);
     }
+
+    /**
+     * Get vector points from a glyph path for morphing.
+     * Samples curves to produce a list of points.
+     */
+    getGlyphPath(char: string, fontSize: number, curveSegments = 8): { x: number; y: number }[] {
+        const run = this.font.layout(char);
+        if (run.glyphs.length === 0) {
+            return [];
+        }
+
+        const glyph = run.glyphs[0];
+        const path = glyph.path;
+        if (!path || !path.commands) {
+            return [];
+        }
+
+        const scale = fontSize / this.info.unitsPerEm;
+        const points: { x: number; y: number }[] = [];
+        let currentX = 0;
+        let currentY = 0;
+
+        for (const cmd of path.commands) {
+            switch (cmd.command) {
+                case 'moveTo':
+                    currentX = cmd.args[0] * scale;
+                    currentY = -cmd.args[1] * scale;
+                    points.push({ x: currentX, y: currentY });
+                    break;
+                case 'lineTo':
+                    currentX = cmd.args[0] * scale;
+                    currentY = -cmd.args[1] * scale;
+                    points.push({ x: currentX, y: currentY });
+                    break;
+                case 'quadraticCurveTo': {
+                    const cx = cmd.args[0] * scale;
+                    const cy = -cmd.args[1] * scale;
+                    const ex = cmd.args[2] * scale;
+                    const ey = -cmd.args[3] * scale;
+                    for (let i = 1; i <= curveSegments; i++) {
+                        const t = i / curveSegments;
+                        const mt = 1 - t;
+                        const x = mt * mt * currentX + 2 * mt * t * cx + t * t * ex;
+                        const y = mt * mt * currentY + 2 * mt * t * cy + t * t * ey;
+                        points.push({ x, y });
+                    }
+                    currentX = ex;
+                    currentY = ey;
+                    break;
+                }
+                case 'bezierCurveTo': {
+                    const c1x = cmd.args[0] * scale;
+                    const c1y = -cmd.args[1] * scale;
+                    const c2x = cmd.args[2] * scale;
+                    const c2y = -cmd.args[3] * scale;
+                    const ex = cmd.args[4] * scale;
+                    const ey = -cmd.args[5] * scale;
+                    for (let i = 1; i <= curveSegments; i++) {
+                        const t = i / curveSegments;
+                        const mt = 1 - t;
+                        const x = mt * mt * mt * currentX + 3 * mt * mt * t * c1x + 3 * mt * t * t * c2x + t * t * t * ex;
+                        const y = mt * mt * mt * currentY + 3 * mt * mt * t * c1y + 3 * mt * t * t * c2y + t * t * t * ey;
+                        points.push({ x, y });
+                    }
+                    currentX = ex;
+                    currentY = ey;
+                    break;
+                }
+                case 'closePath':
+                    break;
+            }
+        }
+
+        return points;
+    }
 }
 

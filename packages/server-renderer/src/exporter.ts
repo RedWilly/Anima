@@ -4,6 +4,7 @@
 
 import type { Scene } from '@anima/core';
 import { ServerCanvasAdapter } from './adapter';
+import type { CanvasRenderingContext2D } from '@napi-rs/canvas';
 
 export interface ExportOptions {
     /** Frames per second (default: 60) */

@@ -113,16 +113,19 @@ export class Polygon extends Shape {
     }
 
     /**
-     * Morph to another shape or set of points over time.
+     * Morph to another shape, text, or set of points over time.
      *
      * @example
      * // Morph to another shape
      * triangle.morphTo(circle({ radius: 50 }), { duration: 1 })
      *
+     * // Morph to text
+     * triangle.morphTo(text({ content: 'A', fontSize: 80 }), { duration: 1 })
+     *
      * // Morph to explicit points
      * triangle.morphTo([{x:0,y:-75}, {x:75,y:75}, {x:-75,y:75}], { duration: 1 })
      */
-    morphTo(target: Shape | Point[], options?: { duration?: number; ease?: EasingName }): this {
+    morphTo(target: { getMorphPoints: (segments?: number) => Point[] } | Point[], options?: { duration?: number; ease?: EasingName }): this {
         if (!this.timeline) {
             throw new Error(
                 `Entity "${this.id}" is not bound to a timeline. ` +

@@ -2,8 +2,9 @@
  * TextCharacter - A single character entity that can be individually animated.
  */
 
-import type { Style, FontWeight } from '../../types';
+import type { Point, Style, FontWeight } from '../../types';
 import { Shape } from '../shape';
+import { resolveFontFamily } from './text';
 import type { TextCharacterOptions } from './types';
 
 /**
@@ -24,20 +25,20 @@ export class TextCharacter extends Shape {
     private fontFamily: string;
     private fontSize: number;
     private fontWeight: FontWeight;
-    
+
     /** Character width in pixels (set by parent Text group) */
     charWidth: number = 0;
-    
+
     /** X offset from the Text group origin (set by parent) */
     offsetX: number = 0;
 
     constructor(options: TextCharacterOptions) {
         super(options.style ?? TEXT_CHAR_DEFAULT_STYLE);
         this.char = options.char;
-        this.fontFamily = options.fontFamily ?? 'sans-serif';
+        this.fontFamily = options.fontFamily ?? 'Roboto';
         this.fontSize = options.fontSize ?? 24;
         this.fontWeight = options.fontWeight ?? 'normal';
-        
+
         this.validateFontSize(this.fontSize);
     }
 
@@ -83,6 +84,11 @@ export class TextCharacter extends Shape {
         return `${this.fontWeight} ${this.fontSize}px ${this.fontFamily}`;
     }
 
+    getMorphPoints(segments = 8): Point[] {
+        const font = resolveFontFamily(this.fontFamily);
+        return font.getGlyphPath(this.char, this.fontSize, segments);
+    }
+
     render(ctx: CanvasRenderingContext2D): void {
         ctx.save();
         this.applyTransform(ctx);
@@ -91,13 +97,11 @@ export class TextCharacter extends Shape {
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
 
-        // Fill character
         if (this.style.fill) {
             ctx.fillStyle = this.style.fill;
             ctx.fillText(this.char, 0, 0);
         }
 
-        // Stroke character
         if (this.style.stroke && this.style.strokeWidth > 0) {
             ctx.strokeStyle = this.style.stroke;
             ctx.lineWidth = this.style.strokeWidth;
@@ -116,4 +120,3 @@ export class TextCharacter extends Shape {
         }
     }
 }
-

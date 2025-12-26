@@ -249,7 +249,7 @@ describe('TextCharacter', () => {
     it('should create with default values', () => {
         const c = new TextCharacter({ char: 'A' });
         expect(c.getChar()).toBe('A');
-        expect(c.getFontFamily()).toBe('sans-serif');
+        expect(c.getFontFamily()).toBe('Roboto');
         expect(c.getFontSize()).toBe(24);
         expect(c.getFontWeight()).toBe('normal');
     });

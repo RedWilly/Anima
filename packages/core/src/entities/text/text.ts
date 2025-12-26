@@ -28,7 +28,7 @@ const fontCache = new Map<string, FontMetrics>();
  * - Otherwise, looks up bundled font by name (e.g., 'Roboto' → Roboto-Regular.ttf).
  * - Falls back to Roboto if the specified font is not found.
  */
-function resolveFontFamily(fontFamily: string): FontMetrics {
+export function resolveFontFamily(fontFamily: string): FontMetrics {
     // Check cache first
     if (fontCache.has(fontFamily)) {
         return fontCache.get(fontFamily)!;
@@ -122,7 +122,7 @@ export class Text {
         this.fontFamily = options?.fontFamily ?? 'Roboto';
         this.fontSize = options?.fontSize ?? 24;
         this.fontWeight = options?.fontWeight ?? 'normal';
-        this.textAlign = options?.textAlign ?? 'left';
+        this.textAlign = options?.textAlign ?? 'center';
         this.textBaseline = options?.textBaseline ?? 'middle';
         this.letterSpacing = options?.letterSpacing ?? 0;
         this.style = { ...TEXT_DEFAULT_STYLE, ...options?.style };
@@ -272,6 +272,26 @@ export class Text {
     /** Get the current font face (FontMetrics). */
     getFontFace(): FontMetrics {
         return this.fontFace;
+    }
+
+    /**
+     * Get vector points for all characters combined.
+     * Used for morphing the entire text into a shape.
+     */
+    getMorphPoints(segments = 8): Point[] {
+        const allPoints: Point[] = [];
+        for (let i = 0; i < this.characters.length; i++) {
+            const char = this.characters[i];
+            const charPoints = char.getMorphPoints(segments);
+            // Offset each character's points by their position
+            for (const pt of charPoints) {
+                allPoints.push({
+                    x: pt.x + char.offsetX,
+                    y: pt.y,
+                });
+            }
+        }
+        return allPoints;
     }
 
     /** Applies to all characters. */
