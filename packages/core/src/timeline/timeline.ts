@@ -286,6 +286,11 @@ export class Timeline {
             // This ensures chained animations start from the correct position
             if (!this.capturedActions.has(action)) {
                 action.startValue = entity.captureState(action.type);
+                // Capture morph start points for morphTo actions
+                if (action.type === 'morphTo' && 'getMorphPoints' in entity) {
+                    const morphable = entity as unknown as { getMorphPoints(): { x: number; y: number }[] };
+                    action.morphStartPoints = morphable.getMorphPoints();
+                }
                 this.capturedActions.add(action);
             }
 

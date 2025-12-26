@@ -158,6 +158,35 @@ export abstract class Entity {
     }
 
     /**
+     * Follow a path (Bezier, Arc, Path, or any object with getPointAt).
+     * 
+     * @param pathObj - Object with getPointAt(t) method
+     * @param options - Animation options, plus orientToPath to rotate along path
+     * 
+     * @example
+     * // Follow a bezier curve
+     * circle.followPath(bezier({ start: {x:0,y:0}, control1: {x:50,y:-50}, end: {x:100,y:0} }), { duration: 2 })
+     * 
+     * // Orient along path direction
+     * arrow.followPath(myPath, { duration: 2, orientToPath: true })
+     */
+    followPath(
+        pathObj: { getPointAt(t: number): Point; getTangentAt?(t: number): Point },
+        options?: AnimationOptions & { orientToPath?: boolean }
+    ): this {
+        this.scheduleAction({
+            type: 'followPath',
+            targetId: this.id,
+            target: null,
+            duration: options?.duration ?? 1,
+            ease: options?.ease ?? 'easeInOut',
+            pathObject: pathObj,
+            orientToPath: options?.orientToPath ?? false,
+        });
+        return this;
+    }
+
+    /**
      * Execute multiple animations on this entity simultaneously.
      * All animations within the parallel block start at the same time,
      * optionally staggered by a delay between each.
@@ -233,6 +262,16 @@ export abstract class Entity {
                     const start = action.startValue;
                     const end = action.target;
                     this.currentOpacity = start + (end - start) * progress;
+                }
+                break;
+            case 'followPath':
+                if (action.pathObject) {
+                    const pos = action.pathObject.getPointAt(progress);
+                    this.currentPosition = pos;
+                    if (action.orientToPath && action.pathObject.getTangentAt) {
+                        const tangent = action.pathObject.getTangentAt(progress);
+                        this.currentRotation = Math.atan2(tangent.y, tangent.x);
+                    }
                 }
                 break;
         }

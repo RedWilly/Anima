@@ -73,6 +73,14 @@ export interface ActionInfo {
     target: Point | number | null;
     /** Undefined allowed due to exactOptionalPropertyTypes tsconfig setting. */
     startValue?: Point | number | null | undefined;
+    /** Path object for followPath actions */
+    pathObject?: { getPointAt(t: number): Point; getTangentAt?(t: number): Point };
+    /** Whether to orient entity along path direction */
+    orientToPath?: boolean;
+    /** Target points for morphTo actions */
+    morphPoints?: Point[];
+    /** Start points for morphTo actions */
+    morphStartPoints?: Point[];
 }
 
 /**

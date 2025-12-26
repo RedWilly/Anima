@@ -5,9 +5,17 @@
 import type { EasingName, Point } from '../types';
 
 /**
+ * Interface for objects that can be followed (have getPointAt method).
+ */
+export interface PathFollowable {
+    getPointAt(t: number): Point;
+    getTangentAt?(t: number): Point;
+}
+
+/**
  * Types of actions that can be scheduled.
  */
-export type ActionType = 'moveTo' | 'scaleTo' | 'rotateTo' | 'fadeTo' | 'wait';
+export type ActionType = 'moveTo' | 'scaleTo' | 'rotateTo' | 'fadeTo' | 'wait' | 'followPath' | 'morphTo';
 
 /**
  * An animation action scheduled on the timeline.
@@ -30,6 +38,14 @@ export interface Action {
      * Undefined allowed due to exactOptionalPropertyTypes tsconfig setting.
      */
     startValue?: Point | number | null | undefined;
+    /** Path object for followPath actions */
+    pathObject?: PathFollowable;
+    /** Whether to orient entity along path direction */
+    orientToPath?: boolean;
+    /** Target points for morphTo actions */
+    morphPoints?: { x: number; y: number }[];
+    /** Start points for morphTo actions (captured lazily) */
+    morphStartPoints?: { x: number; y: number }[];
 }
 
 /**
@@ -50,3 +66,4 @@ export function createAction(
         ease,
     };
 }
+

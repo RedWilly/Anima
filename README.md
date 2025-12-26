@@ -5,39 +5,44 @@ A next-generation animation engine that brings the narrative power and mathemati
 ## ✨ Features
 
 - **Fluent API** — Animation scripts read like English sentences
-- **Universal Rendering** — Same code runs in browser and exports to video
+- **Video Export** — Render animations to MP4, WebM, or GIF
 - **Full Easing Library** — Linear, Ease-In/Out, Elastic, Bounce
-- **Shape Primitives** — Circle, Rectangle with transformation methods
-- **Timeline Orchestration** — Sequential action execution with wait support
-- **Playback Controls** — Pause, resume, seek, speed control
+- **Shape Primitives** — Circle, Rectangle, Line, Arrow, Polygon, Text
+- **Composition** — Group shapes to transform as a unit
+- **Timeline Orchestration** — Sequential and parallel animations
 
 ## 📦 Packages
 
 | Package | Description |
 |---------|-------------|
 | `@anima/core` | Animation engine, entities, timeline |
-| `@anima/browser-renderer` | Canvas 2D adapter, playback controller |
-| `@anima/server-renderer` | @napi-rs/canvas + FFmpeg video export |
+| `@anima/server-renderer` | Canvas + FFmpeg video export + CLI |
 
 ## 🚀 Quick Start
 
 ```typescript
-import { scene, circle } from '@anima/core';
-import { createPlayback } from '@anima/browser-renderer';
+// animation.ts
+import { scene, circle, rectangle } from '@anima/core';
 
-// Create a scene
 const myScene = scene({ width: 800, height: 600 });
 
-// Add a shape with fluent animations
 myScene.add(circle({ radius: 50 }))
   .moveTo(200, 300)
   .wait(0.5)
   .moveTo(600, 300, { ease: 'elastic' })
   .fadeOut();
 
-// Play in browser
-const playback = createPlayback(myScene, canvas);
+export default myScene;
 ```
+
+```bash
+# Preview animation
+bun packages/cli/src/index.ts preview animation.ts
+
+# Render to video
+bun packages/cli/src/index.ts render animation.ts -o output.mp4
+```
+
 
 ## 🛠️ Development
 

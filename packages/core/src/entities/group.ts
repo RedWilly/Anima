@@ -283,6 +283,85 @@ export class Group implements Animatable {
     }
 
     /**
+     * Apply animations to children with staggered timing.
+     * 
+     * @param animation - Animation function to apply to each child
+     * @param options - Stagger configuration
+     * 
+     * @example
+     * // Stagger fade in from first to last
+     * group.stagger(c => c.fadeIn({ duration: 0.5 }), { delay: 0.1 })
+     * 
+     * // Stagger from last to first
+     * group.stagger(c => c.fadeIn(), { delay: 0.1, direction: 'reverse' })
+     * 
+     * // Random order
+     * group.stagger(c => c.fadeIn(), { delay: 0.2, direction: 'random' })
+     * 
+     * // From center outward
+     * group.stagger(c => c.scaleTo(1, 1), { delay: 0.1, direction: 'center' })
+     */
+    stagger(
+        animation: (child: Animatable) => void,
+        options?: {
+            delay?: number;
+            direction?: 'forward' | 'reverse' | 'random' | 'center';
+        }
+    ): this {
+        if (!this.timeline) {
+            throw new Error(
+                `Group "${this.id}" is not bound to a timeline. ` +
+                'Add the group to a scene first.'
+            );
+        }
+
+        const delay = options?.delay ?? 0.1;
+        const direction = options?.direction ?? 'forward';
+        const len = this.children.length;
+        if (len === 0) return this;
+
+        // Build index order based on direction
+        let indices: number[];
+        switch (direction) {
+            case 'reverse':
+                indices = [];
+                for (let i = len - 1; i >= 0; i--) indices.push(i);
+                break;
+            case 'random':
+                indices = [];
+                for (let i = 0; i < len; i++) indices.push(i);
+                // Fisher-Yates shuffle
+                for (let i = len - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [indices[i], indices[j]] = [indices[j], indices[i]];
+                }
+                break;
+            case 'center': {
+                indices = [];
+                const mid = Math.floor(len / 2);
+                // Outward from center
+                for (let d = 0; d <= mid; d++) {
+                    if (mid - d >= 0) indices.push(mid - d);
+                    if (mid + d < len && d > 0) indices.push(mid + d);
+                }
+                break;
+            }
+            default: // 'forward'
+                indices = [];
+                for (let i = 0; i < len; i++) indices.push(i);
+        }
+
+        // Schedule animations with stagger
+        this.timeline.beginParallel({ stagger: delay });
+        for (const idx of indices) {
+            animation(this.children[idx]);
+        }
+        this.timeline.endParallel();
+
+        return this;
+    }
+
+    /**
      * Capture current state for action start values.
      */
     captureState(actionType: string): Point | number | null {
