@@ -252,12 +252,131 @@ export function interpolatePoints(
 }
 
 /**
+ * Calculate the bounding box of a set of points.
+ */
+function getBoundingBox(points: Point[]): { minX: number; maxX: number; minY: number; maxY: number; centerX: number; centerY: number } {
+    if (points.length === 0) {
+        return { minX: 0, maxX: 0, minY: 0, maxY: 0, centerX: 0, centerY: 0 };
+    }
+
+    let minX = Infinity, maxX = -Infinity;
+    let minY = Infinity, maxY = -Infinity;
+
+    for (const p of points) {
+        if (p.x < minX) minX = p.x;
+        if (p.x > maxX) maxX = p.x;
+        if (p.y < minY) minY = p.y;
+        if (p.y > maxY) maxY = p.y;
+    }
+
+    return {
+        minX, maxX, minY, maxY,
+        centerX: (minX + maxX) / 2,
+        centerY: (minY + maxY) / 2,
+    };
+}
+
+/**
+ * Find optimal split points on source path to match target regions.
+ * Splits the source path so each segment's centroid aligns with corresponding target.
+ * 
+ * @param sourcePath - The source path to split
+ * @param targetCentroids - Centroids of target sub-paths (left-to-right order)
+ * @returns Array of split indices
+ */
+function findOptimalSplitPoints(
+    sourcePath: Point[],
+    targetCentroids: Point[]
+): number[] {
+    if (sourcePath.length === 0 || targetCentroids.length <= 1) {
+        return [];
+    }
+
+    const n = sourcePath.length;
+    const numSegments = targetCentroids.length;
+
+    // Sort target centroids by x-coordinate (left to right)
+    const sortedTargets = targetCentroids.map((c, i) => ({ centroid: c, originalIndex: i }))
+        .sort((a, b) => a.centroid.x - b.centroid.x);
+
+    // Find the source path's bounding box
+    const sourceBounds = getBoundingBox(sourcePath);
+    const sourceWidth = sourceBounds.maxX - sourceBounds.minX;
+
+    // Calculate proportional split points based on target centroid positions
+    const targetMinX = Math.min(...targetCentroids.map(c => c.x));
+    const targetMaxX = Math.max(...targetCentroids.map(c => c.x));
+    const targetWidth = targetMaxX - targetMinX;
+
+    const splitIndices: number[] = [];
+
+    if (targetWidth > 0 && sourceWidth > 0) {
+        // Proportional splitting based on target centroid positions
+        for (let i = 1; i < numSegments; i++) {
+            const targetX = sortedTargets[i].centroid.x;
+            const normalizedPosition = (targetX - targetMinX) / targetWidth;
+
+            // Find the point on source path at this proportional position
+            const targetSourceX = sourceBounds.minX + normalizedPosition * sourceWidth;
+
+            // Find closest point on path to this x-coordinate
+            let bestIdx = 0;
+            let bestDist = Infinity;
+            for (let j = 0; j < n; j++) {
+                const dist = Math.abs(sourcePath[j].x - targetSourceX);
+                if (dist < bestDist) {
+                    bestDist = dist;
+                    bestIdx = j;
+                }
+            }
+            splitIndices.push(bestIdx);
+        }
+    } else {
+        // Fallback: evenly distribute
+        for (let i = 1; i < numSegments; i++) {
+            splitIndices.push(Math.floor((i * n) / numSegments));
+        }
+    }
+
+    // Sort and deduplicate
+    return [...new Set(splitIndices)].sort((a, b) => a - b);
+}
+
+/**
+ * Split a path into segments at given indices.
+ */
+function splitPathAtIndices(path: Point[], splitIndices: number[]): Point[][] {
+    if (path.length === 0) return [];
+    if (splitIndices.length === 0) return [path.map(p => ({ ...p }))];
+
+    const segments: Point[][] = [];
+    let lastIdx = 0;
+
+    for (const splitIdx of splitIndices) {
+        if (splitIdx > lastIdx && splitIdx < path.length) {
+            segments.push(path.slice(lastIdx, splitIdx).map(p => ({ ...p })));
+            lastIdx = splitIdx;
+        }
+    }
+
+    // Add final segment
+    if (lastIdx < path.length) {
+        segments.push(path.slice(lastIdx).map(p => ({ ...p })));
+    }
+
+    return segments;
+}
+
+/**
  * Distribute a single path's points to create multiple initial sub-paths.
- * This creates a "bloom" effect where sub-paths emerge from the source.
+ * Uses GEOMETRIC SEGMENT DISTRIBUTION for smooth shape-to-text morphing.
+ * 
+ * Key improvement: Points are split based on spatial relationship to target
+ * characters, not arbitrary index divisions.
  * 
  * @param sourcePath - The single source path to distribute
  * @param targetCount - Number of target sub-paths to create
- * @param targetCentroids - Centroids of each target sub-path for direction hints
+ * @param targetCentroids - Centroids of each target sub-path
  * @param progress - Animation progress (0-1)
  */
 function distributePathToSubPaths(
@@ -269,28 +388,56 @@ function distributePathToSubPaths(
     if (sourcePath.length === 0 || targetCount === 0) return [];
 
     const sourceCentroid = getCentroid(sourcePath);
-    const pointsPerSubPath = Math.max(8, Math.floor(sourcePath.length / targetCount));
+
+    // Phase 1: Find optimal split points based on target positions
+    const splitIndices = findOptimalSplitPoints(sourcePath, targetCentroids);
+
+    // Phase 2: Split source into geometric segments
+    let segments = splitPathAtIndices(sourcePath, splitIndices);
+
+    // Ensure we have exactly targetCount segments
+    while (segments.length < targetCount) {
+        // If we have fewer segments, duplicate the largest one
+        const largestIdx = segments.reduce((maxIdx, seg, idx, arr) =>
+            seg.length > arr[maxIdx].length ? idx : maxIdx, 0);
+        const half = Math.floor(segments[largestIdx].length / 2);
+        const first = segments[largestIdx].slice(0, half);
+        const second = segments[largestIdx].slice(half);
+        segments.splice(largestIdx, 1, first, second);
+    }
+    while (segments.length > targetCount) {
+        // If we have more segments, merge the two smallest adjacent ones
+        let minLen = Infinity;
+        let mergeIdx = 0;
+        for (let i = 0; i < segments.length - 1; i++) {
+            const combinedLen = segments[i].length + segments[i + 1].length;
+            if (combinedLen < minLen) {
+                minLen = combinedLen;
+                mergeIdx = i;
+            }
+        }
+        segments[mergeIdx] = [...segments[mergeIdx], ...segments[mergeIdx + 1]];
+        segments.splice(mergeIdx + 1, 1);
+    }
+
+    // Phase 3: Apply bloom transition effect
+    // At progress=0: all segments collapsed to source centroid
+    // At progress=1: segments fully expanded toward their target positions
     const result: Point[][] = [];
+    const spawnProgress = Math.min(1, progress * 2.5); // Faster spawn in first 40%
 
-    for (let i = 0; i < targetCount; i++) {
-        const subPath: Point[] = [];
+    for (let i = 0; i < segments.length; i++) {
+        const segment = segments[i];
         const targetCenter = targetCentroids[i] || sourceCentroid;
+        const subPath: Point[] = [];
 
-        // Create points for this sub-path
-        for (let j = 0; j < pointsPerSubPath; j++) {
-            const srcIdx = (i * pointsPerSubPath + j) % sourcePath.length;
-            const srcPoint = sourcePath[srcIdx];
-
-            // At progress=0: all points at source centroid
-            // At progress=1: points move toward target centroid
-            // This creates a "spawn from center" effect
-            const spawnProgress = Math.min(1, progress * 2); // Spawn faster in first half
-
+        for (const srcPoint of segment) {
+            // Smooth bloom: expand from centroid while moving toward target
             subPath.push({
                 x: sourceCentroid.x + (srcPoint.x - sourceCentroid.x) * spawnProgress +
-                    (targetCenter.x - sourceCentroid.x) * progress * 0.3,
+                    (targetCenter.x - sourceCentroid.x) * progress * 0.4,
                 y: sourceCentroid.y + (srcPoint.y - sourceCentroid.y) * spawnProgress +
-                    (targetCenter.y - sourceCentroid.y) * progress * 0.3,
+                    (targetCenter.y - sourceCentroid.y) * progress * 0.4,
             });
         }
         result.push(subPath);

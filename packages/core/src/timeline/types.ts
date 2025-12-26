@@ -30,6 +30,6 @@ export interface ParallelOptions {
 
 /** Options for creating a Timeline */
 export interface TimelineOptions {
-    /** Frames per second for rendering (default: 60) */
+    /** Frames per second for rendering (default: 30) */
     fps?: number;
 }
