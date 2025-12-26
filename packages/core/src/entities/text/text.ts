@@ -75,7 +75,7 @@ function generateTextId(): string {
  * Default style for text.
  */
 const TEXT_DEFAULT_STYLE: Style = {
-    fill: '#2c3e50',
+    fill: '#ffffff',
     stroke: '',
     strokeWidth: 0,
 };

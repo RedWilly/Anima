@@ -11,7 +11,7 @@ import type { TextCharacterOptions } from './types';
  * Default style for text characters.
  */
 const TEXT_CHAR_DEFAULT_STYLE: Style = {
-    fill: '#2c3e50',
+    fill: '#ffffff',
     stroke: '',
     strokeWidth: 0,
 };
