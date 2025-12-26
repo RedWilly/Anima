@@ -37,5 +37,5 @@ export { Text, text, TextCharacter } from './text';
 export type { TextOptions, TextCharacterOptions, FontConfig } from './text';
 
 // Group
-export { Group, group } from './group';
-export type { GroupOptions } from './group';
+export { Group, group, buildStaggerIndices } from './group';
+export type { GroupOptions, StaggerDirection, StaggerOptions } from './group';

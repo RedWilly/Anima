@@ -48,12 +48,12 @@ shape
     .morphTo(circle({ radius: 50 }), { duration: 1.2, ease: 'easeInOut' });
 
 // Rotation during morph
-shape.wait(0.5).rotateTo(Math.PI * 2, { duration: 3 });
+shape.wait(0.5).rotateTo(Math.PI * 2, { duration: 1 });
 
 // Scale pulse
-shape.wait(1.4).scaleTo(1.2, 1.2, { duration: 0.6 }).scaleTo(1, 1, { duration: 0.6 });
+shape.wait(1).scaleTo(1.2, 1.2, { duration: 0.6 }).scaleTo(1, 1, { duration: 0.6 });
 
 // Fade out
-shape.wait(1.9).fadeOut({ duration: 0.5 });
+shape.wait(0.5).fadeOut({ duration: 0.5 });
 
 export default myScene;

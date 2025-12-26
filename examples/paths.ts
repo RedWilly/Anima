@@ -7,7 +7,7 @@
 import { scene, circle, bezier, arc, path, arrow } from '@anima/core';
 
 // Create the scene
-const myScene = scene({ width: 800, height: 600, background: '#1a1a2e' });
+const myScene = scene();
 
 // === Create path shapes ===
 

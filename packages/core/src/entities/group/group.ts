@@ -6,10 +6,12 @@
  * Children can still have their own independent animations.
  */
 
-import type { Point, AnimationOptions, ActionInfo, Animatable } from '../types';
-import type { Timeline, ParallelOptions } from '../timeline/timeline';
-import type { Action } from '../timeline/action';
-import { Vector2 } from '../math';
+import type { Point, AnimationOptions, ActionInfo, Animatable } from '../../types';
+import type { Timeline, ParallelOptions } from '../../timeline/timeline';
+import type { Action } from '../../timeline/action';
+import { Vector2 } from '../../math';
+import type { GroupOptions, StaggerOptions } from './types';
+import { buildStaggerIndices } from './types';
 
 let groupIdCounter = 0;
 
@@ -18,13 +20,6 @@ let groupIdCounter = 0;
  */
 function generateGroupId(): string {
     return `group_${++groupIdCounter}`;
-}
-
-export interface GroupOptions {
-    /** Initial x position (default: 0) */
-    x?: number;
-    /** Initial y position (default: 0) */
-    y?: number;
 }
 
 /**
@@ -303,10 +298,7 @@ export class Group implements Animatable {
      */
     stagger(
         animation: (child: Animatable) => void,
-        options?: {
-            delay?: number;
-            direction?: 'forward' | 'reverse' | 'random' | 'center';
-        }
+        options?: StaggerOptions
     ): this {
         if (!this.timeline) {
             throw new Error(
@@ -321,35 +313,7 @@ export class Group implements Animatable {
         if (len === 0) return this;
 
         // Build index order based on direction
-        let indices: number[];
-        switch (direction) {
-            case 'reverse':
-                indices = [];
-                for (let i = len - 1; i >= 0; i--) indices.push(i);
-                break;
-            case 'random':
-                indices = [];
-                for (let i = 0; i < len; i++) indices.push(i);
-                // Fisher-Yates shuffle
-                for (let i = len - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [indices[i], indices[j]] = [indices[j], indices[i]];
-                }
-                break;
-            case 'center': {
-                indices = [];
-                const mid = Math.floor(len / 2);
-                // Outward from center
-                for (let d = 0; d <= mid; d++) {
-                    if (mid - d >= 0) indices.push(mid - d);
-                    if (mid + d < len && d > 0) indices.push(mid + d);
-                }
-                break;
-            }
-            default: // 'forward'
-                indices = [];
-                for (let i = 0; i < len; i++) indices.push(i);
-        }
+        const indices = buildStaggerIndices(len, direction);
 
         // Schedule animations with stagger
         this.timeline.beginParallel({ stagger: delay });

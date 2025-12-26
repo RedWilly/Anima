@@ -29,10 +29,10 @@ export class Scene {
     private entities: Animatable[] = [];
 
     constructor(options?: SceneOptions) {
-        this.width = options?.width ?? 800;
-        this.height = options?.height ?? 600;
+        this.width = options?.width ?? 1920;
+        this.height = options?.height ?? 1080;
         this.background = options?.background ?? '#1a1a2e';
-        this.timeline = new Timeline({ fps: options?.fps ?? 60 });
+        this.timeline = new Timeline({ fps: options?.fps ?? 30 });
     }
 
     /**

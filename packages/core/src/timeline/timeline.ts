@@ -6,36 +6,16 @@ import type { Action } from './action';
 import type { Animatable } from '../types';
 import { getEasing } from '../easing';
 import { clamp } from '../math';
+import type {
+    TimelineState,
+    ScheduleMode,
+    ParallelGroup,
+    ParallelOptions,
+    TimelineOptions,
+} from './types';
 
-export type TimelineState = 'idle' | 'playing' | 'paused' | 'complete';
-
-/** Scheduling mode for actions */
-export type ScheduleMode = 'sequential' | 'parallel';
-
-/** Represents a group of parallel actions */
-export interface ParallelGroup {
-    /** Time when the parallel group starts */
-    startTime: number;
-    /** Maximum duration of any action in the group */
-    maxDuration: number;
-    /** Stagger delay between each animation start */
-    stagger: number;
-    /** Current action index for stagger calculation */
-    actionIndex: number;
-    /** Latest end time of any action in the group */
-    maxEndTime: number;
-}
-
-/** Options for parallel animation groups */
-export interface ParallelOptions {
-    /** Delay between each animation start in seconds (default: 0) */
-    stagger?: number;
-}
-
-export interface TimelineOptions {
-    /** Frames per second for rendering (default: 60) */
-    fps?: number;
-}
+// Re-export types for external use
+export type { TimelineState, ScheduleMode, ParallelGroup, ParallelOptions, TimelineOptions } from './types';
 
 /**
  * Timeline orchestrates the execution of animation actions.
