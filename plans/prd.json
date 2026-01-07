@@ -48,8 +48,7 @@
       "Verify Matrix3x3.shear(shx, shy) creates shear matrix"
     ],
     "passes": true
-  }
-,
+  },
   {
     "category": "Core - Math Utilities",
     "description": "Color class handles color operations",
@@ -112,8 +111,7 @@
       "Verify BezierPath.matchPoints() handles different point counts"
     ],
     "passes": true
-  }
-,
+  },
   {
     "category": "Mobjects - Base Classes",
     "description": "Mobject base class has correct default state",
@@ -171,8 +169,7 @@
       "Verify getPoints() returns the new points"
     ],
     "passes": false
-  }
-,
+  },
   {
     "category": "Mobjects - Primitives",
     "description": "Circle primitive creates correct shape",
@@ -245,8 +242,7 @@
       "Verify Point position is correct"
     ],
     "passes": false
-  }
-,
+  },
   {
     "category": "Mobjects - VGroup",
     "description": "VGroup collects and manages VMobjects",
@@ -1893,6 +1889,94 @@
       "Verify InvalidMobjectState error is thrown",
       "Attempt to set invalid property value",
       "Verify error describes what is invalid"
+    ],
+    "passes": false
+  },
+  {
+    "category": "Property Testing - Vector2",
+    "description": "Vector2 algebraic properties hold for arbitrary inputs",
+    "steps": [
+      "Property: add is commutative (a + b == b + a)",
+      "Property: add is associative ((a + b) + c == a + (b + c))",
+      "Property: multiply by 1 is identity (v * 1 == v)",
+      "Property: multiply by 0 yields zero vector (v * 0 == ZERO)",
+      "Property: normalize produces unit length (|normalize(v)| == 1 for v != ZERO)",
+      "Property: dot product is commutative (a.dot(b) == b.dot(a))",
+      "Property: length is non-negative (|v| >= 0)",
+      "Property: lerp(a, b, 0) == a and lerp(a, b, 1) == b"
+    ],
+    "passes": true
+  },
+  {
+    "category": "Property Testing - Matrix3x3",
+    "description": "Matrix3x3 algebraic properties hold for arbitrary inputs",
+    "steps": [
+      "Property: identity * M == M and M * identity == M",
+      "Property: M * inverse(M) == identity (for invertible M)",
+      "Property: (A * B) * C == A * (B * C) (associativity)",
+      "Property: translation(0, 0) == identity",
+      "Property: rotation(0) == identity",
+      "Property: scale(1, 1) == identity",
+      "Property: transformPoint preserves origin for identity matrix"
+    ],
+    "passes": true
+  },
+  {
+    "category": "Property Testing - Color",
+    "description": "Color operations preserve expected properties",
+    "steps": [
+      "Property: fromHex(toHex(c)) == c (round-trip)",
+      "Property: lerp(c, c, t) == c for any t",
+      "Property: lerp(a, b, 0) == a and lerp(a, b, 1) == b",
+      "Property: RGB values are always clamped to [0, 255]",
+      "Property: alpha values are always clamped to [0, 1]"
+    ],
+    "passes": true
+  },
+  {
+    "category": "Property Testing - BezierPath",
+    "description": "BezierPath morphing properties hold",
+    "steps": [
+      "Property: getPointAt(0) == start point",
+      "Property: getPointAt(1) == end point",
+      "Property: getLength() >= 0 for any path",
+      "Property: interpolate(p, p, t) == p for any t",
+      "Property: interpolate(p1, p2, 0) endpoints match p1",
+      "Property: interpolate(p1, p2, 1) endpoints match p2",
+      "Property: matchPoints produces equal point counts"
+    ],
+    "passes": true
+  },
+  {
+    "category": "Property Testing - Easing",
+    "description": "Easing functions satisfy boundary conditions",
+    "steps": [
+      "Property: all easing functions return 0 at t=0",
+      "Property: all easing functions return 1 at t=1",
+      "Property: linear easing is identity (linear(t) == t)",
+      "Property: easing output is in reasonable range near [0, 1]"
+    ],
+    "passes": false
+  },
+  {
+    "category": "Property Testing - Mobject",
+    "description": "Mobject transformation properties hold",
+    "steps": [
+      "Property: applying identity matrix does not change state",
+      "Property: pos(x, y) correctly updates position to (x, y)",
+      "Property: show() sets opacity to 1",
+      "Property: hide() sets opacity to 0",
+      "Property: scale extraction is positive for positive scale matrices"
+    ],
+    "passes": true
+  },
+  {
+    "category": "Property Testing - Serialization",
+    "description": "Serialization round-trip is lossless for arbitrary data",
+    "steps": [
+      "Property: deserialize(serialize(scene)) == scene",
+      "Property: serialize produces valid JSON for any Scene",
+      "Property: double serialization produces identical output"
     ],
     "passes": false
   }

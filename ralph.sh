@@ -19,7 +19,7 @@ for ((i=1; i<=$1; i++)); do
 Follow the code style guides strictly when writing any code. \
 1. Find the highest-priority feature to work on (YOU decide the priority - not necessarily first in the list). \
 2. Read and understand the existing codebase to ensure consistency with existing patterns and conventions. \
-3. Implement the feature using modular and sub-modular design. Each file MUST be under 150 lines. Break down functionality into small, focused modules organized in directories and subdirectories for easier debugging and maintenance. \
+3. Implement the feature using modular and sub-modular design. Each file MUST be under 180 lines. Break down functionality into small, focused modules organized in directories and subdirectories for easier debugging and maintenance. \
 4. Check that types pass via bun run typecheck. \
 5. Run tests via bun test. Use fast-check for property-based testing to validate function properties and edge cases. \
 6. Update the PRD with the work that was done. \
