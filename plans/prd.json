@@ -983,6 +983,21 @@
   },
   {
     "category": "Camera",
+    "description": "Camera calculates frame dimensions from resolution (replaces hardcoded constants)",
+    "steps": [
+      "Camera constructor accepts optional pixel_width, pixel_height (default 1920x1080 = 16:9)",
+      "Camera.frameHeight is fixed at 8.0 units",
+      "Camera.frameWidth is calculated as frameHeight * (pixel_width / pixel_height)",
+      "Camera provides frameXRadius and frameYRadius getters (half of width/height)",
+      "Verify default 1920x1080 produces frameWidth of ~14.22",
+      "Verify 1080x1920 (9:16 portrait) produces frameWidth of ~4.5",
+      "Verify 1080x1080 (1:1 square) produces frameWidth of 8.0",
+      "VGroup layout functions use Camera frame dimensions instead of constants"
+    ],
+    "passes": false
+  },
+  {
+    "category": "Camera",
     "description": "Camera pan operations work correctly",
     "steps": [
       "Create Camera at position (0, 0)",
