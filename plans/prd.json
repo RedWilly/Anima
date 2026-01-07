@@ -179,7 +179,7 @@
       "Create Circle with custom radius",
       "Verify radius affects path size"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - Primitives",
@@ -190,7 +190,7 @@
       "Create Rectangle with custom width and height",
       "Verify dimensions affect path size"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - Primitives",
@@ -201,7 +201,7 @@
       "Verify getPointAt(0) equals start",
       "Verify getPointAt(1) equals end"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - Primitives",
@@ -211,7 +211,7 @@
       "Verify Arrow has line segment",
       "Verify Arrow has arrowhead at end"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - Primitives",
@@ -221,7 +221,7 @@
       "Verify Arc has curved BezierPath",
       "Verify arc spans correct angle range"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - Primitives",
@@ -231,17 +231,17 @@
       "Verify Polygon has closed BezierPath",
       "Verify all vertices are connected"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - Primitives",
-    "description": "Point primitive creates small circle",
+    "description": "Point primitive creates correct small circle",
     "steps": [
       "Create Point with position",
       "Verify Point has small circular representation",
       "Verify Point position is correct"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - VGroup",

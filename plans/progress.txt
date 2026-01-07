@@ -59,4 +59,14 @@ IMPLEMENTED PRD ITEM #13, #14: VMobject Implementation
 - Added tests in `tests/unit/mobjects/VMobject.test.ts`.
 - Verified Mobject Matrix3x3 transformations (Item #12) via tests.
 
-Next: Mobject Primitives (Circle, Rectangle, etc.)
+
+IMPLEMENTED PRD ITEM #15-#20: Mobject Primitives
+- Created `src/mobjects/geometry/` directory.
+- Implemented `Arc`, `Circle`, `Line`, `Arrow`, `Rectangle`, `Polygon`, `Point`.
+- Added `Vector2.equals` method to support testing.
+- Created unit tests in `tests/unit/mobjects/geometry/` covering all primitives.
+- Verified all tests passed.
+- Verified typecheck passed.
+- Updated PRD.
+
+Next: VGroup implementation.

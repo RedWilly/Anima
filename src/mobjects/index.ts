@@ -1,2 +1,3 @@
-export { Mobject } from './Mobject';
-export { VMobject } from './VMobject';
+export * from './Mobject';
+export * from './VMobject';
+export * from './geometry';

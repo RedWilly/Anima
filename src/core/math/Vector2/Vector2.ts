@@ -76,6 +76,16 @@ export class Vector2 {
     return this.multiply(1 - t).add(other.multiply(t));
   }
 
+  /**
+   * Checks if this vector is equal to another.
+   * @param other The vector to compare.
+   * @param tolerance The tolerance for equality check.
+   * @returns True if equal, false otherwise.
+   */
+  equals(other: Vector2, tolerance: number = 1e-6): boolean {
+    return Math.abs(this.x - other.x) < tolerance && Math.abs(this.y - other.y) < tolerance;
+  }
+
   static readonly ZERO = new Vector2(0, 0);
   static readonly UP = new Vector2(0, -1);
   static readonly DOWN = new Vector2(0, 1);
