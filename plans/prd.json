@@ -61,7 +61,7 @@
       "Verify toRGBA() returns correct rgba string",
       "Verify lerp() interpolates between colors"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Core - Math Utilities",
@@ -73,7 +73,7 @@
       "Verify Color.GREEN is (0, 255, 0)",
       "Verify Color.BLUE is (0, 0, 255)"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Core - BezierPath",
