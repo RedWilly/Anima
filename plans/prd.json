@@ -124,7 +124,7 @@
       "Verify default scale is (1, 1)",
       "Verify default opacity is 0 (invisible by default)"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - Base Classes",
@@ -135,7 +135,7 @@
       "Call show() and verify opacity becomes 1",
       "Call hide() and verify opacity becomes 0"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - Base Classes",
@@ -1882,7 +1882,7 @@
       "Create Animation with undefined target",
       "Verify AnimationTargetMissing error is thrown"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - Base Classes",
