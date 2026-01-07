@@ -14,4 +14,11 @@ IMPLEMENTED PRD ITEM #1: Vector2 Implementation
 - Created `tests/core/math/Vector2.test.ts` with comprehensive tests.
 - Updated PRD to reflect completion of Vector2 items.
 
-Next: Matrix3x3 implementation.
+IMPLEMENTED PRD ITEM #2 & #3: Matrix3x3 Implementation
+- Created `src/core/math/Matrix3x3.ts` with affine transformation support (multiply, transformPoint, inverse).
+- Implemented static factories (translation, rotation, scale, shear) and identity.
+- Added type-safe implementation using local variables to handle `noUncheckedIndexedAccess`.
+- Created `tests/core/math/Matrix3x3.test.ts` covering all requirements.
+- Updated PRD to reflect completion of Matrix3x3 items.
+
+Next: Color class implementation.

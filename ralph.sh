@@ -14,7 +14,7 @@ for ((i=1; i<=$1; i++)); do
 
   # 3. Run the coding agent (Claude) with context files and instructions
   # This command saves the agent's output into the $result variable
-  result=$(gemini --approval-mode auto_edit \
+  result=$(gemini --approval-mode yolo \
     "@plans/prd.json @plans/progress.txt @code_styleguides/general.md @code_styleguides/typescript.md \
 Follow the code style guides strictly when writing any code. \
 1. Find the highest-priority feature to work on (YOU decide the priority - not necessarily first in the list). \

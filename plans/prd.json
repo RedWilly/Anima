@@ -36,7 +36,7 @@
       "Verify inverse() returns correct inverse matrix",
       "Verify identity() returns identity matrix"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Core - Math Utilities",
@@ -47,7 +47,7 @@
       "Verify Matrix3x3.scale(sx, sy) creates scale matrix",
       "Verify Matrix3x3.shear(shx, shy) creates shear matrix"
     ],
-    "passes": false
+    "passes": true
   }
 ,
   {
