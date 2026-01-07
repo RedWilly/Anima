@@ -1,0 +1,105 @@
+import { Mobject } from './Mobject';
+import { BezierPath } from '../core/math/bezier/BezierPath';
+import { Color } from '../core/math/color/Color';
+import { Vector2 } from '../core/math/Vector2/Vector2';
+
+/**
+ * A Mobject that is defined by one or more BezierPaths.
+ * Supports stroke and fill styling.
+ */
+export class VMobject extends Mobject {
+    protected _paths: BezierPath[] = [];
+    
+    strokeColor: Color = Color.WHITE;
+    strokeWidth: number = 2;
+    fillColor: Color = Color.TRANSPARENT;
+    fillOpacity: number = 0;
+
+    constructor() {
+        super();
+    }
+
+    get paths(): BezierPath[] {
+        return this._paths;
+    }
+
+    set paths(value: BezierPath[]) {
+        this._paths = value;
+    }
+
+    addPath(path: BezierPath): this {
+        this._paths.push(path);
+        return this;
+    }
+
+    /**
+     * Sets the stroke style.
+     * @param color The stroke color.
+     * @param width The stroke width in pixels.
+     */
+    stroke(color: Color, width: number): this {
+        this.strokeColor = color;
+        this.strokeWidth = width;
+        return this;
+    }
+
+    /**
+     * Sets the fill style.
+     * @param color The fill color.
+     * @param opacity The fill opacity (0-1).
+     */
+    fill(color: Color, opacity: number): this {
+        this.fillColor = color;
+        this.fillOpacity = opacity;
+        return this;
+    }
+
+    /**
+     * Returns a flat array of all points (anchors and controls) in the paths.
+     * This captures the geometry of the paths.
+     */
+    getPoints(): Vector2[] {
+        const points: Vector2[] = [];
+        for (const path of this._paths) {
+            for (const cmd of path.getCommands()) {
+                 if (cmd.type === 'Move') {
+                     points.push(cmd.end);
+                 } else if (cmd.type === 'Line') {
+                     points.push(cmd.end);
+                 } else if (cmd.type === 'Quadratic') {
+                     if (cmd.control1) points.push(cmd.control1);
+                     points.push(cmd.end);
+                 } else if (cmd.type === 'Cubic') {
+                     if (cmd.control1) points.push(cmd.control1);
+                     if (cmd.control2) points.push(cmd.control2);
+                     points.push(cmd.end);
+                 } else if (cmd.type === 'Close') {
+                     points.push(cmd.end);
+                 }
+            }
+        }
+        return points;
+    }
+
+    /**
+     * Sets the points of the VMobject. 
+     * This implementation creates a single path connecting the points with lines (polyline).
+     * @param points The array of points to connect.
+     */
+    setPoints(points: Vector2[]): this {
+        if (points.length === 0) {
+            this._paths = [];
+            return this;
+        }
+
+        const path = new BezierPath();
+        path.moveTo(points[0]!);
+        
+        for (let i = 1; i < points.length; i++) {
+            path.lineTo(points[i]!);
+        }
+
+        this._paths = [path];
+        return this;
+    }
+}

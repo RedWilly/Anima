@@ -145,7 +145,7 @@
       "Apply rotation matrix",
       "Verify rotation is applied correctly"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - VMobject",
@@ -157,7 +157,7 @@
       "Call stroke(color, width) and verify style updates",
       "Call fill(color, opacity) and verify style updates"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - VMobject",
@@ -168,7 +168,7 @@
       "Call setPoints(newPoints)",
       "Verify getPoints() returns the new points"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - Primitives",
