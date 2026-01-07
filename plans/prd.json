@@ -12,7 +12,7 @@
       "Verify normalize() returns unit vector",
       "Verify lerp(other, t) interpolates correctly"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Core - Math Utilities",
@@ -24,7 +24,7 @@
       "Verify Vector2.LEFT equals (-1, 0)",
       "Verify Vector2.RIGHT equals (1, 0)"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Core - Math Utilities",
@@ -329,8 +329,7 @@
       "Verify VGroup is positioned at top-left corner"
     ],
     "passes": false
-  }
-,
+  },
   {
     "category": "Mobjects - Text",
     "description": "Text creates vectorized glyphs using fontkit",
@@ -414,8 +413,7 @@
       "Verify circular layout is applied"
     ],
     "passes": false
-  }
-,
+  },
   {
     "category": "Animations - Easing",
     "description": "Built-in easing functions work correctly",
@@ -510,8 +508,7 @@
       "Verify interpolate(1) sets scale to (2, 2)"
     ],
     "passes": false
-  }
-,
+  },
   {
     "category": "Animations - MorphTo",
     "description": "MorphTo animation morphs between VMobjects",
@@ -623,8 +620,7 @@
       "Verify both tracks interpolate correctly during playback"
     ],
     "passes": false
-  }
-,
+  },
   {
     "category": "FluentAPI",
     "description": "FluentAPI methods return this for chaining",
@@ -754,8 +750,7 @@
       "Verify all children move together"
     ],
     "passes": false
-  }
-,
+  },
   {
     "category": "ProAPI",
     "description": "ProAPI exposes Animation objects for composition",
@@ -832,8 +827,7 @@
       "Verify all animations render correctly together"
     ],
     "passes": false
-  }
-,
+  },
   {
     "category": "Timeline",
     "description": "Timeline schedules animations correctly",
@@ -912,8 +906,7 @@
       "Verify result is blend of both animations"
     ],
     "passes": false
-  }
-,
+  },
   {
     "category": "Scene",
     "description": "Scene configuration is preserved",
@@ -991,8 +984,7 @@
       "Verify mobject opacity is 0 (invisible)"
     ],
     "passes": false
-  }
-,
+  },
   {
     "category": "Camera",
     "description": "Camera pan operations work correctly",
@@ -1076,8 +1068,7 @@
       "Verify Matrix3x3 combines all transformations correctly"
     ],
     "passes": false
-  }
-,
+  },
   {
     "category": "Serialization",
     "description": "Scene serializes to valid JSON",
@@ -1144,8 +1135,7 @@
       "Deserialize and verify custom VMobject is restored"
     ],
     "passes": false
-  }
-,
+  },
   {
     "category": "Renderer",
     "description": "Renderer supports multiple resolutions",
@@ -1267,8 +1257,7 @@
       "Verify frame numbers are sequential with no gaps"
     ],
     "passes": false
-  }
-,
+  },
   {
     "category": "CLI",
     "description": "CLI render command works with options",
@@ -1354,8 +1343,7 @@
       "Verify error message explains valid formats"
     ],
     "passes": false
-  }
-,
+  },
   {
     "category": "Error Handling",
     "description": "Invalid Scene config throws descriptive error",
@@ -1485,8 +1473,7 @@
       "Verify stack trace is included in output"
     ],
     "passes": false
-  }
-,
+  },
   {
     "category": "Public API",
     "description": "Public API exports only required interfaces",

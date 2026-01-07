@@ -24,8 +24,8 @@ Follow the code style guides strictly when writing any code. \
 5. Run tests via bun test. Use fast-check for property-based testing to validate function properties and edge cases. \
 6. Update the PRD with the work that was done. \
 7. Append your progress to plans/progress.txt as a note for the next person working in the codebase. \
-8. Make a git commit of that feature. \
-9. ONLY WORK ON A SINGLE FEATURE. If the PRD is complete, output <promise>COMPLETE</promise>.")
+8. Make a git commit using format: git commit -m '[Title] - [Description]'. \
+9. ONLY WORK ON A SINGLE FEATURE. After completing ALL steps above (including the commit), if the PRD is complete, output <promise>COMPLETE</promise>.")
 
   # 4. Print the result to the console
   echo "$result"

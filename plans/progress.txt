@@ -8,4 +8,10 @@ IMPLEMENTED PRD ITEM #-0: Project Initialization
 - Basic package.json and tsconfig.json are verified and ready.
 - Initial project typecheck passed.
 
-Next: Identify and implement the highest-priority feature from prd.json.
+IMPLEMENTED PRD ITEM #1: Vector2 Implementation
+- Created `src/core/math/Vector2.ts` with basic vector operations (add, subtract, multiply, dot, length, normalize, lerp).
+- Implemented static constants (ZERO, UP, DOWN, LEFT, RIGHT).
+- Created `tests/core/math/Vector2.test.ts` with comprehensive tests.
+- Updated PRD to reflect completion of Vector2 items.
+
+Next: Matrix3x3 implementation.

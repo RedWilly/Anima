@@ -3,6 +3,9 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/fontkit": "^2.0.8"
