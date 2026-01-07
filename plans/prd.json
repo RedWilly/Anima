@@ -85,7 +85,7 @@
       "Verify cubicTo(c1, c2, end) adds cubic curve",
       "Verify closePath() closes the path"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Core - BezierPath",
