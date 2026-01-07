@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test';
-import { Vector2 } from '../../../src/core/math/Vector2';
+import { Vector2 } from '../../../src/core/math/Vector2/Vector2';
 
 describe('Vector2', () => {
   it('should create a vector with x and y values', () => {
@@ -48,7 +48,7 @@ describe('Vector2', () => {
     const result = v.normalize();
     expect(result.x).toBe(1);
     expect(result.y).toBe(0);
-    
+
     const vZero = new Vector2(0, 0);
     expect(vZero.normalize()).toEqual(Vector2.ZERO);
   });

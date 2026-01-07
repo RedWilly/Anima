@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import { Matrix3x3 } from '../../../src/core/math/matrix/Matrix3x3';
-import { Vector2 } from '../../../src/core/math/Vector2';
+import { Vector2 } from '../../../src/core/math/Vector2/Vector2';
 
 describe('Matrix3x3', () => {
   test('should create a matrix with 9 values', () => {

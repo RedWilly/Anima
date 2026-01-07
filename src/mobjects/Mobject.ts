@@ -1,5 +1,5 @@
 import { Matrix3x3 } from '../core/math/matrix/Matrix3x3';
-import { Vector2 } from '../core/math/Vector2';
+import { Vector2 } from '../core/math/Vector2/Vector2';
 
 /**
  * Base class for all mathematical objects.

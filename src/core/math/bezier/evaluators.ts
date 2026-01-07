@@ -1,4 +1,4 @@
-import { Vector2 } from '../Vector2';
+import { Vector2 } from '../Vector2/Vector2';
 
 /**
  * Evaluates a point on a quadratic Bezier curve at parameter t.

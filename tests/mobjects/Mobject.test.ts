@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import { Mobject } from '../../src/mobjects/Mobject';
-import { Vector2 } from '../../src/core/math/Vector2';
+import { Vector2 } from '../../src/core/math/Vector2/Vector2';
 import { Matrix3x3 } from '../../src/core/math/matrix/Matrix3x3';
 
 describe('Mobject', () => {

@@ -1,4 +1,4 @@
-import type { Vector2 } from '../Vector2';
+import type { Vector2 } from '../Vector2/Vector2';
 
 export type PathCommandType = 'Move' | 'Line' | 'Quadratic' | 'Cubic' | 'Close';
 
