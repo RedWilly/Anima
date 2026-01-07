@@ -102,4 +102,30 @@ export class VMobject extends Mobject {
         this._paths = [path];
         return this;
     }
+
+    /**
+     * Returns the axis-aligned bounding box of the VMobject in world space.
+     */
+    getBoundingBox(): { minX: number; maxX: number; minY: number; maxY: number } {
+        const points = this.getPoints();
+        if (points.length === 0) {
+            const pos = this.position;
+            return { minX: pos.x, maxX: pos.x, minY: pos.y, maxY: pos.y };
+        }
+
+        let minX = Infinity;
+        let maxX = -Infinity;
+        let minY = Infinity;
+        let maxY = -Infinity;
+
+        for (const point of points) {
+            const transformed = this._matrix.transformPoint(point);
+            if (transformed.x < minX) minX = transformed.x;
+            if (transformed.x > maxX) maxX = transformed.x;
+            if (transformed.y < minY) minY = transformed.y;
+            if (transformed.y > maxY) maxY = transformed.y;
+        }
+
+        return { minX, maxX, minY, maxY };
+    }
 }

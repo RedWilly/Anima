@@ -253,7 +253,7 @@
       "Call remove(mobject) and verify child is removed",
       "Verify get(index) returns correct child"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - VGroup",
@@ -267,7 +267,7 @@
       "Apply scale transformation to VGroup",
       "Verify all children scales are updated"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - VGroup",
@@ -277,7 +277,7 @@
       "Apply transformation to parent VGroup",
       "Verify transformation propagates to all descendants recursively"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - VGroup",
@@ -288,7 +288,7 @@
       "Verify child remains in group",
       "Verify other children are unaffected"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - VGroup Arrange",
@@ -300,7 +300,7 @@
       "Call arrange('DOWN', spacing)",
       "Verify children are positioned vertically with spacing"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - VGroup Arrange",
@@ -312,7 +312,7 @@
       "Call alignTo(target, 'LEFT')",
       "Verify VGroup left edge aligns with target left"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - VGroup Arrange",
@@ -324,7 +324,7 @@
       "Call toCorner('TOP_LEFT')",
       "Verify VGroup is positioned at top-left corner"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - Text",
