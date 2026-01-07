@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test';
-import { Vector2 } from '../../../src/core/math/Vector2/Vector2';
+import { Vector2 } from '../../../../src/core/math/Vector2/Vector2';
 
 describe('Vector2', () => {
   it('should create a vector with x and y values', () => {

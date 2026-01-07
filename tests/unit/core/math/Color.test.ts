@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { Color } from '../../../src/core/math/color/Color';
+import { Color } from '../../../../src/core/math/color/Color';
 
 describe('Color', () => {
   test('should create a color with rgba values', () => {

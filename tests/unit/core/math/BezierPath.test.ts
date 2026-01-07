@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'bun:test';
-import { BezierPath } from '../../../src/core/math/bezier/BezierPath';
-import { Vector2 } from '../../../src/core/math/Vector2/Vector2';
+import { BezierPath } from '../../../../src/core/math/bezier/BezierPath';
+import { Vector2 } from '../../../../src/core/math/Vector2/Vector2';
 
 describe('BezierPath', () => {
   it('should create a path and add a move command', () => {
