@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { Color } from '../../../src/core/math/Color';
+import { Color } from '../../../src/core/math/color/Color';
 
 describe('Color', () => {
   test('should create a color with rgba values', () => {
@@ -102,7 +102,7 @@ describe('Color', () => {
       expect(color1.r).toBe(color2.r);
       expect(color1.g).toBe(color2.g);
       expect(color1.b).toBe(color2.b);
-      
+
       const color3 = Color.fromHSL(370, 1, 0.5);
       const color4 = Color.fromHSL(10, 1, 0.5);
       expect(color3.r).toBe(color4.r);
@@ -141,7 +141,7 @@ describe('Color', () => {
       const c1 = new Color(0, 0, 0, 0);
       const c2 = new Color(100, 200, 50, 1);
       const result = c1.lerp(c2, 0.5);
-      
+
       expect(result.r).toBe(50);
       expect(result.g).toBe(100);
       expect(result.b).toBe(25);
@@ -151,10 +151,10 @@ describe('Color', () => {
     test('should clamp t between 0 and 1', () => {
       const c1 = new Color(0, 0, 0);
       const c2 = new Color(100, 100, 100);
-      
+
       const r1 = c1.lerp(c2, -1);
       expect(r1.r).toBe(0);
-      
+
       const r2 = c1.lerp(c2, 2);
       expect(r2.r).toBe(100);
     });

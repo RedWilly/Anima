@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test';
-import { BezierPath } from '../../../src/core/math/BezierPath';
+import { BezierPath } from '../../../src/core/math/bezier/BezierPath';
 import { Vector2 } from '../../../src/core/math/Vector2';
 
 describe('BezierPath', () => {
@@ -120,21 +120,21 @@ describe('BezierPath', () => {
     });
 
     it('should approximate length of curves reasonably well', () => {
-        // Quarter circle approximation with cubic bezier
-        // Control points for quarter circle: (1, k) and (k, 1) where k = 0.55228475
-        const k = 0.55228475;
-        const r = 100;
-        const path = new BezierPath();
-        path.moveTo(new Vector2(r, 0));
-        path.cubicTo(
-            new Vector2(r, r * k),
-            new Vector2(r * k, r),
-            new Vector2(0, r)
-        );
+      // Quarter circle approximation with cubic bezier
+      // Control points for quarter circle: (1, k) and (k, 1) where k = 0.55228475
+      const k = 0.55228475;
+      const r = 100;
+      const path = new BezierPath();
+      path.moveTo(new Vector2(r, 0));
+      path.cubicTo(
+        new Vector2(r, r * k),
+        new Vector2(r * k, r),
+        new Vector2(0, r)
+      );
 
-        const expectedLength = 0.5 * Math.PI * r; // ~157.08
-        expect(path.getLength()).toBeGreaterThan(expectedLength * 0.99);
-        expect(path.getLength()).toBeLessThan(expectedLength * 1.01);
+      const expectedLength = 0.5 * Math.PI * r; // ~157.08
+      expect(path.getLength()).toBeGreaterThan(expectedLength * 0.99);
+      expect(path.getLength()).toBeLessThan(expectedLength * 1.01);
     });
   });
 
@@ -143,14 +143,14 @@ describe('BezierPath', () => {
       const path = new BezierPath();
       path.moveTo(new Vector2(0, 0));
       path.lineTo(new Vector2(10, 10));
-      
+
       const clone = path.clone();
       const cmds = clone.getCommands();
-      
+
       expect(cmds.length).toBe(2);
       expect(cmds[0]?.end).toEqual(new Vector2(0, 0));
       expect(cmds[1]?.end).toEqual(new Vector2(10, 10));
-      
+
       // Verify deep copy (modifying original shouldn't affect clone)
       path.lineTo(new Vector2(20, 20));
       expect(clone.getCommands().length).toBe(2);
@@ -161,7 +161,7 @@ describe('BezierPath', () => {
       const path = new BezierPath();
       path.moveTo(new Vector2(0, 0));
       path.lineTo(new Vector2(10, 0));
-      
+
       const points = path.getPoints(3);
       expect(points.length).toBe(3);
       expect(points[0]).toEqual(new Vector2(0, 0));
@@ -180,10 +180,10 @@ describe('BezierPath', () => {
       const path = new BezierPath();
       path.moveTo(new Vector2(0, 0));
       path.lineTo(new Vector2(10, 10)); // Should become Cubic
-      
+
       const cubicPath = path.toCubic();
       const cmds = cubicPath.getCommands();
-      
+
       expect(cmds.length).toBe(2);
       expect(cmds[0]?.type).toBe('Move');
       expect(cmds[1]?.type).toBe('Cubic');
@@ -209,7 +209,7 @@ describe('BezierPath', () => {
       // p2 has 3 commands (Move, Line, Line) -> (Move, Cubic, Cubic)
 
       const [m1, m2] = BezierPath.matchPoints(p1, p2);
-      
+
       expect(m1.getPointCount()).toBe(m2.getPointCount());
       expect(m1.getPointCount()).toBe(3); // p1 should be subdivided
     });
@@ -226,30 +226,30 @@ describe('BezierPath', () => {
       // Interpolate at t=0.5
       const mid = BezierPath.interpolate(p1, p2, 0.5);
       const cmds = mid.getCommands();
-      
+
       expect(cmds[0]?.end.y).toBeCloseTo(5); // Move y
       expect(cmds[1]?.end.y).toBeCloseTo(5); // Line end y
       expect(cmds[1]?.type).toBe('Cubic'); // Result is always cubic
     });
-    
+
     it('interpolate(0) equals p1 and interpolate(1) equals p2 (structurally)', () => {
-        const p1 = new BezierPath();
-        p1.moveTo(Vector2.ZERO);
-        p1.lineTo(new Vector2(10, 0));
-        
-        const p2 = new BezierPath();
-        p2.moveTo(new Vector2(0, 10));
-        p2.lineTo(new Vector2(10, 10));
-        
-        const i0 = BezierPath.interpolate(p1, p2, 0);
-        const i1 = BezierPath.interpolate(p1, p2, 1);
-        
-        // Check end points
-        expect(i0.getPointAt(0)).toEqual(p1.getPointAt(0));
-        expect(i0.getPointAt(1)).toEqual(p1.getPointAt(1));
-        
-        expect(i1.getPointAt(0)).toEqual(p2.getPointAt(0));
-        expect(i1.getPointAt(1)).toEqual(p2.getPointAt(1));
+      const p1 = new BezierPath();
+      p1.moveTo(Vector2.ZERO);
+      p1.lineTo(new Vector2(10, 0));
+
+      const p2 = new BezierPath();
+      p2.moveTo(new Vector2(0, 10));
+      p2.lineTo(new Vector2(10, 10));
+
+      const i0 = BezierPath.interpolate(p1, p2, 0);
+      const i1 = BezierPath.interpolate(p1, p2, 1);
+
+      // Check end points
+      expect(i0.getPointAt(0)).toEqual(p1.getPointAt(0));
+      expect(i0.getPointAt(1)).toEqual(p1.getPointAt(1));
+
+      expect(i1.getPointAt(0)).toEqual(p2.getPointAt(0));
+      expect(i1.getPointAt(1)).toEqual(p2.getPointAt(1));
     });
   });
 });

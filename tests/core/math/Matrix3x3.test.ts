@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { Matrix3x3 } from '../../../src/core/math/Matrix3x3';
+import { Matrix3x3 } from '../../../src/core/math/matrix/Matrix3x3';
 import { Vector2 } from '../../../src/core/math/Vector2';
 
 describe('Matrix3x3', () => {
@@ -33,7 +33,7 @@ describe('Matrix3x3', () => {
     // [ 1 2 3 ]   [ 2 0 0 ]   [ 2 2 3 ]
     // [ 4 5 6 ] * [ 0 1 0 ] = [ 8 5 6 ]  <-- Wait, checking math manually
     // [ 7 8 9 ]   [ 0 0 1 ]   [ 14 8 9 ]
-    
+
     // Manual check:
     // Row 0: 1*2+2*0+3*0=2, 1*0+2*1+3*0=2, 1*0+2*0+3*1=3 -> [2, 2, 3]
     // Row 1: 4*2+5*0+6*0=8, 4*0+5*1+6*0=5, 4*0+5*0+6*1=6 -> [8, 5, 6]
@@ -70,7 +70,7 @@ describe('Matrix3x3', () => {
     const r = Matrix3x3.rotation(Math.PI / 2);
     const p4 = new Vector2(1, 0);
     const p4t = r.transformPoint(p4);
-    
+
     expect(p4t.x).toBeCloseTo(0); // -0
     expect(p4t.y).toBeCloseTo(1);
   });
@@ -85,16 +85,16 @@ describe('Matrix3x3', () => {
     const invS = s.inverse();
     expect(invS.values[0]).toBe(0.5);
     expect(invS.values[4]).toBe(0.25);
-    
+
     // Check property M * M^-1 = I
     const m = new Matrix3x3([
-        2, 1, 0,
-        1, 2, 0,
-        0, 0, 1
+      2, 1, 0,
+      1, 2, 0,
+      0, 0, 1
     ]);
     const invM = m.inverse();
     const prod = m.multiply(invM);
-    
+
     // Floating point precision check
     expect(prod.values[0]).toBeCloseTo(1);
     expect(prod.values[1]).toBeCloseTo(0);
