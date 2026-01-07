@@ -1,0 +1,17 @@
+{
+  "name": "anima",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/fontkit": "^2.0.8"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.88",
+    "fontkit": "^2.0.4"
+  }
+}

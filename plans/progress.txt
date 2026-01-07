@@ -1,0 +1,11 @@
+# Progress Log
+## 2026-01-07
+
+IMPLEMENTED PRD ITEM #-0: Project Initialization
+- Initialized git repository and base directory structure.
+- Configured core environment with TypeScript, bun, @napi-rs/canvas and fontkit.
+- Created plans/prd.json with the feature roadmap.
+- Basic package.json and tsconfig.json are verified and ready.
+- Initial project typecheck passed.
+
+Next: Identify and implement the highest-priority feature from prd.json.
