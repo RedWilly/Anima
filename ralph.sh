@@ -25,18 +25,25 @@ Follow the code style guides strictly when writing any code. \
 6. Update the PRD with the work that was done. \
 7. Append your progress to plans/progress.txt as a note for the next person working in the codebase. \
 8. Make a git commit using format: git commit -m '[Title] - [Description]'. \
-9. ONLY WORK ON A SINGLE FEATURE. After completing ALL steps above (including the commit), if the PRD is complete, output <promise>COMPLETE</promise>.")
+9. ONLY WORK ON A SINGLE FEATURE. After completing ALL steps above (including the commit): \
+   - Output <promise>DONE</promise> to signal this feature is complete. \
+   - If the ENTIRE PRD has no remaining features, ALSO output <promise>ALL_COMPLETE</promise>.")
 
   # 4. Print the result to the console
   echo "$result"
 
-  # 5. Check if the agent signalled completion
-  if [[ "$result" == *"<promise>COMPLETE</promise>"* ]]; then
-    echo "PRO complete, exiting."
-    
-    # Optional: Send a notification (The video uses a custom tool 'tt')
-    # tt notify "CVM PRD complete after $i iterations"
-    
+  # 5. Check if the ENTIRE PRD is complete (exit early)
+  if [[ "$result" == *"<promise>ALL_COMPLETE</promise>"* ]]; then
+    echo "Entire PRD complete after $i iterations. Exiting."
     exit 0
   fi
+
+  # 6. Check if the feature was completed (continue to next iteration)
+  if [[ "$result" == *"<promise>DONE</promise>"* ]]; then
+    echo "Feature $i complete. Starting next iteration..."
+  else
+    echo "Warning: Feature $i may not have completed successfully."
+  fi
 done
+
+echo "Completed all $1 iterations."
