@@ -69,4 +69,72 @@ describe('BezierPath', () => {
     expect(commands[3]?.type).toBe('Close');
     expect(commands[3]?.end).toEqual(start);
   });
+
+  describe('Path Analysis', () => {
+    it('should calculate length of straight line path', () => {
+      const path = new BezierPath();
+      path.moveTo(new Vector2(0, 0));
+      path.lineTo(new Vector2(10, 0));
+      expect(path.getLength()).toBeCloseTo(10);
+    });
+
+    it('should calculate length of multi-segment path', () => {
+      const path = new BezierPath();
+      path.moveTo(new Vector2(0, 0));
+      path.lineTo(new Vector2(10, 0)); // 10
+      path.lineTo(new Vector2(10, 10)); // 10
+      expect(path.getLength()).toBeCloseTo(20);
+    });
+
+    it('should return correct point at t for lines', () => {
+      const path = new BezierPath();
+      path.moveTo(new Vector2(0, 0));
+      path.lineTo(new Vector2(10, 0));
+      path.lineTo(new Vector2(20, 0));
+
+      const pStart = path.getPointAt(0);
+      const pMid = path.getPointAt(0.5);
+      const pEnd = path.getPointAt(1);
+
+      expect(pStart.x).toBeCloseTo(0);
+      expect(pStart.y).toBeCloseTo(0);
+      expect(pMid.x).toBeCloseTo(10);
+      expect(pMid.y).toBeCloseTo(0);
+      expect(pEnd.x).toBeCloseTo(20);
+      expect(pEnd.y).toBeCloseTo(0);
+    });
+
+    it('should return correct tangent at t for lines', () => {
+      const path = new BezierPath();
+      path.moveTo(new Vector2(0, 0));
+      path.lineTo(new Vector2(10, 0));
+      path.lineTo(new Vector2(10, 10));
+
+      const t1 = path.getTangentAt(0.25); // On first segment (horizontal)
+      expect(t1.x).toBeCloseTo(1);
+      expect(t1.y).toBeCloseTo(0);
+
+      const t2 = path.getTangentAt(0.75); // On second segment (vertical up)
+      expect(t2.x).toBeCloseTo(0);
+      expect(t2.y).toBeCloseTo(1);
+    });
+
+    it('should approximate length of curves reasonably well', () => {
+        // Quarter circle approximation with cubic bezier
+        // Control points for quarter circle: (1, k) and (k, 1) where k = 0.55228475
+        const k = 0.55228475;
+        const r = 100;
+        const path = new BezierPath();
+        path.moveTo(new Vector2(r, 0));
+        path.cubicTo(
+            new Vector2(r, r * k),
+            new Vector2(r * k, r),
+            new Vector2(0, r)
+        );
+
+        const expectedLength = 0.5 * Math.PI * r; // ~157.08
+        expect(path.getLength()).toBeGreaterThan(expectedLength * 0.99);
+        expect(path.getLength()).toBeLessThan(expectedLength * 1.01);
+    });
+  });
 });

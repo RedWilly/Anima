@@ -98,7 +98,7 @@
       "Verify getTangentAt(t) returns tangent vector",
       "Verify getLength() returns path length"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Core - BezierPath",
