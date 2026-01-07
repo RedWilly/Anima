@@ -111,7 +111,7 @@
       "Verify BezierPath.interpolate(p1, p2, 1) equals p2",
       "Verify BezierPath.matchPoints() handles different point counts"
     ],
-    "passes": false
+    "passes": true
   }
 ,
   {

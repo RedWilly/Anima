@@ -342,4 +342,295 @@ export class BezierPath {
       .add(p2.subtract(p1).multiply(6 * oneMinusT * t))
       .add(p3.subtract(p2).multiply(3 * t * t));
   }
+
+  /**
+   * Returns a list of evenly spaced points along the path.
+   * @param count The number of points to sample.
+   * @returns Array of Vector2 points.
+   */
+  getPoints(count: number): Vector2[] {
+    const points: Vector2[] = [];
+    if (count <= 0) return points;
+    if (count === 1) return [this.getPointAt(0)];
+
+    for (let i = 0; i < count; i++) {
+      const t = i / (count - 1);
+      points.push(this.getPointAt(t));
+    }
+    return points;
+  }
+
+  /**
+   * Returns the number of commands (segments) in the path.
+   * @returns The number of commands.
+   */
+  getPointCount(): number {
+    return this.commands.length;
+  }
+
+  /**
+   * Creates a deep copy of the path.
+   * @returns A new BezierPath instance.
+   */
+  clone(): BezierPath {
+    const newPath = new BezierPath();
+    newPath.commands = this.commands.map(cmd => ({ ...cmd })); // Shallow copy of command objects is enough as Vector2 is immutable-ish but let's be safe
+    // Vector2 is technically mutable if we cheat, but here we treat as value.
+    // However, the command object structure {type, end, ...} needs to be copied.
+    // The properties are references to Vector2.
+    newPath.currentPoint = this.currentPoint;
+    newPath.startPoint = this.startPoint;
+    return newPath;
+  }
+
+  /**
+   * Returns a new BezierPath where all segments are converted to Cubic Bezier curves.
+   * This facilitates morphing and other operations.
+   * @returns A new BezierPath with only Move and Cubic commands.
+   */
+  toCubic(): BezierPath {
+    const newPath = new BezierPath();
+    let cursor = new Vector2(0, 0);
+    let subpathStart = new Vector2(0, 0);
+
+    for (const cmd of this.commands) {
+      switch (cmd.type) {
+        case 'Move':
+          newPath.moveTo(cmd.end);
+          cursor = cmd.end;
+          subpathStart = cmd.end;
+          break;
+        case 'Line':
+          // Convert Line to Cubic
+          // P0, P1 -> P0, P0 + (P1-P0)/3, P1 - (P1-P0)/3, P1
+          const c1 = cursor.add(cmd.end.subtract(cursor).multiply(1 / 3));
+          const c2 = cmd.end.subtract(cmd.end.subtract(cursor).multiply(1 / 3));
+          newPath.cubicTo(c1, c2, cmd.end);
+          cursor = cmd.end;
+          break;
+        case 'Quadratic':
+          if (cmd.control1) {
+            // Convert Quadratic to Cubic
+            // CP1 = P0 + 2/3 * (QP1 - P0)
+            // CP2 = P1 + 2/3 * (QP1 - P1)
+            const qp1 = cmd.control1;
+            const cubicC1 = cursor.add(qp1.subtract(cursor).multiply(2 / 3));
+            const cubicC2 = cmd.end.add(qp1.subtract(cmd.end).multiply(2 / 3));
+            newPath.cubicTo(cubicC1, cubicC2, cmd.end);
+          }
+          cursor = cmd.end;
+          break;
+        case 'Cubic':
+          if (cmd.control1 && cmd.control2) {
+            newPath.cubicTo(cmd.control1, cmd.control2, cmd.end);
+          }
+          cursor = cmd.end;
+          break;
+        case 'Close':
+          // Treat Close as Line to start, then Line -> Cubic
+          const closeC1 = cursor.add(subpathStart.subtract(cursor).multiply(1 / 3));
+          const closeC2 = subpathStart.subtract(subpathStart.subtract(cursor).multiply(1 / 3));
+          newPath.cubicTo(closeC1, closeC2, subpathStart);
+          // Note: We don't call closePath() on the new path because strictly speaking
+          // we are converting structure to cubics. But we might want to preserve the 'Close' semantic?
+          // For morphing, having explicit points is better.
+          // However, if we want to fill, we might need the Close command.
+          // But toCubic is mostly for morphing interpolation where we treat everything as curves.
+          // Let's stick to explicit cubic to start.
+          cursor = subpathStart;
+          break;
+      }
+    }
+    return newPath;
+  }
+
+  /**
+   * Interpolates between two paths.
+   * @param path1 The start path.
+   * @param path2 The end path.
+   * @param t The interpolation factor (0-1).
+   * @returns The interpolated path.
+   */
+  static interpolate(path1: BezierPath, path2: BezierPath, t: number): BezierPath {
+    const [p1, p2] = BezierPath.matchPoints(path1, path2);
+    const result = new BezierPath();
+    
+    // Assuming matchPoints returns paths with identical structure (Move then Cubics)
+    // We can iterate commands directly.
+    const cmds1 = p1.commands;
+    const cmds2 = p2.commands;
+    
+    for (let i = 0; i < cmds1.length; i++) {
+      const c1 = cmds1[i]!;
+      const c2 = cmds2[i]!;
+      
+      if (c1.type === 'Move' && c2.type === 'Move') {
+        result.moveTo(c1.end.lerp(c2.end, t));
+      } else if (c1.type === 'Cubic' && c2.type === 'Cubic') {
+        if (c1.control1 && c1.control2 && c2.control1 && c2.control2) {
+          result.cubicTo(
+            c1.control1.lerp(c2.control1, t),
+            c1.control2.lerp(c2.control2, t),
+            c1.end.lerp(c2.end, t)
+          );
+        }
+      } else {
+        // Fallback for unexpected mismatch (shouldn't happen after matchPoints)
+        result.moveTo(c1.end.lerp(c2.end, t));
+      }
+    }
+    
+    return result;
+  }
+
+  /**
+   * Matches the number of points/commands in two paths for morphing.
+   * Returns two new paths that are structurally compatible.
+   * @param path1 The first path.
+   * @param path2 The second path.
+   * @returns A tuple [path1, path2] of compatible paths.
+   */
+  static matchPoints(path1: BezierPath, path2: BezierPath): [BezierPath, BezierPath] {
+    let p1 = path1.toCubic();
+    let p2 = path2.toCubic();
+
+    const count1 = p1.commands.length;
+    const count2 = p2.commands.length;
+
+    if (count1 === count2) return [p1, p2];
+
+    // Identify which path needs more points
+    // We will subdivide curves in the shorter path until counts match
+    if (count1 < count2) {
+      p1 = BezierPath.subdividePath(p1, count2);
+    } else {
+      p2 = BezierPath.subdividePath(p2, count1);
+    }
+
+    return [p1, p2];
+  }
+
+  private static subdividePath(path: BezierPath, targetCount: number): BezierPath {
+    const currentCount = path.commands.length;
+    if (currentCount >= targetCount) return path;
+
+    const needed = targetCount - currentCount;
+    // Simple strategy: Iterate through commands and split them.
+    // We can split 'needed' curves. 
+    // Ideally we spread the splits evenly.
+    
+    // We will reconstruct the path
+    const newPath = new BezierPath();
+    const commands = path.commands;
+    
+    // We want to split 'needed' times.
+    // We have 'commands.length' items.
+    // However, the first command is usually 'Move', which we can't split (it's a point).
+    // We only split 'Cubic' commands.
+    
+    // Identify indices of split-able commands (Cubics)
+    const cubicIndices: number[] = [];
+    for (let i = 0; i < commands.length; i++) {
+      if (commands[i]!.type === 'Cubic') {
+        cubicIndices.push(i);
+      }
+    }
+    
+    if (cubicIndices.length === 0) {
+      // Degenerate case: Path has no curves (only moves?). 
+      // Just append Moves or Line-likes?
+      // If it's just a Move, we can't really "morph" it to a shape meaningfully without adding degenerate curves at the point.
+      // Let's assume we can add degenerate cubics at the last point.
+      const lastCmd = commands[commands.length - 1];
+      if (lastCmd) {
+          const pt = lastCmd.end;
+          const result = path.clone();
+          for(let k=0; k<needed; k++) {
+              result.cubicTo(pt, pt, pt);
+          }
+          return result;
+      }
+      return path; // Should not happen for valid paths
+    }
+
+    // Determine how many times each segment needs to be split
+    // For now, let's just split the first 'needed' segments once.
+    // If needed > cubicIndices.length, we might need loop.
+    
+    // Better strategy: repeatedly find the longest segment and split it?
+    // That requires tracking state.
+    
+    // Simpler strategy for this iteration:
+    // Just split curves starting from the beginning until we have added 'needed' extra curves.
+    
+    let splitsPerformed = 0;
+    
+    let cursor = new Vector2(0, 0); // Track start of current segment
+    
+    for (let i = 0; i < commands.length; i++) {
+      const cmd = commands[i]!;
+      
+      if (cmd.type === 'Move') {
+        newPath.moveTo(cmd.end);
+        cursor = cmd.end;
+      } else if (cmd.type === 'Cubic' && splitsPerformed < needed) {
+        // Split this cubic into two
+        if (cmd.control1 && cmd.control2) {
+           const [c1, c2] = BezierPath.splitCubic(cursor, cmd.control1, cmd.control2, cmd.end, 0.5);
+           
+           newPath.cubicTo(c1.control1!, c1.control2!, c1.end);
+           newPath.cubicTo(c2.control1!, c2.control2!, c2.end);
+           
+           splitsPerformed++;
+           cursor = cmd.end;
+        } else {
+             // Should not happen for valid Cubic
+             newPath.commands.push(cmd);
+             cursor = cmd.end;
+        }
+      } else {
+        // Just copy
+        if (cmd.type === 'Cubic' && cmd.control1 && cmd.control2) {
+             newPath.cubicTo(cmd.control1, cmd.control2, cmd.end);
+        }
+        // Handle other types if any (shouldn't be in normalized path)
+        cursor = cmd.end;
+      }
+    }
+    
+    // If we still need more (e.g., we ran out of curves to split once), recurse
+    if (newPath.commands.length < targetCount) {
+        return BezierPath.subdividePath(newPath, targetCount);
+    }
+    
+    return newPath;
+  }
+
+  private static splitCubic(p0: Vector2, p1: Vector2, p2: Vector2, p3: Vector2, t: number): [PathCommand, PathCommand] {
+      // De Casteljau's algorithm
+      const p01 = p0.lerp(p1, t);
+      const p12 = p1.lerp(p2, t);
+      const p23 = p2.lerp(p3, t);
+      
+      const p012 = p01.lerp(p12, t);
+      const p123 = p12.lerp(p23, t);
+      
+      const p0123 = p012.lerp(p123, t);
+      
+      const cmd1: PathCommand = {
+          type: 'Cubic',
+          control1: p01,
+          control2: p012,
+          end: p0123
+      };
+      
+      const cmd2: PathCommand = {
+          type: 'Cubic',
+          control1: p123,
+          control2: p23,
+          end: p3
+      };
+      
+      return [cmd1, cmd2];
+  }
 }
