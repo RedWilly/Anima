@@ -336,7 +336,7 @@
       "Verify getChildren() returns glyph VMobjects",
       "Verify get(index) returns specific glyph"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - Text",
@@ -347,7 +347,7 @@
       "Call setStyle() to change style",
       "Verify new style is applied"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - Text",
@@ -358,7 +358,7 @@
       "Apply animation to single glyph",
       "Verify only that glyph is animated"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - Graph",
