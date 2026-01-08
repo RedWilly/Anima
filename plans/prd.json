@@ -372,7 +372,7 @@
       "Verify removeEdge() removes connection",
       "Verify getEdgePath() returns BezierPath"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - Graph",
@@ -383,7 +383,7 @@
       "Apply stroke and fill to node",
       "Verify styling is applied"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - Graph",
@@ -394,7 +394,7 @@
       "Verify edges can be styled independently",
       "Verify edges support smooth animations"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - Graph Layout",
@@ -408,7 +408,7 @@
       "Call layout('circular')",
       "Verify circular layout is applied"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Animations - Easing",

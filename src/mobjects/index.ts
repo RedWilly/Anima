@@ -3,3 +3,4 @@ export * from './VMobject';
 export * from './VGroup';
 export * from './geometry';
 export * from './text';
+export * from './graph';

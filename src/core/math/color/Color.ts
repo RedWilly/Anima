@@ -83,5 +83,6 @@ export class Color {
     static readonly RED = new Color(255, 0, 0);
     static readonly GREEN = new Color(0, 255, 0);
     static readonly BLUE = new Color(0, 0, 255);
+    static readonly YELLOW = new Color(255, 255, 0);
     static readonly TRANSPARENT = new Color(0, 0, 0, 0);
 }
