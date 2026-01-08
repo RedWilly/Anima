@@ -19,7 +19,7 @@ export function circularLayout(
     if (count === 0) return positions;
 
     for (let i = 0; i < count; i++) {
-        const angle = (2 * Math.PI * i) / count - Math.PI / 2; // Start from top
+        const angle = (2 * Math.PI * i) / count - Math.PI / 2;
         const x = radius * Math.cos(angle);
         const y = radius * Math.sin(angle);
         const node = nodes[i];

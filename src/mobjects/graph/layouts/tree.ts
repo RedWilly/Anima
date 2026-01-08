@@ -123,11 +123,12 @@ export function treeLayout(
 ): Map<string, Vector2> {
     const positions = new Map<string, Vector2>();
     const levelHeight = config.levelHeight ?? DEFAULT_LEVEL_HEIGHT;
+    const siblingSpacing = config.siblingSpacing ?? DEFAULT_SIBLING_SPACING;
 
     const tree = buildTree(nodes, edges);
     if (!tree) return positions;
 
-    assignPositions(tree, 0, DEFAULT_SIBLING_SPACING);
+    assignPositions(tree, 0, siblingSpacing);
 
     collectPositions(tree, levelHeight, positions);
 

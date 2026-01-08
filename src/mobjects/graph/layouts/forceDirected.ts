@@ -7,8 +7,8 @@ const DEFAULT_ITERATIONS = 50;
 const DEFAULT_SPRING_LENGTH = 1.5;
 const DEFAULT_REPULSION = 1.0;
 const DEFAULT_ATTRACTION = 0.1;
-const DAMPING = 0.85;
-const MIN_DISTANCE = 0.01;
+const DEFAULT_DAMPING = 0.85;
+const DEFAULT_MIN_DISTANCE = 0.01;
 
 interface NodeState {
     position: Vector2;
@@ -28,6 +28,9 @@ export function forceDirectedLayout(
     const iterations = config.iterations ?? DEFAULT_ITERATIONS;
     const springLength = config.springLength ?? DEFAULT_SPRING_LENGTH;
     const repulsion = config.repulsion ?? DEFAULT_REPULSION;
+    const attraction = config.attraction ?? DEFAULT_ATTRACTION;
+    const damping = config.damping ?? DEFAULT_DAMPING;
+    const minDistance = config.minDistance ?? DEFAULT_MIN_DISTANCE;
 
     if (nodes.length === 0) return positions;
 
@@ -77,7 +80,7 @@ export function forceDirectedLayout(
                 if (!stateA || !stateB) continue;
 
                 const delta = stateA.position.subtract(stateB.position);
-                const distance = Math.max(delta.length(), MIN_DISTANCE);
+                const distance = Math.max(delta.length(), minDistance);
                 const force = delta.normalize().multiply(repulsion / (distance * distance));
 
                 const forceA = forces.get(nodeA.id) ?? Vector2.ZERO;
@@ -96,7 +99,7 @@ export function forceDirectedLayout(
             const delta = stateB.position.subtract(stateA.position);
             const distance = delta.length();
             const displacement = distance - springLength;
-            const force = delta.normalize().multiply(displacement * DEFAULT_ATTRACTION);
+            const force = delta.normalize().multiply(displacement * attraction);
 
             const forceA = forces.get(edge.source) ?? Vector2.ZERO;
             const forceB = forces.get(edge.target) ?? Vector2.ZERO;
@@ -110,7 +113,7 @@ export function forceDirectedLayout(
             const force = forces.get(node.id);
             if (!state || !force) continue;
 
-            state.velocity = state.velocity.add(force).multiply(DAMPING);
+            state.velocity = state.velocity.add(force).multiply(damping);
             state.position = state.position.add(state.velocity);
         }
     }

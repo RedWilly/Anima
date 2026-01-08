@@ -26,9 +26,18 @@ export type LayoutType = 'force-directed' | 'tree' | 'circular';
 
 /** Configuration for graph layout algorithms. */
 export interface LayoutConfig {
-    radius?: number;       // For circular layout
-    levelHeight?: number;  // For tree layout
-    iterations?: number;   // For force-directed layout
-    springLength?: number; // For force-directed layout
-    repulsion?: number;    // For force-directed layout
+    // Circular layout
+    radius?: number;
+
+    // Tree layout
+    levelHeight?: number;
+    siblingSpacing?: number;
+
+    // Force-directed layout
+    iterations?: number;
+    springLength?: number;
+    repulsion?: number;
+    attraction?: number;
+    damping?: number;
+    minDistance?: number;
 }
