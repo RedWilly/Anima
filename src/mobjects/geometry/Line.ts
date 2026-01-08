@@ -15,6 +15,6 @@ export class Line extends VMobject {
         const path = new BezierPath();
         path.moveTo(this.start);
         path.lineTo(this.end);
-        this._paths = [path];
+        this.pathList = [path];
     }
 }

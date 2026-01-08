@@ -1,7 +1,6 @@
 import * as fontkit from 'fontkit';
 import { VGroup } from '../VGroup';
 import { Glyph } from './Glyph';
-import { Color } from '../../core/math/color/Color';
 import type { TextStyle } from './types';
 import { DEFAULT_TEXT_STYLE } from './types';
 

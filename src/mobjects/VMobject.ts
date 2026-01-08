@@ -8,8 +8,8 @@ import { Vector2 } from '../core/math/Vector2/Vector2';
  * Supports stroke and fill styling.
  */
 export class VMobject extends Mobject {
-    protected _paths: BezierPath[] = [];
-    
+    protected pathList: BezierPath[] = [];
+
     strokeColor: Color = Color.WHITE;
     strokeWidth: number = 2;
     fillColor: Color = Color.TRANSPARENT;
@@ -20,15 +20,15 @@ export class VMobject extends Mobject {
     }
 
     get paths(): BezierPath[] {
-        return this._paths;
+        return this.pathList;
     }
 
     set paths(value: BezierPath[]) {
-        this._paths = value;
+        this.pathList = value;
     }
 
     addPath(path: BezierPath): this {
-        this._paths.push(path);
+        this.pathList.push(path);
         return this;
     }
 
@@ -60,22 +60,22 @@ export class VMobject extends Mobject {
      */
     getPoints(): Vector2[] {
         const points: Vector2[] = [];
-        for (const path of this._paths) {
+        for (const path of this.pathList) {
             for (const cmd of path.getCommands()) {
-                 if (cmd.type === 'Move') {
-                     points.push(cmd.end);
-                 } else if (cmd.type === 'Line') {
-                     points.push(cmd.end);
-                 } else if (cmd.type === 'Quadratic') {
-                     if (cmd.control1) points.push(cmd.control1);
-                     points.push(cmd.end);
-                 } else if (cmd.type === 'Cubic') {
-                     if (cmd.control1) points.push(cmd.control1);
-                     if (cmd.control2) points.push(cmd.control2);
-                     points.push(cmd.end);
-                 } else if (cmd.type === 'Close') {
-                     points.push(cmd.end);
-                 }
+                if (cmd.type === 'Move') {
+                    points.push(cmd.end);
+                } else if (cmd.type === 'Line') {
+                    points.push(cmd.end);
+                } else if (cmd.type === 'Quadratic') {
+                    if (cmd.control1) points.push(cmd.control1);
+                    points.push(cmd.end);
+                } else if (cmd.type === 'Cubic') {
+                    if (cmd.control1) points.push(cmd.control1);
+                    if (cmd.control2) points.push(cmd.control2);
+                    points.push(cmd.end);
+                } else if (cmd.type === 'Close') {
+                    points.push(cmd.end);
+                }
             }
         }
         return points;
@@ -88,18 +88,18 @@ export class VMobject extends Mobject {
      */
     setPoints(points: Vector2[]): this {
         if (points.length === 0) {
-            this._paths = [];
+            this.pathList = [];
             return this;
         }
 
         const path = new BezierPath();
         path.moveTo(points[0]!);
-        
+
         for (let i = 1; i < points.length; i++) {
             path.lineTo(points[i]!);
         }
 
-        this._paths = [path];
+        this.pathList = [path];
         return this;
     }
 
@@ -119,7 +119,7 @@ export class VMobject extends Mobject {
         let maxY = -Infinity;
 
         for (const point of points) {
-            const transformed = this._matrix.transformPoint(point);
+            const transformed = this.transformMatrix.transformPoint(point);
             if (transformed.x < minX) minX = transformed.x;
             if (transformed.x > maxX) maxX = transformed.x;
             if (transformed.y < minY) minY = transformed.y;

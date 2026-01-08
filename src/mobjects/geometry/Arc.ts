@@ -16,17 +16,17 @@ export class Arc extends VMobject {
         const path = new BezierPath();
         const sweepAngle = this.endAngle - this.startAngle;
         const absSweep = Math.abs(sweepAngle);
-        
+
         // Split into segments of at most 90 degrees to maintain accuracy
         const maxSegmentAngle = Math.PI / 2;
         const numSegments = Math.max(1, Math.ceil(absSweep / maxSegmentAngle));
         const stepAngle = sweepAngle / numSegments;
-        
+
         // k = (4/3) * tan(theta/4)
         const k = (4 / 3) * Math.tan(stepAngle / 4);
 
         let currentAngle = this.startAngle;
-        
+
         // Start point
         const startX = this.radius * Math.cos(currentAngle);
         const startY = this.radius * Math.sin(currentAngle);
@@ -35,7 +35,7 @@ export class Arc extends VMobject {
         for (let i = 0; i < numSegments; i++) {
             const alpha = currentAngle;
             const nextAngle = currentAngle + stepAngle;
-            
+
             // P3 is next point
             const p3 = new Vector2(
                 this.radius * Math.cos(nextAngle),
@@ -61,6 +61,6 @@ export class Arc extends VMobject {
             currentAngle += stepAngle;
         }
 
-        this._paths = [path];
+        this.pathList = [path];
     }
 }

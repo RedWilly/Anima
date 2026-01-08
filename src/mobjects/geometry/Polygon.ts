@@ -10,13 +10,13 @@ export class Polygon extends VMobject {
 
     private generatePath(): void {
         if (this.vertices.length === 0) return;
-        
+
         const path = new BezierPath();
         path.moveTo(this.vertices[0]!);
         for (let i = 1; i < this.vertices.length; i++) {
             path.lineTo(this.vertices[i]!);
         }
         path.closePath();
-        this._paths = [path];
+        this.pathList = [path];
     }
 }
