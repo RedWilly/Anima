@@ -421,7 +421,7 @@
       "Verify Easing.bounce(0) = 0 and Easing.bounce(1) = 1",
       "Verify Easing.elastic(0) = 0 and Easing.elastic(1) = 1"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Animations - Easing",
@@ -431,7 +431,7 @@
       "Call registerEasing('custom', fn)",
       "Verify custom easing can be used in animations"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Animations - Base",

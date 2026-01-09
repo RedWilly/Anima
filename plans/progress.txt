@@ -102,4 +102,16 @@ IMPLEMENTED PRD ITEMS #30-#33: Graph Implementation
 - Verified all tests passed (184 total).
 - Updated PRD.
 
-Next: Easing functions implementation.
+IMPLEMENTED PRD ITEMS #34-#35: Easing Functions Implementation
+- Created `src/core/animations/easing/` module with modular structure.
+- Implemented `types.ts` - EasingFunction type definition.
+- Implemented `standard.ts` - 31 standard easing functions (linear, quad, cubic, quart, quint, sine, expo, circ, back, elastic).
+- Implemented `bounce.ts` - 3 bounce easing functions.
+- Implemented `manim.ts` - 12 Manim-style rate functions (smooth, doubleSmooth, rushInto, rushFrom, slowInto, thereAndBack, thereAndBackWithPause, runningStart, wiggle, notQuiteThere, lingering, exponentialDecay).
+- Implemented `registry.ts` - Custom easing registration system (registerEasing, getEasing, hasEasing, unregisterEasing, clearRegistry).
+- Implemented `index.ts` - Exports all functions with `smooth` as `defaultEasing`.
+- Created `tests/unit/core/animations/Easing.test.ts` with 99 comprehensive tests.
+- Verified all tests passed.
+- Updated PRD.
+
+Next: Animation base class implementation.
