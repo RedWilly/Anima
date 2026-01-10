@@ -1,6 +1,6 @@
-import { Animation } from './Animation';
-import { Mobject } from '../../mobjects/Mobject';
-import { Vector2 } from '../math/Vector2/Vector2';
+import { Animation } from '../Animation';
+import { Mobject } from '../../../mobjects/Mobject';
+import { Vector2 } from '../../math/Vector2/Vector2';
 
 /**
  * Animation that scales a Mobject to a target scale factor.

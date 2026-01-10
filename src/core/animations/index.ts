@@ -2,18 +2,13 @@
 export { Animation } from './Animation';
 
 // Fade animations
-export { FadeIn } from './FadeIn';
-export { FadeOut } from './FadeOut';
-
-// Movement animations
-export { MoveTo } from './MoveTo';
+export { FadeIn, FadeOut } from './fade';
 
 // Transform animations
-export { Rotate } from './Rotate';
-export { Scale } from './Scale';
+export { MoveTo, Rotate, Scale } from './transform';
 
 // Morph animations
-export { MorphTo } from './MorphTo';
+export { MorphTo } from './morph';
 
 // Animation types
 export type { AnimationConfig } from './types';

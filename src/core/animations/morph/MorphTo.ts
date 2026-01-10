@@ -1,6 +1,6 @@
-import { Animation } from './Animation';
-import { VMobject } from '../../mobjects/VMobject';
-import { BezierPath } from '../math/bezier/BezierPath';
+import { Animation } from '../Animation';
+import { VMobject } from '../../../mobjects/VMobject';
+import { BezierPath } from '../../math/bezier/BezierPath';
 
 /**
  * Animation that morphs a VMobject from its current shape to a target shape.

@@ -1,5 +1,5 @@
-import { Animation } from './Animation';
-import { Mobject } from '../../mobjects/Mobject';
+import { Animation } from '../Animation';
+import { Mobject } from '../../../mobjects/Mobject';
 
 /**
  * Animation that fades a Mobject in by increasing its opacity from 0 to 1.
