@@ -150,4 +150,14 @@ IMPLEMENTED PRD ITEM #39: MoveTo Animation
 - Verified all tests pass (421 total tests).
 - Updated PRD.
 
-Next: Rotate animation implementation.
+IMPLEMENTED PRD ITEMS #40-42: Rotate, Scale, MorphTo Animations
+- Added `setRotation()` and `setScale()` methods to `Mobject.ts`.
+- Created `src/core/animations/Rotate.ts` - rotates by specified angle (radians).
+- Created `src/core/animations/Scale.ts` - scales to target factor (uniform/non-uniform).
+- Created `src/core/animations/MorphTo.ts` - morphs between VMobject paths using `BezierPath.interpolate()`.
+- Updated `src/core/animations/index.ts` with exports.
+- Created test files: `Rotate.test.ts` (8 tests), `Scale.test.ts` (10 tests), `MorphTo.test.ts` (8 tests).
+- Verified all tests pass (447 total tests).
+- Updated PRD.
+
+Next: Create animation implementation.

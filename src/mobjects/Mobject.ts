@@ -79,6 +79,62 @@ export class Mobject {
   }
 
   /**
+   * Sets the rotation of the Mobject directly in radians.
+   * Reconstructs the transform matrix preserving position and scale.
+   */
+  setRotation(angle: number): this {
+    const m = this.transformMatrix.values;
+    const posX = m[2]!;
+    const posY = m[5]!;
+    const currentScale = this.scale;
+
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+
+    const newValues = new Float32Array(9);
+    newValues[0] = cos * currentScale.x;
+    newValues[1] = -sin * currentScale.y;
+    newValues[2] = posX;
+    newValues[3] = sin * currentScale.x;
+    newValues[4] = cos * currentScale.y;
+    newValues[5] = posY;
+    newValues[6] = 0;
+    newValues[7] = 0;
+    newValues[8] = 1;
+
+    this.transformMatrix = new Matrix3x3(newValues);
+    return this;
+  }
+
+  /**
+   * Sets the scale of the Mobject directly.
+   * Reconstructs the transform matrix preserving position and rotation.
+   */
+  setScale(sx: number, sy: number): this {
+    const m = this.transformMatrix.values;
+    const posX = m[2]!;
+    const posY = m[5]!;
+    const currentRotation = this.rotation;
+
+    const cos = Math.cos(currentRotation);
+    const sin = Math.sin(currentRotation);
+
+    const newValues = new Float32Array(9);
+    newValues[0] = cos * sx;
+    newValues[1] = -sin * sy;
+    newValues[2] = posX;
+    newValues[3] = sin * sx;
+    newValues[4] = cos * sy;
+    newValues[5] = posY;
+    newValues[6] = 0;
+    newValues[7] = 0;
+    newValues[8] = 1;
+
+    this.transformMatrix = new Matrix3x3(newValues);
+    return this;
+  }
+
+  /**
    * Applies a transformation matrix to the Mobject.
    * Pre-multiplies the current matrix: New = Transform * Old.
    * @param m The matrix to apply.

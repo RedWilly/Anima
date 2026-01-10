@@ -8,6 +8,13 @@ export { FadeOut } from './FadeOut';
 // Movement animations
 export { MoveTo } from './MoveTo';
 
+// Transform animations
+export { Rotate } from './Rotate';
+export { Scale } from './Scale';
+
+// Morph animations
+export { MorphTo } from './MorphTo';
+
 // Animation types
 export type { AnimationConfig } from './types';
 

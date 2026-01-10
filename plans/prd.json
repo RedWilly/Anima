@@ -491,7 +491,7 @@
       "Verify interpolate(0.5) sets rotation to 45",
       "Verify interpolate(1) sets rotation to 90"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Animations - Scale",
@@ -503,7 +503,7 @@
       "Verify interpolate(0.5) sets scale to (1.5, 1.5)",
       "Verify interpolate(1) sets scale to (2, 2)"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Animations - MorphTo",
@@ -516,7 +516,7 @@
       "Verify interpolate(0.5) shows intermediate shape",
       "Verify interpolate(1) shows target shape"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Animations - Create",
