@@ -5,6 +5,9 @@ export { Animation } from './Animation';
 export { FadeIn } from './FadeIn';
 export { FadeOut } from './FadeOut';
 
+// Movement animations
+export { MoveTo } from './MoveTo';
+
 // Animation types
 export type { AnimationConfig } from './types';
 

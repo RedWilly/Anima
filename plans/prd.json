@@ -479,7 +479,7 @@
       "Verify interpolate(0.5) sets position to (50, 25)",
       "Verify interpolate(1) sets position to (100, 50)"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Animations - Rotate",

@@ -141,4 +141,13 @@ IMPLEMENTED PRD ITEMS #37-38: FadeIn/FadeOut Animations
 - Verified all tests pass (14 FadeIn/FadeOut tests).
 - Updated PRD.
 
-Next: MoveTo animation implementation.
+IMPLEMENTED PRD ITEM #39: MoveTo Animation
+- Created `src/core/animations/MoveTo.ts` with Vector2 position interpolation.
+- Supports constructor overloads: (target, Vector2) and (target, x, y).
+- Uses `Vector2.lerp()` in `interpolate()` for smooth position transitions.
+- Updated `src/core/animations/index.ts` with export.
+- Created `tests/unit/core/animations/MoveTo.test.ts` - 11 tests.
+- Verified all tests pass (421 total tests).
+- Updated PRD.
+
+Next: Rotate animation implementation.
