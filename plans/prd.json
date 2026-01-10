@@ -443,7 +443,7 @@
       "Call ease(Easing.easeIn) and verify easing changes",
       "Call delay(0.5) and verify delay is set"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Animations - FadeIn/FadeOut",

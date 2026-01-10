@@ -114,4 +114,21 @@ IMPLEMENTED PRD ITEMS #34-#35: Easing Functions Implementation
 - Verified all tests passed.
 - Updated PRD.
 
-Next: Animation base class implementation.
+IMPLEMENTED PRD ITEM #36: Animation Base Class Implementation
+- Created `src/core/animations/types.ts` - AnimationConfig interface with defaults.
+- Created `src/core/animations/Animation.ts` - Abstract base class with:
+  - Constructor with target Mobject.
+  - Default duration: 1 second.
+  - Default easing: `smooth` (Manim default).
+  - Fluent API: `duration()`, `ease()`, `delay()` methods return `this`.
+  - Abstract `interpolate(progress)` for subclasses.
+  - `update(progress)` applies easing and clamps progress.
+- Created `src/core/animations/index.ts` - Exports Animation and re-exports easing.
+- Created `tests/unit/core/animations/Animation.test.ts` - 22 tests including:
+  - Constructor and default state tests.
+  - Fluent chaining tests.
+  - Property-based tests with fast-check.
+- Verified all tests pass (22 Animation tests).
+- Updated PRD.
+
+Next: FadeIn/FadeOut animation implementation.
