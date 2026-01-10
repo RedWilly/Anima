@@ -455,7 +455,7 @@
       "Verify interpolate(0.5) sets opacity to 0.5",
       "Verify interpolate(1) sets opacity to 1"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Animations - FadeIn/FadeOut",
@@ -467,7 +467,7 @@
       "Verify interpolate(0.5) sets opacity to 0.5",
       "Verify interpolate(1) sets opacity to 0"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Animations - MoveTo",

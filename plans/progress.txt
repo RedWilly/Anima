@@ -131,4 +131,14 @@ IMPLEMENTED PRD ITEM #36: Animation Base Class Implementation
 - Verified all tests pass (22 Animation tests).
 - Updated PRD.
 
-Next: FadeIn/FadeOut animation implementation.
+IMPLEMENTED PRD ITEMS #37-38: FadeIn/FadeOut Animations
+- Added `setOpacity()` method to `Mobject` for animation support.
+- Created `src/core/animations/FadeIn.ts` - fades opacity from start to 1.
+- Created `src/core/animations/FadeOut.ts` - fades opacity from start to 0.
+- Updated `src/core/animations/index.ts` with exports.
+- Created `tests/unit/core/animations/FadeIn.test.ts` - 7 tests.
+- Created `tests/unit/core/animations/FadeOut.test.ts` - 7 tests.
+- Verified all tests pass (14 FadeIn/FadeOut tests).
+- Updated PRD.
+
+Next: MoveTo animation implementation.

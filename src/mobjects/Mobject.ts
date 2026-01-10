@@ -70,6 +70,15 @@ export class Mobject {
   }
 
   /**
+   * Sets the opacity of the Mobject directly.
+   * @param value Opacity value in [0, 1].
+   */
+  setOpacity(value: number): this {
+    this.opacityValue = Math.max(0, Math.min(1, value));
+    return this;
+  }
+
+  /**
    * Applies a transformation matrix to the Mobject.
    * Pre-multiplies the current matrix: New = Transform * Old.
    * @param m The matrix to apply.
