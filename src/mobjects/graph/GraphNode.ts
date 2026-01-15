@@ -5,7 +5,6 @@ import { Color } from '../../core/math/color/Color';
 import type { GraphNodeId, NodeConfig } from './types';
 
 const DEFAULT_RADIUS = 0.25;
-const CIRCLE_SEGMENTS = 8;
 
 /**
  * A graph node represented as a circular VMobject.

@@ -1,5 +1,3 @@
-import { Vector2 } from '../Vector2/Vector2';
-
 /**
  * Creates an identity matrix.
  */

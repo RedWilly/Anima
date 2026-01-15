@@ -1,6 +1,6 @@
 import { Vector2 } from '../Vector2/Vector2';
 import type { PathCommand } from './types';
-import { getPathLength, getPointAtPath, getTangentAtPath } from './sampling';
+import { getTangentAtPath } from './sampling';
 import { getQuadraticLength, getCubicLength } from './length';
 import { evaluateQuadratic, evaluateCubic } from './evaluators';
 import { toCubicCommands, subdividePath } from './morphing';
