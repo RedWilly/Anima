@@ -20,15 +20,14 @@ describe('MorphTo Animation', () => {
             // At t=0, shape should match source
             expect(newPoints.length).toBeGreaterThan(0);
             for (let i = 0; i < Math.min(originalPoints.length, newPoints.length); i++) {
-                expect(newPoints[i]!.x).toBeCloseTo(originalPoints[i]!.x, 3);
-                expect(newPoints[i]!.y).toBeCloseTo(originalPoints[i]!.y, 3);
+                expect(newPoints[i]!.end.x).toBeCloseTo(originalPoints[i]!.end.x, 3);
+                expect(newPoints[i]!.end.y).toBeCloseTo(originalPoints[i]!.end.y, 3);
             }
         });
 
         it('should show target shape when interpolate(1)', () => {
             const circle = new Circle(50);
             const rectangle = new Rectangle(100, 100);
-            const targetPoints = rectangle.getPoints();
             const anim = new MorphTo(circle, rectangle);
 
             anim.interpolate(1);

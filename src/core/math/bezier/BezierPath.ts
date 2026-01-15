@@ -1,6 +1,8 @@
 import { Vector2 } from '../Vector2/Vector2';
 import type { PathCommand } from './types';
 import { getPathLength, getPointAtPath, getTangentAtPath } from './sampling';
+import { getQuadraticLength, getCubicLength } from './length';
+import { evaluateQuadratic, evaluateCubic } from './evaluators';
 import { toCubicCommands, subdividePath } from './morphing';
 
 /**
@@ -12,11 +14,70 @@ export class BezierPath {
     private currentPoint: Vector2 = Vector2.ZERO;
     private startPoint: Vector2 = Vector2.ZERO;
 
+    // Caching for O(1) length and O(log N) point sampling
+    private cachedLength: number | null = null;
+    private segmentLengths: number[] = [];
+    private segmentCDF: number[] = [];
+
+    /** Invalidates the cached length data. Called after any path modification. */
+    private invalidateCache(): void {
+        this.cachedLength = null;
+        this.segmentLengths = [];
+        this.segmentCDF = [];
+    }
+
+    /** Builds the cache if not already valid. */
+    private ensureCache(): void {
+        if (this.cachedLength !== null) return;
+
+        this.segmentLengths = [];
+        this.segmentCDF = [];
+        let totalLength = 0;
+        let cursor = Vector2.ZERO;
+        let subpathStart = Vector2.ZERO;
+
+        for (const cmd of this.commands) {
+            let segmentLength = 0;
+            switch (cmd.type) {
+                case 'Move':
+                    cursor = cmd.end;
+                    subpathStart = cmd.end;
+                    break;
+                case 'Line':
+                    segmentLength = cursor.subtract(cmd.end).length();
+                    cursor = cmd.end;
+                    break;
+                case 'Quadratic':
+                    if (cmd.control1) {
+                        segmentLength = getQuadraticLength(cursor, cmd.control1, cmd.end);
+                    }
+                    cursor = cmd.end;
+                    break;
+                case 'Cubic':
+                    if (cmd.control1 && cmd.control2) {
+                        segmentLength = getCubicLength(cursor, cmd.control1, cmd.control2, cmd.end);
+                    }
+                    cursor = cmd.end;
+                    break;
+                case 'Close':
+                    segmentLength = cursor.subtract(subpathStart).length();
+                    cursor = subpathStart;
+                    break;
+            }
+            this.segmentLengths.push(segmentLength);
+            totalLength += segmentLength;
+            this.segmentCDF.push(totalLength);
+        }
+
+        this.cachedLength = totalLength;
+    }
+
     /**
      * Moves the current point to the specified location.
      * Starts a new subpath.
      */
     moveTo(point: Vector2): void {
+        this.invalidateCache();
         this.commands.push({ type: 'Move', end: point });
         this.currentPoint = point;
         this.startPoint = point;
@@ -26,6 +87,7 @@ export class BezierPath {
      * Adds a line segment from the current point to the specified point.
      */
     lineTo(point: Vector2): void {
+        this.invalidateCache();
         this.commands.push({ type: 'Line', end: point });
         this.currentPoint = point;
     }
@@ -34,6 +96,7 @@ export class BezierPath {
      * Adds a quadratic Bezier curve from the current point to the specified end point.
      */
     quadraticTo(control: Vector2, end: Vector2): void {
+        this.invalidateCache();
         this.commands.push({ type: 'Quadratic', control1: control, end: end });
         this.currentPoint = end;
     }
@@ -42,6 +105,7 @@ export class BezierPath {
      * Adds a cubic Bezier curve from the current point to the specified end point.
      */
     cubicTo(control1: Vector2, control2: Vector2, end: Vector2): void {
+        this.invalidateCache();
         this.commands.push({
             type: 'Cubic',
             control1: control1,
@@ -55,6 +119,7 @@ export class BezierPath {
      * Closes the current subpath by drawing a line to the start point.
      */
     closePath(): void {
+        this.invalidateCache();
         this.commands.push({ type: 'Close', end: this.startPoint });
         this.currentPoint = this.startPoint;
     }
@@ -66,12 +131,82 @@ export class BezierPath {
 
     /** Calculates the total length of the path. */
     getLength(): number {
-        return getPathLength(this.commands);
+        this.ensureCache();
+        return this.cachedLength!;
     }
 
-    /** Returns the point on the path at the normalized position t (0-1). */
+    /**
+     * Returns the point on the path at the normalized position t (0-1).
+     * Uses cached CDF for O(log N) lookup instead of O(N) recalculation.
+     */
     getPointAt(t: number): Vector2 {
-        return getPointAtPath(this.commands, t);
+        this.ensureCache();
+        const totalLength = this.cachedLength!;
+
+        if (totalLength === 0 || this.commands.length === 0) {
+            return this.commands.length > 0 ? this.commands[this.commands.length - 1]!.end : Vector2.ZERO;
+        }
+
+        t = Math.max(0, Math.min(1, t));
+        const targetDistance = t * totalLength;
+
+        // Binary search for the segment containing targetDistance
+        let low = 0;
+        let high = this.segmentCDF.length - 1;
+        while (low < high) {
+            const mid = (low + high) >>> 1;
+            if (this.segmentCDF[mid]! < targetDistance) {
+                low = mid + 1;
+            } else {
+                high = mid;
+            }
+        }
+
+        const segmentIndex = low;
+        const cmd = this.commands[segmentIndex];
+        if (!cmd) return Vector2.ZERO;
+
+        // Calculate the starting cursor for this segment
+        let cursor = Vector2.ZERO;
+        let subpathStart = Vector2.ZERO;
+        for (let i = 0; i < segmentIndex; i++) {
+            const c = this.commands[i]!;
+            if (c.type === 'Move') {
+                cursor = c.end;
+                subpathStart = c.end;
+            } else if (c.type === 'Close') {
+                cursor = subpathStart;
+            } else {
+                cursor = c.end;
+            }
+        }
+
+        // Calculate local t within this segment
+        const segmentStart = segmentIndex > 0 ? this.segmentCDF[segmentIndex - 1]! : 0;
+        const segmentLength = this.segmentLengths[segmentIndex]!;
+        const localT = segmentLength > 0 ? (targetDistance - segmentStart) / segmentLength : 0;
+
+        // Evaluate the point at localT
+        switch (cmd.type) {
+            case 'Move':
+                return cmd.end;
+            case 'Line':
+                return cursor.lerp(cmd.end, localT);
+            case 'Quadratic':
+                if (cmd.control1) {
+                    return evaluateQuadratic(cursor, cmd.control1, cmd.end, localT);
+                }
+                return cmd.end;
+            case 'Cubic':
+                if (cmd.control1 && cmd.control2) {
+                    return evaluateCubic(cursor, cmd.control1, cmd.control2, cmd.end, localT);
+                }
+                return cmd.end;
+            case 'Close':
+                return cursor.lerp(subpathStart, localT);
+            default:
+                return cursor;
+        }
     }
 
     /** Returns the tangent vector on the path at the normalized position t (0-1). */

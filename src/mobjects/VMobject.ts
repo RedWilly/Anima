@@ -1,5 +1,6 @@
 import { Mobject } from './Mobject';
 import { BezierPath } from '../core/math/bezier/BezierPath';
+import type { PathCommand } from '../core/math/bezier/types';
 import { Color } from '../core/math/color/Color';
 import { Vector2 } from '../core/math/Vector2/Vector2';
 
@@ -55,48 +56,53 @@ export class VMobject extends Mobject {
     }
 
     /**
-     * Returns a flat array of all points (anchors and controls) in the paths.
-     * This captures the geometry of the paths.
+     * Returns all path commands defining this VMobject's geometry.
+     * This is the lossless representation of the shape.
+     * Use with setPoints() for perfect round-trip.
      */
-    getPoints(): Vector2[] {
-        const points: Vector2[] = [];
+    getPoints(): PathCommand[] {
+        const commands: PathCommand[] = [];
         for (const path of this.pathList) {
-            for (const cmd of path.getCommands()) {
-                if (cmd.type === 'Move') {
-                    points.push(cmd.end);
-                } else if (cmd.type === 'Line') {
-                    points.push(cmd.end);
-                } else if (cmd.type === 'Quadratic') {
-                    if (cmd.control1) points.push(cmd.control1);
-                    points.push(cmd.end);
-                } else if (cmd.type === 'Cubic') {
-                    if (cmd.control1) points.push(cmd.control1);
-                    if (cmd.control2) points.push(cmd.control2);
-                    points.push(cmd.end);
-                } else if (cmd.type === 'Close') {
-                    points.push(cmd.end);
-                }
-            }
+            commands.push(...path.getCommands());
         }
-        return points;
+        return commands;
     }
 
     /**
-     * Sets the points of the VMobject. 
-     * This implementation creates a single path connecting the points with lines (polyline).
-     * @param points The array of points to connect.
+     * Sets the VMobject's paths from an array of PathCommands.
+     * This preserves all command types (Move, Line, Quadratic, Cubic, Close).
+     * Use with getPoints() for lossless round-trip.
+     * @param commands Array of PathCommand objects.
      */
-    setPoints(points: Vector2[]): this {
-        if (points.length === 0) {
+    setPoints(commands: PathCommand[]): this {
+        if (commands.length === 0) {
             this.pathList = [];
             return this;
         }
 
         const path = new BezierPath();
-        path.moveTo(points[0]!);
-
-        for (let i = 1; i < points.length; i++) {
-            path.lineTo(points[i]!);
+        for (const cmd of commands) {
+            switch (cmd.type) {
+                case 'Move':
+                    path.moveTo(cmd.end);
+                    break;
+                case 'Line':
+                    path.lineTo(cmd.end);
+                    break;
+                case 'Quadratic':
+                    if (cmd.control1) {
+                        path.quadraticTo(cmd.control1, cmd.end);
+                    }
+                    break;
+                case 'Cubic':
+                    if (cmd.control1 && cmd.control2) {
+                        path.cubicTo(cmd.control1, cmd.control2, cmd.end);
+                    }
+                    break;
+                case 'Close':
+                    path.closePath();
+                    break;
+            }
         }
 
         this.pathList = [path];
@@ -104,10 +110,26 @@ export class VMobject extends Mobject {
     }
 
     /**
+     * Returns a flat array of all anchor/control Vector2 points for bounding box calculations.
+     * For path manipulation, use getPoints() instead.
+     */
+    private getPointsAsVectors(): Vector2[] {
+        const points: Vector2[] = [];
+        for (const cmd of this.getPoints()) {
+            if (cmd.control1) points.push(cmd.control1);
+            if (cmd.control2) points.push(cmd.control2);
+            points.push(cmd.end);
+        }
+        return points;
+    }
+
+    /**
      * Returns the axis-aligned bounding box of the VMobject in world space.
      */
     getBoundingBox(): { minX: number; maxX: number; minY: number; maxY: number } {
-        const points = this.getPoints();
+        const points = this.getPointsAsVectors();
+        const worldMatrix = this.getWorldMatrix();
+
         if (points.length === 0) {
             const pos = this.position;
             return { minX: pos.x, maxX: pos.x, minY: pos.y, maxY: pos.y };
@@ -119,7 +141,7 @@ export class VMobject extends Mobject {
         let maxY = -Infinity;
 
         for (const point of points) {
-            const transformed = this.transformMatrix.transformPoint(point);
+            const transformed = worldMatrix.transformPoint(point);
             if (transformed.x < minX) minX = transformed.x;
             if (transformed.x > maxX) maxX = transformed.x;
             if (transformed.y < minY) minY = transformed.y;

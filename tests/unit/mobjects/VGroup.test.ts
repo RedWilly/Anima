@@ -3,6 +3,13 @@ import { VGroup } from '../../../src/mobjects/VGroup';
 import { Circle } from '../../../src/mobjects/geometry/Circle';
 import { Rectangle } from '../../../src/mobjects/geometry/Rectangle';
 import { FRAME_X_RADIUS, FRAME_Y_RADIUS } from '../../../src/core/constants';
+import type { Mobject } from '../../../src/mobjects/Mobject';
+
+// Helper to get world position from a Mobject
+function getWorldPosition(mob: Mobject): { x: number; y: number } {
+    const worldMatrix = mob.getWorldMatrix();
+    return { x: worldMatrix.values[2]!, y: worldMatrix.values[5]! };
+}
 
 describe('VGroup', () => {
     test('collects and manages children', () => {
@@ -23,28 +30,49 @@ describe('VGroup', () => {
         expect(group.getChildren().includes(c1)).toBe(false);
     });
 
-    test('propagates transformations to children', () => {
+    test('Scene Graph: child local position unchanged, world position inherits parent', () => {
         const c1 = new Circle(1);
         const group = new VGroup(c1);
 
         group.pos(10, 10);
 
+        // Group's local position changed
         expect(group.position.x).toBeCloseTo(10);
         expect(group.position.y).toBeCloseTo(10);
-        expect(c1.position.x).toBeCloseTo(10);
-        expect(c1.position.y).toBeCloseTo(10);
+
+        // Child's LOCAL position should be unchanged (Scene Graph)
+        expect(c1.position.x).toBeCloseTo(0);
+        expect(c1.position.y).toBeCloseTo(0);
+
+        // Child's WORLD position should reflect parent's transform
+        const worldPos = getWorldPosition(c1);
+        expect(worldPos.x).toBeCloseTo(10);
+        expect(worldPos.y).toBeCloseTo(10);
     });
 
-    test('supports nested VGroups', () => {
+    test('Scene Graph: nested VGroups inherit transforms hierarchically', () => {
         const c1 = new Circle();
         const innerGroup = new VGroup(c1);
         const outerGroup = new VGroup(innerGroup);
 
         outerGroup.pos(20, 0);
 
+        // Outer group's local position changed
         expect(outerGroup.position.x).toBeCloseTo(20);
-        expect(innerGroup.position.x).toBeCloseTo(20);
-        expect(c1.position.x).toBeCloseTo(20);
+
+        // Inner group's LOCAL position unchanged
+        expect(innerGroup.position.x).toBeCloseTo(0);
+
+        // Inner group's WORLD position inherits outer
+        const innerWorldPos = getWorldPosition(innerGroup);
+        expect(innerWorldPos.x).toBeCloseTo(20);
+
+        // Circle's LOCAL position unchanged
+        expect(c1.position.x).toBeCloseTo(0);
+
+        // Circle's WORLD position inherits full chain
+        const circleWorldPos = getWorldPosition(c1);
+        expect(circleWorldPos.x).toBeCloseTo(20);
     });
 
     test('arrange positions children correctly', () => {
@@ -62,13 +90,15 @@ describe('VGroup', () => {
         expect(p1.y).toBeCloseTo(p2.y);
     });
 
-    test('center centers the group', () => {
+    test('center centers the group (moves children locally)', () => {
         const c1 = new Circle();
         c1.pos(10, 10);
         const group = new VGroup(c1);
 
         group.center();
 
+        // center() uses layout functions that move children directly
+        // so child local position IS changed
         expect(c1.position.x).toBeCloseTo(0);
         expect(c1.position.y).toBeCloseTo(0);
     });
@@ -84,7 +114,7 @@ describe('VGroup', () => {
         expect(bounds.minY).toBeCloseTo(-FRAME_Y_RADIUS);
     });
 
-    test('alignTo aligns to target edge', () => {
+    test('alignTo aligns to target edge (moves children locally)', () => {
         const r1 = new Rectangle(2, 2);
         r1.pos(-5, 0); // Left edge at -6
 
@@ -94,6 +124,7 @@ describe('VGroup', () => {
         const group = new VGroup(r2);
         group.alignTo(r1, 'LEFT');
 
+        // alignTo uses layout functions that move children directly
         // r2 left edge should now be -6.
         // r2 center should be -6 + 1 = -5.
         expect(r2.position.x).toBeCloseTo(-5);
@@ -190,13 +221,14 @@ describe('VGroup', () => {
         expect(bounds.minY).toBe(bounds.maxY);
     });
 
-    test('empty VGroup toCorner still moves the group', () => {
+    test('empty VGroup toCorner is a no-op (no children to move)', () => {
         const group = new VGroup();
         group.toCorner('BOTTOM_RIGHT', 0);
 
-        // Group position should have changed
-        expect(group.position.x).not.toBe(0);
-        expect(group.position.y).not.toBe(0);
+        // With Scene Graph: toCorner moves children, not the group itself.
+        // An empty group has no children, so nothing changes.
+        expect(group.position.x).toBe(0);
+        expect(group.position.y).toBe(0);
     });
 
     test('add does not duplicate children', () => {

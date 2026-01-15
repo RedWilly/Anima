@@ -11,7 +11,8 @@ import type { CornerPosition, Direction, Edge } from './layout';
 
 /**
  * A collection of VMobjects that can be manipulated as a single unit.
- * Transformations applied to the group propagate to all children.
+ * Uses Scene Graph hierarchy: transforms on parent are inherited by children
+ * via getWorldMatrix() calculation, not by mutating child matrices.
  */
 export class VGroup extends VMobject {
     protected children: VMobject[] = [];
@@ -28,6 +29,7 @@ export class VGroup extends VMobject {
     add(...mobjects: VMobject[]): this {
         for (const mob of mobjects) {
             if (!this.children.includes(mob)) {
+                mob.parent = this;
                 this.children.push(mob);
             }
         }
@@ -37,12 +39,16 @@ export class VGroup extends VMobject {
     remove(mobject: VMobject): this {
         const index = this.children.indexOf(mobject);
         if (index > -1) {
+            mobject.parent = null;
             this.children.splice(index, 1);
         }
         return this;
     }
 
     clear(): this {
+        for (const child of this.children) {
+            child.parent = null;
+        }
         this.children = [];
         return this;
     }
@@ -55,19 +61,12 @@ export class VGroup extends VMobject {
         return this.children[index];
     }
 
-    override applyMatrix(m: Matrix3x3): this {
-        super.applyMatrix(m);
-        for (const child of this.children) {
-            child.applyMatrix(m);
-        }
-        return this;
-    }
+    // Note: applyMatrix is NOT overridden - transforms stay on this group's local matrix.
+    // Children inherit via getWorldMatrix() during rendering.
 
     override pos(x: number, y: number): this {
-        const currentPos = this.position;
-        const deltaX = x - currentPos.x;
-        const deltaY = y - currentPos.y;
-        return this.applyMatrix(Matrix3x3.translation(deltaX, deltaY));
+        // Directly set position on local matrix, don't propagate to children
+        return super.pos(x, y);
     }
 
     override show(): this {

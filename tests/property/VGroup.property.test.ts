@@ -70,7 +70,7 @@ describe('VGroup Property Tests', () => {
         ));
     });
 
-    test('transformations propagate to all children', () => {
+    test('Scene Graph: children world position inherits parent transform', () => {
         fc.assert(fc.property(
             fc.double({ min: -50, max: 50, noNaN: true }),
             fc.double({ min: -50, max: 50, noNaN: true }),
@@ -80,19 +80,35 @@ describe('VGroup Property Tests', () => {
                 c2.pos(5, 0);
                 const group = new VGroup(c1, c2);
 
-                const beforeC1 = c1.position;
-                const beforeC2 = c2.position;
+                const beforeC1Local = c1.position;
+                const beforeC2Local = c2.position;
 
                 group.pos(tx, ty);
 
-                const afterC1 = c1.position;
-                const afterC2 = c2.position;
+                // With Scene Graph: local positions stay unchanged
+                const afterC1Local = c1.position;
+                const afterC2Local = c2.position;
+                const localUnchanged =
+                    Math.abs(afterC1Local.x - beforeC1Local.x) < 1e-6 &&
+                    Math.abs(afterC1Local.y - beforeC1Local.y) < 1e-6 &&
+                    Math.abs(afterC2Local.x - beforeC2Local.x) < 1e-6 &&
+                    Math.abs(afterC2Local.y - beforeC2Local.y) < 1e-6;
 
-                // Both should have moved by roughly (tx, ty) from origin
-                // c1 was at origin, so should now be near (tx, ty)
-                // c2 was at (5,0), so should now be near (5+tx, ty)
-                return Math.abs(afterC1.x - tx) < 1e-2 &&
-                    Math.abs(afterC1.y - ty) < 1e-2;
+                // World positions should reflect parent transform
+                const c1World = c1.getWorldMatrix();
+                const c2World = c2.getWorldMatrix();
+                const c1WorldPos = { x: c1World.values[2]!, y: c1World.values[5]! };
+                const c2WorldPos = { x: c2World.values[2]!, y: c2World.values[5]! };
+
+                // c1 was at origin, world should now be (tx, ty)
+                // c2 was at (5,0), world should now be (5+tx, ty)
+                const worldCorrect =
+                    Math.abs(c1WorldPos.x - tx) < 1e-2 &&
+                    Math.abs(c1WorldPos.y - ty) < 1e-2 &&
+                    Math.abs(c2WorldPos.x - (5 + tx)) < 1e-2 &&
+                    Math.abs(c2WorldPos.y - ty) < 1e-2;
+
+                return localUnchanged && worldCorrect;
             }
         ));
     });

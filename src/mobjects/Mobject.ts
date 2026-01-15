@@ -3,26 +3,42 @@ import { Vector2 } from '../core/math/Vector2/Vector2';
 
 /**
  * Base class for all mathematical objects.
- * Manages position, rotation, scale, and opacity via a transformation matrix.
+ * Manages position, rotation, scale, and opacity via a local transformation matrix.
+ * Supports Scene Graph hierarchy where world transforms are computed from parent chain.
  */
 export class Mobject {
-  protected transformMatrix: Matrix3x3;
+  protected localMatrix: Matrix3x3;
   protected opacityValue: number;
 
+  /** Parent in the scene graph hierarchy. Set by VGroup when adding children. */
+  parent: Mobject | null = null;
+
   constructor() {
-    this.transformMatrix = Matrix3x3.identity();
+    this.localMatrix = Matrix3x3.identity();
     this.opacityValue = 0; // Invisible by default
   }
 
+  /** Returns the local transform matrix (relative to parent). */
   get matrix(): Matrix3x3 {
-    return this.transformMatrix;
+    return this.localMatrix;
+  }
+
+  /**
+   * Returns the world transform matrix (local * parent chain).
+   * This is the final transform used for rendering.
+   */
+  getWorldMatrix(): Matrix3x3 {
+    if (this.parent === null) {
+      return this.localMatrix;
+    }
+    return this.parent.getWorldMatrix().multiply(this.localMatrix);
   }
 
   /**
    * Returns the position of the Mobject (translation component).
    */
   get position(): Vector2 {
-    const m = this.transformMatrix.values;
+    const m = this.localMatrix.values;
     return new Vector2(m[2]!, m[5]!);
   }
 
@@ -30,15 +46,20 @@ export class Mobject {
    * Returns the rotation of the Mobject in radians.
    */
   get rotation(): number {
-    const m = this.transformMatrix.values;
+    const m = this.localMatrix.values;
     return Math.atan2(m[3]!, m[0]!);
   }
 
   /**
-   * Returns the scale of the Mobject.
+   * Returns the effective scale of the Mobject (column vector magnitudes).
+   * 
+   * WARNING: This returns the magnitude of the matrix column vectors,
+   * which is only accurate for rotation+scale transforms. If the matrix
+   * contains shear (skew), this value will not represent the true scale
+   * components. For sheared matrices, consider using polar decomposition.
    */
   get scale(): Vector2 {
-    const m = this.transformMatrix.values;
+    const m = this.localMatrix.values;
     const sx = Math.sqrt(m[0]! * m[0]! + m[3]! * m[3]!);
     const sy = Math.sqrt(m[1]! * m[1]! + m[4]! * m[4]!);
     return new Vector2(sx, sy);
@@ -52,10 +73,10 @@ export class Mobject {
    * Sets the position of the Mobject directly.
    */
   pos(x: number, y: number): this {
-    const newValues = new Float32Array(this.transformMatrix.values);
+    const newValues = new Float32Array(this.localMatrix.values);
     newValues[2] = x;
     newValues[5] = y;
-    this.transformMatrix = new Matrix3x3(newValues);
+    this.localMatrix = new Matrix3x3(newValues);
     return this;
   }
 
@@ -83,7 +104,7 @@ export class Mobject {
    * Reconstructs the transform matrix preserving position and scale.
    */
   setRotation(angle: number): this {
-    const m = this.transformMatrix.values;
+    const m = this.localMatrix.values;
     const posX = m[2]!;
     const posY = m[5]!;
     const currentScale = this.scale;
@@ -102,7 +123,7 @@ export class Mobject {
     newValues[7] = 0;
     newValues[8] = 1;
 
-    this.transformMatrix = new Matrix3x3(newValues);
+    this.localMatrix = new Matrix3x3(newValues);
     return this;
   }
 
@@ -111,7 +132,7 @@ export class Mobject {
    * Reconstructs the transform matrix preserving position and rotation.
    */
   setScale(sx: number, sy: number): this {
-    const m = this.transformMatrix.values;
+    const m = this.localMatrix.values;
     const posX = m[2]!;
     const posY = m[5]!;
     const currentRotation = this.rotation;
@@ -130,17 +151,17 @@ export class Mobject {
     newValues[7] = 0;
     newValues[8] = 1;
 
-    this.transformMatrix = new Matrix3x3(newValues);
+    this.localMatrix = new Matrix3x3(newValues);
     return this;
   }
 
   /**
-   * Applies a transformation matrix to the Mobject.
+   * Applies a transformation matrix to the Mobject's local transform.
    * Pre-multiplies the current matrix: New = Transform * Old.
    * @param m The matrix to apply.
    */
   applyMatrix(m: Matrix3x3): this {
-    this.transformMatrix = m.multiply(this.transformMatrix);
+    this.localMatrix = m.multiply(this.localMatrix);
     return this;
   }
 }

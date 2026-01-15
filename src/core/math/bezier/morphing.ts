@@ -101,72 +101,72 @@ export function splitCubic(
 
 /**
  * Subdivides a path to match a target command count.
+ * Uses iterative approach to avoid stack overflow on complex paths.
  */
 export function subdividePath(commands: PathCommand[], targetCount: number): PathCommand[] {
-    if (commands.length >= targetCount) return commands;
+    let currentCommands = commands;
 
-    const needed = targetCount - commands.length;
-    const result: PathCommand[] = [];
+    while (currentCommands.length < targetCount) {
+        const needed = targetCount - currentCommands.length;
+        const result: PathCommand[] = [];
 
-    // Identify cubic indices for splitting
-    const cubicIndices: number[] = [];
-    for (let i = 0; i < commands.length; i++) {
-        if (commands[i]!.type === 'Cubic') {
-            cubicIndices.push(i);
-        }
-    }
-
-    if (cubicIndices.length === 0) {
-        // No curves to split - add degenerate cubics at last point
-        const lastCmd = commands[commands.length - 1];
-        if (lastCmd) {
-            const pt = lastCmd.end;
-            const resultCmds = [...commands];
-            for (let k = 0; k < needed; k++) {
-                resultCmds.push({ type: 'Cubic', control1: pt, control2: pt, end: pt });
+        // Identify cubic indices for splitting
+        const cubicIndices: number[] = [];
+        for (let i = 0; i < currentCommands.length; i++) {
+            if (currentCommands[i]!.type === 'Cubic') {
+                cubicIndices.push(i);
             }
-            return resultCmds;
         }
-        return commands;
-    }
 
-    let splitsPerformed = 0;
-    let cursor = new Vector2(0, 0);
+        if (cubicIndices.length === 0) {
+            // No curves to split - add degenerate cubics at last point
+            const lastCmd = currentCommands[currentCommands.length - 1];
+            if (lastCmd) {
+                const pt = lastCmd.end;
+                const resultCmds = [...currentCommands];
+                for (let k = 0; k < needed; k++) {
+                    resultCmds.push({ type: 'Cubic', control1: pt, control2: pt, end: pt });
+                }
+                return resultCmds;
+            }
+            return currentCommands;
+        }
 
-    for (let i = 0; i < commands.length; i++) {
-        const cmd = commands[i]!;
+        let splitsPerformed = 0;
+        let cursor = new Vector2(0, 0);
 
-        if (cmd.type === 'Move') {
-            result.push({ type: 'Move', end: cmd.end });
-            cursor = cmd.end;
-        } else if (cmd.type === 'Cubic' && splitsPerformed < needed) {
-            if (cmd.control1 && cmd.control2) {
-                const [c1, c2] = splitCubic(cursor, cmd.control1, cmd.control2, cmd.end, 0.5);
-                result.push(c1);
-                result.push(c2);
-                splitsPerformed++;
+        for (let i = 0; i < currentCommands.length; i++) {
+            const cmd = currentCommands[i]!;
+
+            if (cmd.type === 'Move') {
+                result.push({ type: 'Move', end: cmd.end });
                 cursor = cmd.end;
+            } else if (cmd.type === 'Cubic' && splitsPerformed < needed) {
+                if (cmd.control1 && cmd.control2) {
+                    const [c1, c2] = splitCubic(cursor, cmd.control1, cmd.control2, cmd.end, 0.5);
+                    result.push(c1);
+                    result.push(c2);
+                    splitsPerformed++;
+                    cursor = cmd.end;
+                } else {
+                    result.push(cmd);
+                    cursor = cmd.end;
+                }
             } else {
-                result.push(cmd);
+                if (cmd.type === 'Cubic' && cmd.control1 && cmd.control2) {
+                    result.push({
+                        type: 'Cubic',
+                        control1: cmd.control1,
+                        control2: cmd.control2,
+                        end: cmd.end
+                    });
+                }
                 cursor = cmd.end;
             }
-        } else {
-            if (cmd.type === 'Cubic' && cmd.control1 && cmd.control2) {
-                result.push({
-                    type: 'Cubic',
-                    control1: cmd.control1,
-                    control2: cmd.control2,
-                    end: cmd.end
-                });
-            }
-            cursor = cmd.end;
         }
+
+        currentCommands = result;
     }
 
-    // Recurse if still need more
-    if (result.length < targetCount) {
-        return subdividePath(result, targetCount);
-    }
-
-    return result;
+    return currentCommands;
 }

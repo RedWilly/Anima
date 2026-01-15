@@ -10,16 +10,24 @@ export type Edge = 'TOP' | 'BOTTOM' | 'LEFT' | 'RIGHT';
 
 /**
  * Centers a VGroup at the origin (0, 0).
+ * Moves all children so the group's bounding box is centered at origin.
  */
 export function centerGroup(group: VGroup): VGroup {
     const bounds = group.getBoundingBox();
     const centerX = (bounds.minX + bounds.maxX) / 2;
     const centerY = (bounds.minY + bounds.maxY) / 2;
-    return group.applyMatrix(Matrix3x3.translation(-centerX, -centerY));
+    const translation = Matrix3x3.translation(-centerX, -centerY);
+
+    // Apply translation to all children directly (not to group)
+    for (const child of group.getChildren()) {
+        child.applyMatrix(translation);
+    }
+    return group;
 }
 
 /**
  * Moves a VGroup to a corner of the screen.
+ * Moves all children so the group's content is at the corner.
  */
 export function toCorner(group: VGroup, corner: CornerPosition, buff: number = 0.0): VGroup {
     const bounds = group.getBoundingBox();
@@ -52,8 +60,13 @@ export function toCorner(group: VGroup, corner: CornerPosition, buff: number = 0
     const currentCenterY = (bounds.minY + bounds.maxY) / 2;
     const shiftX = targetX - currentCenterX;
     const shiftY = targetY - currentCenterY;
+    const translation = Matrix3x3.translation(shiftX, shiftY);
 
-    return group.applyMatrix(Matrix3x3.translation(shiftX, shiftY));
+    // Apply translation to all children directly
+    for (const child of group.getChildren()) {
+        child.applyMatrix(translation);
+    }
+    return group;
 }
 
 /**
@@ -121,6 +134,7 @@ export function arrangeChildren(
 
 /**
  * Aligns a VGroup to a target VMobject's edge.
+ * Moves all children so the group is aligned with the target edge.
  */
 export function alignToTarget(group: VGroup, target: VMobject, edge: Edge): VGroup {
     const targetBounds = target.getBoundingBox();
@@ -144,5 +158,11 @@ export function alignToTarget(group: VGroup, target: VMobject, edge: Edge): VGro
             break;
     }
 
-    return group.applyMatrix(Matrix3x3.translation(shiftX, shiftY));
+    const translation = Matrix3x3.translation(shiftX, shiftY);
+
+    // Apply translation to all children directly
+    for (const child of group.getChildren()) {
+        child.applyMatrix(translation);
+    }
+    return group;
 }
