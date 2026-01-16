@@ -44,15 +44,15 @@ describe('Write Animation', () => {
             expect(finalLength).toBeCloseTo(originalLength, 1);
         });
 
-        it('should simulate natural writing motion (stroke only)', () => {
+        it('should preserve fill during animation', () => {
             const rect = new Rectangle(100, 50);
             rect.fill(Color.BLUE, 1);
             const anim = new Write(rect);
 
             anim.interpolate(0.5);
 
-            // Write animation should disable fill for writing effect
-            expect(rect.fillOpacity).toBe(0);
+            // Write animation preserves fill (like Manim)
+            expect(rect.fillOpacity).toBe(1);
         });
     });
 
@@ -108,6 +108,64 @@ describe('Write Animation', () => {
             const circle = new Circle(50);
             const anim = new Write(circle);
             expect(anim.getTarget()).toBe(circle);
+        });
+    });
+
+    describe('Stroke/Fill Combinations', () => {
+        it('should handle stroke only (no fill) - typical use case', () => {
+            const circle = new Circle(50);
+            circle.stroke(Color.RED, 3);
+            // circle.fillOpacity = 0; /not needed
+            const anim = new Write(circle);
+
+            anim.interpolate(1);
+
+            expect(circle.paths.length).toBeGreaterThan(0);
+            expect(circle.strokeWidth).toBe(3);
+            expect(circle.fillOpacity).toBe(0);
+        });
+
+        it('should preserve fill during animation', () => {
+            const rect = new Rectangle(100, 50);
+            rect.stroke(Color.GREEN, 2);
+            rect.fill(Color.YELLOW, 0.8);
+            const anim = new Write(rect);
+
+            anim.interpolate(0.5);
+
+            // Write preserves fill (like Manim)
+            expect(rect.fillOpacity).toBe(0.8);
+            expect(rect.paths.length).toBeGreaterThan(0);
+
+            anim.interpolate(1);
+            expect(rect.fillOpacity).toBe(0.8);
+        });
+
+        it('should preserve stroke color and width during animation', () => {
+            const circle = new Circle(50);
+            circle.stroke(Color.BLUE, 5);
+            const anim = new Write(circle);
+
+            anim.interpolate(0.3);
+            expect(circle.strokeWidth).toBe(5);
+
+            anim.interpolate(0.7);
+            expect(circle.strokeWidth).toBe(5);
+
+            anim.interpolate(1);
+            expect(circle.strokeWidth).toBe(5);
+        });
+
+        it('should work with zero stroke width and preserve fill', () => {
+            const circle = new Circle(50);
+            circle.strokeWidth = 0;
+            circle.fill(Color.RED, 1);
+            const anim = new Write(circle);
+
+            anim.interpolate(0.5);
+
+            expect(circle.paths.length).toBeGreaterThan(0);
+            expect(circle.fillOpacity).toBe(1);
         });
     });
 });

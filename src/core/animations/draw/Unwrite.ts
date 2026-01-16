@@ -4,22 +4,25 @@ import { BezierPath } from '../../math/bezier/BezierPath';
 import { getPartialPath } from './partialPath';
 
 /**
- * Animation that simulates erasing by progressively removing the stroke.
- * Reverse of Write animation - at progress 0, full stroke is visible;
+ * Animation that progressively removes a VMobject by erasing the path.
+ * Reverse of Write animation - at progress 0, full object is visible;
  * at progress 1, nothing is visible.
+ * Preserves both stroke and fill properties during the animation.
  */
 export class Unwrite<T extends VMobject = VMobject> extends Animation<T> {
     private readonly originalPaths: BezierPath[];
     private readonly originalOpacity: number;
+    private readonly originalFillOpacity: number;
 
     constructor(target: T) {
         super(target);
         this.originalPaths = target.paths.map(p => p.clone());
         this.originalOpacity = target.opacity;
+        this.originalFillOpacity = target.fillOpacity;
     }
 
     /**
-     * Interpolates the unwrite animation - progressively erases stroke.
+     * Interpolates the unwrite animation - progressively erases the path.
      * @param progress Eased progress value in [0, 1].
      */
     interpolate(progress: number): void {
@@ -31,18 +34,19 @@ export class Unwrite<T extends VMobject = VMobject> extends Animation<T> {
         }
 
         if (progress <= 0) {
-            // Start - show full stroke
+            // Start - show full paths
             this.target.paths = this.originalPaths.map(p => p.clone());
             const targetOpacity = this.originalOpacity === 0 ? 1 : this.originalOpacity;
             this.target.setOpacity(targetOpacity);
+            this.target.fillOpacity = this.originalFillOpacity;
             return;
         }
 
-        // Show partial stroke (reverse progress)
+        // Show partial paths (reverse progress)
         const reverseProgress = 1 - progress;
         const targetOpacity = this.originalOpacity === 0 ? 1 : this.originalOpacity;
         this.target.setOpacity(targetOpacity);
-        this.target.fillOpacity = 0;
+        this.target.fillOpacity = this.originalFillOpacity;
 
         const partialPaths: BezierPath[] = [];
 

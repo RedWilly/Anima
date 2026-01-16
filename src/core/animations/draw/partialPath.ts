@@ -2,7 +2,7 @@ import { BezierPath } from '../../math/bezier/BezierPath';
 import { Vector2 } from '../../math/Vector2/Vector2';
 import type { PathCommand } from '../../math/bezier/types';
 import { getQuadraticLength, getCubicLength } from '../../math/bezier/length';
-import { evaluateQuadratic, evaluateCubic } from '../../math/bezier/evaluators';
+import { evaluateQuadratic } from '../../math/bezier/evaluators';
 import { splitCubicAt } from '../../math/bezier/split';
 
 /**
@@ -83,7 +83,7 @@ function getSegmentLength(
 
 function updateCursor(
     cmd: PathCommand,
-    cursor: Vector2,
+    _cursor: Vector2,
     subpathStart: Vector2,
     update: (cursor: Vector2, subpathStart: Vector2) => void
 ): void {
@@ -103,8 +103,8 @@ function updateCursor(
 function appendCommand(
     result: BezierPath,
     cmd: PathCommand,
-    cursor: Vector2,
-    subpathStart: Vector2
+    _cursor: Vector2,
+    _subpathStart: Vector2
 ): void {
     switch (cmd.type) {
         case 'Move':

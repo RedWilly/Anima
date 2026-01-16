@@ -111,4 +111,92 @@ describe('Draw Animation', () => {
             expect(anim.getDelay()).toBe(0.5);
         });
     });
+
+    describe('Stroke/Fill Combinations', () => {
+        it('should handle stroke only (no fill)', () => {
+            const circle = new Circle(50);
+            circle.stroke(Color.RED, 3);
+            circle.fillOpacity = 0;
+            const anim = new Draw(circle);
+
+            anim.interpolate(0.25);
+            expect(circle.paths.length).toBeGreaterThan(0);
+            expect(circle.fillOpacity).toBe(0);
+
+            anim.interpolate(0.75);
+            expect(circle.fillOpacity).toBe(0);
+
+            anim.interpolate(1);
+            expect(circle.fillOpacity).toBe(0);
+        });
+
+        it('should handle fill only (no stroke in visual sense)', () => {
+            const rect = new Rectangle(100, 50);
+            rect.strokeWidth = 0;
+            rect.fill(Color.BLUE, 1);
+            const anim = new Draw(rect);
+
+            anim.interpolate(0.5);
+            expect(rect.fillOpacity).toBe(0);
+
+            anim.interpolate(1);
+            expect(rect.fillOpacity).toBe(1);
+        });
+
+        it('should handle both stroke and fill', () => {
+            const rect = new Rectangle(100, 50);
+            rect.stroke(Color.GREEN, 2);
+            rect.fill(Color.YELLOW, 0.8);
+            const anim = new Draw(rect);
+
+            // First half - stroke only
+            anim.interpolate(0.25);
+            expect(rect.fillOpacity).toBe(0);
+            expect(rect.strokeWidth).toBe(2);
+
+            // Second half - fill fades in
+            anim.interpolate(0.75);
+            expect(rect.fillOpacity).toBeGreaterThan(0);
+            expect(rect.fillOpacity).toBeLessThan(0.8);
+            expect(rect.strokeWidth).toBe(2);
+
+            // Complete
+            anim.interpolate(1);
+            expect(rect.fillOpacity).toBeCloseTo(0.8, 3);
+        });
+
+        it('should preserve stroke properties throughout animation', () => {
+            const circle = new Circle(50);
+            circle.stroke(Color.BLUE, 5);
+            circle.fill(Color.RED, 0.5);
+            const anim = new Draw(circle);
+
+            anim.interpolate(0.1);
+            expect(circle.strokeWidth).toBe(5);
+
+            anim.interpolate(0.5);
+            expect(circle.strokeWidth).toBe(5);
+
+            anim.interpolate(0.9);
+            expect(circle.strokeWidth).toBe(5);
+
+            anim.interpolate(1);
+            expect(circle.strokeWidth).toBe(5);
+        });
+
+        it('should correctly calculate fill opacity at various points', () => {
+            const rect = new Rectangle(100, 50);
+            rect.fill(Color.GREEN, 1);
+            const anim = new Draw(rect);
+
+            anim.interpolate(0.5);
+            expect(rect.fillOpacity).toBe(0);
+
+            anim.interpolate(0.75);
+            expect(rect.fillOpacity).toBeCloseTo(0.5, 2);
+
+            anim.interpolate(1);
+            expect(rect.fillOpacity).toBeCloseTo(1, 2);
+        });
+    });
 });

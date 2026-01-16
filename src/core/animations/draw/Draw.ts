@@ -1,7 +1,6 @@
 import { Animation } from '../Animation';
 import { VMobject } from '../../../mobjects/VMobject';
 import { BezierPath } from '../../math/bezier/BezierPath';
-import { Color } from '../../math/color/Color';
 import { getPartialPath } from './partialPath';
 
 /**
@@ -10,14 +9,12 @@ import { getPartialPath } from './partialPath';
  */
 export class Draw<T extends VMobject = VMobject> extends Animation<T> {
     private readonly originalPaths: BezierPath[];
-    private readonly originalFillColor: Color;
     private readonly originalFillOpacity: number;
     private readonly originalOpacity: number;
 
     constructor(target: T) {
         super(target);
         this.originalPaths = target.paths.map(p => p.clone());
-        this.originalFillColor = target.fillColor;
         this.originalFillOpacity = target.fillOpacity;
         this.originalOpacity = target.opacity;
     }

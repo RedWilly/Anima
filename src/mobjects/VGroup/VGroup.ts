@@ -1,5 +1,4 @@
 import { VMobject } from '../VMobject';
-import { Matrix3x3 } from '../../core/math/matrix/Matrix3x3';
 import { Color } from '../../core/math/color/Color';
 import {
     centerGroup,
