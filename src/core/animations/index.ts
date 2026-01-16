@@ -16,6 +16,10 @@ export { Create, Draw, Write, Unwrite } from './draw';
 // Composition containers
 export { Sequence, Parallel } from './composition';
 
+// Keyframes
+export { KeyframeTrack, KeyframeAnimation } from './keyframes';
+export type { Keyframe } from './keyframes';
+
 // Animation types
 export type { AnimationConfig } from './types';
 

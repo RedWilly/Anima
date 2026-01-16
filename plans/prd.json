@@ -604,7 +604,7 @@
       "Verify getValueAt(1) returns B",
       "Verify getValueAt(0.5) returns interpolated value"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Animations - Keyframes",
@@ -615,7 +615,7 @@
       "Add opacity track with keyframes",
       "Verify both tracks interpolate correctly during playback"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "FluentAPI",

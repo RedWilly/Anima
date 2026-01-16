@@ -183,4 +183,15 @@ IMPLEMENTED PRD ITEMS #47-48: Sequence/Parallel Animation Containers
 - All 553 tests pass.
 - Updated PRD.
 
-Next: Keyframes or FluentAPI implementation.
+IMPLEMENTED PRD ITEMS #49-50: Keyframes Implementation
+- Created `src/core/animations/keyframes/` module with modular structure.
+- Implemented `types.ts` - Keyframe interface, KeyframeValue type, InterpolatorFn, lerpNumber.
+- Implemented `KeyframeTrack.ts` - manages keyframes for a single property with addKeyframe, removeKeyframe, getValueAt.
+- Implemented `KeyframeAnimation.ts` - Animation subclass supporting multiple named tracks with property setters.
+- Created `keyframes/index.ts` and updated `animations/index.ts` with exports.
+- Created `tests/unit/core/animations/keyframes/KeyframeTrack.test.ts` - 21 tests with property-based testing.
+- Created `tests/unit/core/animations/keyframes/KeyframeAnimation.test.ts` - 17 tests.
+- All 591 tests pass.
+- Updated PRD.
+
+Next: FluentAPI implementation.
