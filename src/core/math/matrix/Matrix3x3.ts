@@ -24,10 +24,6 @@ export class Matrix3x3 {
         this.values = new Float32Array(values);
     }
 
-    /**
-     * Multiplies this matrix by another matrix.
-     * Result = This * Other
-     */
     multiply(other: Matrix3x3): Matrix3x3 {
         const a = this.values;
         const b = other.values;
@@ -54,10 +50,7 @@ export class Matrix3x3 {
         return new Matrix3x3(out);
     }
 
-    /**
-     * Transforms a Vector2 by this matrix.
-     * Assumes the vector is a point with z=1.
-     */
+    /** Transforms a Vector2 point (assumes z=1). */
     transformPoint(point: Vector2): Vector2 {
         const m = this.values;
         const x = point.x;
@@ -72,10 +65,7 @@ export class Matrix3x3 {
         return new Vector2(tx, ty);
     }
 
-    /**
-     * Calculates the inverse of this matrix.
-     * @throws Error if the matrix is not invertible.
-     */
+    /** @throws Error if the matrix is not invertible. */
     inverse(): Matrix3x3 {
         const m = this.values;
 
@@ -108,27 +98,22 @@ export class Matrix3x3 {
         return new Matrix3x3(out);
     }
 
-    /** Returns the identity matrix. */
     static identity(): Matrix3x3 {
         return Matrix3x3.IDENTITY;
     }
 
-    /** Creates a translation matrix. */
     static translation(tx: number, ty: number): Matrix3x3 {
         return new Matrix3x3(createTranslation(tx, ty));
     }
 
-    /** Creates a rotation matrix. */
     static rotation(angle: number): Matrix3x3 {
         return new Matrix3x3(createRotation(angle));
     }
 
-    /** Creates a scaling matrix. */
     static scale(sx: number, sy: number): Matrix3x3 {
         return new Matrix3x3(createScale(sx, sy));
     }
 
-    /** Creates a shear matrix. */
     static shear(shx: number, shy: number): Matrix3x3 {
         return new Matrix3x3(createShear(shx, shy));
     }

@@ -9,11 +9,7 @@ export function createIdentity(): Float32Array {
     ]);
 }
 
-/**
- * Creates a translation matrix.
- * @param tx Translation in x.
- * @param ty Translation in y.
- */
+/** Creates a translation matrix. */
 export function createTranslation(tx: number, ty: number): Float32Array {
     return new Float32Array([
         1, 0, tx,
@@ -22,10 +18,7 @@ export function createTranslation(tx: number, ty: number): Float32Array {
     ]);
 }
 
-/**
- * Creates a rotation matrix.
- * @param angle Angle in radians.
- */
+/** Creates a rotation matrix (angle in radians). */
 export function createRotation(angle: number): Float32Array {
     const c = Math.cos(angle);
     const s = Math.sin(angle);
@@ -36,11 +29,7 @@ export function createRotation(angle: number): Float32Array {
     ]);
 }
 
-/**
- * Creates a scaling matrix.
- * @param sx Scale in x.
- * @param sy Scale in y.
- */
+/** Creates a scaling matrix. */
 export function createScale(sx: number, sy: number): Float32Array {
     return new Float32Array([
         sx, 0, 0,
@@ -49,11 +38,7 @@ export function createScale(sx: number, sy: number): Float32Array {
     ]);
 }
 
-/**
- * Creates a shear matrix.
- * @param shx Shear factor in x.
- * @param shy Shear factor in y.
- */
+/** Creates a shear matrix. */
 export function createShear(shx: number, shy: number): Float32Array {
     return new Float32Array([
         1, shx, 0,

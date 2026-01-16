@@ -1,12 +1,6 @@
 import { Vector2 } from '../Vector2/Vector2';
 
-/**
- * Evaluates a point on a quadratic Bezier curve at parameter t.
- * @param p0 Start point
- * @param p1 Control point
- * @param p2 End point
- * @param t Parameter (0-1)
- */
+/** Evaluates a point on a quadratic Bezier curve at parameter t (0-1). */
 export function evaluateQuadratic(p0: Vector2, p1: Vector2, p2: Vector2, t: number): Vector2 {
     const oneMinusT = 1 - t;
     // (1-t)^2 * p0 + 2(1-t)t * p1 + t^2 * p2
@@ -15,14 +9,7 @@ export function evaluateQuadratic(p0: Vector2, p1: Vector2, p2: Vector2, t: numb
         .add(p2.multiply(t * t));
 }
 
-/**
- * Evaluates a point on a cubic Bezier curve at parameter t.
- * @param p0 Start point
- * @param p1 First control point
- * @param p2 Second control point
- * @param p3 End point
- * @param t Parameter (0-1)
- */
+/** Evaluates a point on a cubic Bezier curve at parameter t (0-1). */
 export function evaluateCubic(
     p0: Vector2,
     p1: Vector2,
@@ -43,13 +30,7 @@ export function evaluateCubic(
         .add(p3.multiply(t3));
 }
 
-/**
- * Evaluates the derivative of a quadratic Bezier curve at parameter t.
- * @param p0 Start point
- * @param p1 Control point
- * @param p2 End point
- * @param t Parameter (0-1)
- */
+/** Evaluates the derivative of a quadratic Bezier curve at parameter t (0-1). */
 export function evaluateQuadraticDerivative(
     p0: Vector2,
     p1: Vector2,
@@ -62,14 +43,7 @@ export function evaluateQuadraticDerivative(
         .add(p2.subtract(p1).multiply(2 * t));
 }
 
-/**
- * Evaluates the derivative of a cubic Bezier curve at parameter t.
- * @param p0 Start point
- * @param p1 First control point
- * @param p2 Second control point
- * @param p3 End point
- * @param t Parameter (0-1)
- */
+/** Evaluates the derivative of a cubic Bezier curve at parameter t (0-1). */
 export function evaluateCubicDerivative(
     p0: Vector2,
     p1: Vector2,

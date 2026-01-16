@@ -24,11 +24,7 @@ export class Graph extends VGroup {
         super();
     }
 
-    /**
-     * Adds a node to the graph.
-     * @param id Unique identifier for the node.
-     * @param config Optional configuration for the node.
-     */
+    /** Adds a node to the graph. */
     addNode(id: GraphNodeId, config: NodeConfig = {}): GraphNode {
         if (this.nodes.has(id)) {
             const existing = this.nodes.get(id);
@@ -41,10 +37,7 @@ export class Graph extends VGroup {
         return node;
     }
 
-    /**
-     * Removes a node and all connected edges from the graph.
-     * @param id The node identifier to remove.
-     */
+    /** Removes a node and all connected edges from the graph. */
     removeNode(id: GraphNodeId): this {
         const node = this.nodes.get(id);
         if (!node) return this;
@@ -63,10 +56,6 @@ export class Graph extends VGroup {
         return this;
     }
 
-    /**
-     * Returns the node VMobject for the given id.
-     * @param id The node identifier.
-     */
     getNode(id: GraphNodeId): GraphNode | undefined {
         return this.nodes.get(id);
     }
@@ -78,12 +67,7 @@ export class Graph extends VGroup {
         return Array.from(this.nodes.values());
     }
 
-    /**
-     * Adds an edge between two nodes.
-     * @param sourceId Source node identifier.
-     * @param targetId Target node identifier.
-     * @param config Optional edge configuration.
-     */
+    /** Adds an edge between two nodes. */
     addEdge(
         sourceId: GraphNodeId,
         targetId: GraphNodeId,
@@ -108,11 +92,7 @@ export class Graph extends VGroup {
         return edge;
     }
 
-    /**
-     * Removes an edge between two nodes.
-     * @param sourceId Source node identifier.
-     * @param targetId Target node identifier.
-     */
+    /** Removes an edge between two nodes. */
     removeEdge(sourceId: GraphNodeId, targetId: GraphNodeId): this {
         const edge = this.edges.find(
             e => (e.source === sourceId && e.target === targetId) ||
@@ -132,11 +112,6 @@ export class Graph extends VGroup {
         }
     }
 
-    /**
-     * Returns the BezierPath for an edge between two nodes.
-     * @param sourceId Source node identifier.
-     * @param targetId Target node identifier.
-     */
     getEdgePath(
         sourceId: GraphNodeId,
         targetId: GraphNodeId
@@ -155,11 +130,7 @@ export class Graph extends VGroup {
         return [...this.edges];
     }
 
-    /**
-     * Applies a layout algorithm to reposition all nodes.
-     * @param type The layout algorithm to use.
-     * @param config Optional layout configuration.
-     */
+    /** Applies a layout algorithm to reposition all nodes. */
     layout(type: LayoutType, config: LayoutConfig = {}): this {
         const nodeArray = this.getNodes();
         let positions: Map<string, Vector2>;

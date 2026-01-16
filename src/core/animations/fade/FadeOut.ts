@@ -12,10 +12,6 @@ export class FadeOut<T extends Mobject = Mobject> extends Animation<T> {
         this.startOpacity = target.opacity;
     }
 
-    /**
-     * Interpolates the opacity from starting value to 0.
-     * @param progress Eased progress value in [0, 1].
-     */
     interpolate(progress: number): void {
         const newOpacity = this.startOpacity * (1 - progress);
         this.target.setOpacity(newOpacity);

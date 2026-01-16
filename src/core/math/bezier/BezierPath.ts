@@ -72,10 +72,7 @@ export class BezierPath {
         this.cachedLength = totalLength;
     }
 
-    /**
-     * Moves the current point to the specified location.
-     * Starts a new subpath.
-     */
+    /** Starts a new subpath at the specified point. */
     moveTo(point: Vector2): void {
         this.invalidateCache();
         this.commands.push({ type: 'Move', end: point });
@@ -83,27 +80,18 @@ export class BezierPath {
         this.startPoint = point;
     }
 
-    /**
-     * Adds a line segment from the current point to the specified point.
-     */
     lineTo(point: Vector2): void {
         this.invalidateCache();
         this.commands.push({ type: 'Line', end: point });
         this.currentPoint = point;
     }
 
-    /**
-     * Adds a quadratic Bezier curve from the current point to the specified end point.
-     */
     quadraticTo(control: Vector2, end: Vector2): void {
         this.invalidateCache();
         this.commands.push({ type: 'Quadratic', control1: control, end: end });
         this.currentPoint = end;
     }
 
-    /**
-     * Adds a cubic Bezier curve from the current point to the specified end point.
-     */
     cubicTo(control1: Vector2, control2: Vector2, end: Vector2): void {
         this.invalidateCache();
         this.commands.push({
@@ -115,30 +103,22 @@ export class BezierPath {
         this.currentPoint = end;
     }
 
-    /**
-     * Closes the current subpath by drawing a line to the start point.
-     */
     closePath(): void {
         this.invalidateCache();
         this.commands.push({ type: 'Close', end: this.startPoint });
         this.currentPoint = this.startPoint;
     }
 
-    /** Returns the list of commands in this path. */
     getCommands(): PathCommand[] {
         return [...this.commands];
     }
 
-    /** Calculates the total length of the path. */
     getLength(): number {
         this.ensureCache();
         return this.cachedLength!;
     }
 
-    /**
-     * Returns the point on the path at the normalized position t (0-1).
-     * Uses cached CDF for O(log N) lookup instead of O(N) recalculation.
-     */
+    /** Returns the point on the path at the normalized position t (0-1). */
     getPointAt(t: number): Vector2 {
         this.ensureCache();
         const totalLength = this.cachedLength!;
@@ -209,12 +189,10 @@ export class BezierPath {
         }
     }
 
-    /** Returns the tangent vector on the path at the normalized position t (0-1). */
     getTangentAt(t: number): Vector2 {
         return getTangentAtPath(this.commands, t);
     }
 
-    /** Returns a list of evenly spaced points along the path. */
     getPoints(count: number): Vector2[] {
         const points: Vector2[] = [];
         if (count <= 0) return points;
@@ -227,12 +205,10 @@ export class BezierPath {
         return points;
     }
 
-    /** Returns the number of commands (segments) in the path. */
     getPointCount(): number {
         return this.commands.length;
     }
 
-    /** Creates a deep copy of the path. */
     clone(): BezierPath {
         const newPath = new BezierPath();
         newPath.commands = this.commands.map(cmd => ({ ...cmd }));

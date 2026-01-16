@@ -22,10 +22,6 @@ export class MoveTo<T extends Mobject = Mobject> extends Animation<T> {
         }
     }
 
-    /**
-     * Interpolates the position from start to destination.
-     * @param progress Eased progress value in [0, 1].
-     */
     interpolate(progress: number): void {
         const newPosition = this.startPosition.lerp(this.endPosition, progress);
         this.target.pos(newPosition.x, newPosition.y);

@@ -18,12 +18,10 @@ export class Sequence extends Animation<Mobject> {
         this.durationSeconds = this.totalChildDuration;
     }
 
-    /** Returns the total duration (sum of all child durations). */
     override getDuration(): number {
         return this.durationSeconds;
     }
 
-    /** Returns the child animations. */
     getChildren(): readonly Animation[] {
         return this.children;
     }

@@ -19,12 +19,7 @@ export class Draw<T extends VMobject = VMobject> extends Animation<T> {
         this.originalOpacity = target.opacity;
     }
 
-    /**
-     * Interpolates the draw animation.
-     * First half (0-0.5): draws stroke progressively
-     * Second half (0.5-1): fills shape with opacity fade
-     * @param progress Eased progress value in [0, 1].
-     */
+    /** Interpolates stroke drawing (0-0.5) and then fill fade (0.5-1). */
     interpolate(progress: number): void {
         // Make target visible
         const targetOpacity = this.originalOpacity === 0 ? 1 : this.originalOpacity;

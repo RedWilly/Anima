@@ -7,10 +7,7 @@ export type CornerPosition = 'TOP_LEFT' | 'TOP_RIGHT' | 'BOTTOM_LEFT' | 'BOTTOM_
 export type Direction = 'RIGHT' | 'LEFT' | 'UP' | 'DOWN';
 export type Edge = 'TOP' | 'BOTTOM' | 'LEFT' | 'RIGHT';
 
-/**
- * Centers a VGroup at the origin (0, 0).
- * Moves all children so the group's bounding box is centered at origin.
- */
+/** Centers a VGroup's bounding box at the origin (0, 0). */
 export function centerGroup(group: VGroup): VGroup {
     const bounds = group.getBoundingBox();
     const centerX = (bounds.minX + bounds.maxX) / 2;
@@ -24,10 +21,7 @@ export function centerGroup(group: VGroup): VGroup {
     return group;
 }
 
-/**
- * Moves a VGroup to a corner of the screen.
- * Moves all children so the group's content is at the corner.
- */
+/** Moves a VGroup's bounding box to a corner of the frame. */
 export function toCorner(group: VGroup, corner: CornerPosition, buff: number = 0.0): VGroup {
     const bounds = group.getBoundingBox();
     const width = bounds.maxX - bounds.minX;
@@ -68,9 +62,7 @@ export function toCorner(group: VGroup, corner: CornerPosition, buff: number = 0
     return group;
 }
 
-/**
- * Arranges children in a line along the specified direction.
- */
+/** Arranges children in a line along the specified direction. */
 export function arrangeChildren(
     group: VGroup,
     direction: Direction = 'RIGHT',
@@ -131,10 +123,7 @@ export function arrangeChildren(
     return group;
 }
 
-/**
- * Aligns a VGroup to a target VMobject's edge.
- * Moves all children so the group is aligned with the target edge.
- */
+/** Aligns a VGroup to a target VMobject's edge. */
 export function alignToTarget(group: VGroup, target: VMobject, edge: Edge): VGroup {
     const targetBounds = target.getBoundingBox();
     const myBounds = group.getBoundingBox();

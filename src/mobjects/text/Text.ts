@@ -79,25 +79,16 @@ export class Text extends VGroup {
         }
     }
 
-    /**
-     * Updates the text style and reapplies to all glyphs.
-     */
     setStyle(options: Partial<TextStyle>): this {
         this.style = { ...this.style, ...options };
         this.applyStyle();
         return this;
     }
 
-    /**
-     * Returns the current text style.
-     */
     getStyle(): TextStyle {
         return { ...this.style };
     }
 
-    /**
-     * Returns the glyph at the specified index.
-     */
     getGlyph(index: number): Glyph | undefined {
         const child = this.get(index);
         return child instanceof Glyph ? child : undefined;

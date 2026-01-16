@@ -18,15 +18,11 @@ export class Mobject {
     this.opacityValue = 0; // Invisible by default
   }
 
-  /** Returns the local transform matrix (relative to parent). */
   get matrix(): Matrix3x3 {
     return this.localMatrix;
   }
 
-  /**
-   * Returns the world transform matrix (local * parent chain).
-   * This is the final transform used for rendering.
-   */
+  /** World transform matrix (local * parent chain). */
   getWorldMatrix(): Matrix3x3 {
     if (this.parent === null) {
       return this.localMatrix;
@@ -34,30 +30,17 @@ export class Mobject {
     return this.parent.getWorldMatrix().multiply(this.localMatrix);
   }
 
-  /**
-   * Returns the position of the Mobject (translation component).
-   */
   get position(): Vector2 {
     const m = this.localMatrix.values;
     return new Vector2(m[2]!, m[5]!);
   }
 
-  /**
-   * Returns the rotation of the Mobject in radians.
-   */
   get rotation(): number {
     const m = this.localMatrix.values;
     return Math.atan2(m[3]!, m[0]!);
   }
 
-  /**
-   * Returns the effective scale of the Mobject (column vector magnitudes).
-   * 
-   * WARNING: This returns the magnitude of the matrix column vectors,
-   * which is only accurate for rotation+scale transforms. If the matrix
-   * contains shear (skew), this value will not represent the true scale
-   * components. For sheared matrices, consider using polar decomposition.
-   */
+  /** Effective scale of the Mobject (column vector magnitudes). */
   get scale(): Vector2 {
     const m = this.localMatrix.values;
     const sx = Math.sqrt(m[0]! * m[0]! + m[3]! * m[3]!);
@@ -69,9 +52,6 @@ export class Mobject {
     return this.opacityValue;
   }
 
-  /**
-   * Sets the position of the Mobject directly.
-   */
   pos(x: number, y: number): this {
     const newValues = new Float32Array(this.localMatrix.values);
     newValues[2] = x;
@@ -90,19 +70,13 @@ export class Mobject {
     return this;
   }
 
-  /**
-   * Sets the opacity of the Mobject directly.
-   * @param value Opacity value in [0, 1].
-   */
+  /** Sets opacity value in [0, 1]. */
   setOpacity(value: number): this {
     this.opacityValue = Math.max(0, Math.min(1, value));
     return this;
   }
 
-  /**
-   * Sets the rotation of the Mobject directly in radians.
-   * Reconstructs the transform matrix preserving position and scale.
-   */
+  /** Sets the rotation (radians). */
   setRotation(angle: number): this {
     const m = this.localMatrix.values;
     const posX = m[2]!;
@@ -127,10 +101,7 @@ export class Mobject {
     return this;
   }
 
-  /**
-   * Sets the scale of the Mobject directly.
-   * Reconstructs the transform matrix preserving position and rotation.
-   */
+  /** Sets the scale. */
   setScale(sx: number, sy: number): this {
     const m = this.localMatrix.values;
     const posX = m[2]!;
@@ -155,11 +126,7 @@ export class Mobject {
     return this;
   }
 
-  /**
-   * Applies a transformation matrix to the Mobject's local transform.
-   * Pre-multiplies the current matrix: New = Transform * Old.
-   * @param m The matrix to apply.
-   */
+  /** New = Transform * Old. */
   applyMatrix(m: Matrix3x3): this {
     this.localMatrix = m.multiply(this.localMatrix);
     return this;

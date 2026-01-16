@@ -10,16 +10,7 @@ export interface CubicSegment {
     end: Vector2;
 }
 
-/**
- * Splits a cubic Bezier curve at parameter t using de Casteljau's algorithm.
- * Returns two cubic segments: [0, t] and [t, 1].
- * 
- * @param p0 Start point
- * @param p1 First control point
- * @param p2 Second control point
- * @param p3 End point
- * @param t Split parameter (0-1)
- */
+/** Splits a cubic Bezier curve at t using de Casteljau's algorithm into two segments. */
 export function splitCubicAt(
     p0: Vector2,
     p1: Vector2,
@@ -58,10 +49,7 @@ export function splitCubicAt(
     return [first, second];
 }
 
-/**
- * Splits a quadratic Bezier curve at parameter t.
- * Returns two quadratic segments: [0, t] and [t, 1].
- */
+/** Splits a quadratic Bezier curve at t into two segments. */
 export interface QuadraticSegment {
     start: Vector2;
     control: Vector2;

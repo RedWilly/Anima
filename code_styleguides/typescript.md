@@ -38,6 +38,7 @@ This document summarizes key rules and best practices from the Google TypeScript
 ## 5. Comments and Documentation
 - **JSDoc:** Use `/** JSDoc */` for documentation, `//` for implementation comments.
 - **Redundancy:** **Do not declare types in `@param` or `@return` blocks** (e.g., `/** @param {string} user */`). This is redundant in TypeScript.
-- **Add Information:** Comments must add information, not just restate the code.
+- **Add Information:** Comments must add information, not just restate the code or the function's purpose.
+- **Purpose:** Document the purpose of the code, not just its implementation.
 
 *Source: [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html)*

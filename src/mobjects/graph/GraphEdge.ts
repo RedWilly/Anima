@@ -65,9 +65,6 @@ export class GraphEdge extends VMobject {
         this.pathList = [path];
     }
 
-    /**
-     * Returns the BezierPath of this edge.
-     */
     getPath(): BezierPath | undefined {
         return this.pathList[0];
     }

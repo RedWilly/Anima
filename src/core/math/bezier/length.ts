@@ -1,10 +1,7 @@
 import { Vector2 } from '../Vector2/Vector2';
 import { evaluateQuadratic, evaluateCubic } from './evaluators';
 
-/**
- * Calculates the approximate length of a quadratic Bezier curve.
- * Uses subdivision with 10 steps for approximation.
- */
+/** Calculates approximate length of a quadratic Bezier curve via subdivision (10 steps). */
 export function getQuadraticLength(p0: Vector2, p1: Vector2, p2: Vector2): number {
     const steps = 10;
     let length = 0;
@@ -18,10 +15,7 @@ export function getQuadraticLength(p0: Vector2, p1: Vector2, p2: Vector2): numbe
     return length;
 }
 
-/**
- * Calculates the approximate length of a cubic Bezier curve.
- * Uses subdivision with 20 steps for approximation.
- */
+/** Calculates approximate length of a cubic Bezier curve via subdivision (20 steps). */
 export function getCubicLength(
     p0: Vector2,
     p1: Vector2,

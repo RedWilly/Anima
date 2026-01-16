@@ -4,9 +4,6 @@ import { evaluateQuadratic, evaluateCubic } from './evaluators';
 import { evaluateQuadraticDerivative, evaluateCubicDerivative } from './evaluators';
 import { getQuadraticLength, getCubicLength } from './length';
 
-/**
- * Calculates the total length of a path from its commands.
- */
 export function getPathLength(commands: PathCommand[]): number {
     let length = 0;
     let cursor = new Vector2(0, 0);
@@ -43,9 +40,7 @@ export function getPathLength(commands: PathCommand[]): number {
     return length;
 }
 
-/**
- * Returns the point on the path at the normalized position t (0-1).
- */
+/** Point on the path at normalized position t (0-1). */
 export function getPointAtPath(commands: PathCommand[], t: number): Vector2 {
     const totalLength = getPathLength(commands);
     if (totalLength === 0) {
@@ -109,9 +104,7 @@ export function getPointAtPath(commands: PathCommand[], t: number): Vector2 {
     return cursor;
 }
 
-/**
- * Returns the tangent vector on the path at the normalized position t (0-1).
- */
+/** Tangent vector on the path at normalized position t (0-1). */
 export function getTangentAtPath(commands: PathCommand[], t: number): Vector2 {
     const totalLength = getPathLength(commands);
     if (totalLength === 0) return Vector2.RIGHT;

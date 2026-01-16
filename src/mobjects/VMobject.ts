@@ -33,22 +33,12 @@ export class VMobject extends Mobject {
         return this;
     }
 
-    /**
-     * Sets the stroke style.
-     * @param color The stroke color.
-     * @param width The stroke width in pixels.
-     */
     stroke(color: Color, width: number): this {
         this.strokeColor = color;
         this.strokeWidth = width;
         return this;
     }
 
-    /**
-     * Sets the fill style.
-     * @param color The fill color.
-     * @param opacity The fill opacity (0-1).
-     */
     fill(color: Color, opacity: number): this {
         this.fillColor = color;
         this.fillOpacity = opacity;
@@ -68,12 +58,7 @@ export class VMobject extends Mobject {
         return commands;
     }
 
-    /**
-     * Sets the VMobject's paths from an array of PathCommands.
-     * This preserves all command types (Move, Line, Quadratic, Cubic, Close).
-     * Use with getPoints() for lossless round-trip.
-     * @param commands Array of PathCommand objects.
-     */
+    /** Sets paths from PathCommands. Use with getPoints() for lossless round-trip. */
     setPoints(commands: PathCommand[]): this {
         if (commands.length === 0) {
             this.pathList = [];
@@ -123,9 +108,7 @@ export class VMobject extends Mobject {
         return points;
     }
 
-    /**
-     * Returns the axis-aligned bounding box of the VMobject in world space.
-     */
+    /** World-space axis-aligned bounding box. */
     getBoundingBox(): { minX: number; maxX: number; minY: number; maxY: number } {
         const points = this.getPointsAsVectors();
         const worldMatrix = this.getWorldMatrix();

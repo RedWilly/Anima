@@ -17,10 +17,6 @@ export class Create<T extends VMobject = VMobject> extends Animation<T> {
         this.originalOpacity = target.opacity;
     }
 
-    /**
-     * Interpolates the paths to show partial drawing progress.
-     * @param progress Eased progress value in [0, 1].
-     */
     interpolate(progress: number): void {
         if (progress <= 0) {
             // Show nothing - set empty paths and hide

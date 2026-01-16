@@ -20,10 +20,6 @@ export class Write<T extends VMobject = VMobject> extends Animation<T> {
         this.originalFillOpacity = target.fillOpacity;
     }
 
-    /**
-     * Interpolates the write animation - progressively draws the path.
-     * @param progress Eased progress value in [0, 1].
-     */
     interpolate(progress: number): void {
         if (progress <= 0) {
             this.target.paths = [];

@@ -48,17 +48,12 @@ export class KeyframeTrack<T extends KeyframeValue = number> {
         return this.keyframes.length < initialLength;
     }
 
-    /**
-     * Returns all keyframes sorted by time.
-     */
+    /** All keyframes sorted by time. */
     getKeyframes(): ReadonlyArray<Keyframe<T>> {
         return this.keyframes;
     }
 
-    /**
-     * Returns the interpolated value at the given normalized time.
-     * Uses the easing function of the target keyframe for interpolation.
-     */
+    /** Interpolated value at normalized time (uses target keyframe easing). */
     getValueAt(time: number): T {
         if (this.keyframes.length === 0) {
             throw new Error('KeyframeTrack has no keyframes');
@@ -101,9 +96,7 @@ export class KeyframeTrack<T extends KeyframeValue = number> {
         return this.interpolator(prevKeyframe.value, nextKeyframe.value, easedProgress);
     }
 
-    /**
-     * Returns the number of keyframes in this track.
-     */
+    /** Number of keyframes in this track. */
     getKeyframeCount(): number {
         return this.keyframes.length;
     }

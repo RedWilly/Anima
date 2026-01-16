@@ -51,10 +51,7 @@ export const thereAndBack: EasingFunction = (t) => {
     return smooth(2 - mapped);
 };
 
-/**
- * Goes from 0 to 1 and back to 0 with a pause at the peak.
- * @param pauseRatio The fraction of time spent at the peak (default 1/3).
- */
+/** Goes from 0 to 1 and back to 0 with a pause at the peak. */
 export function thereAndBackWithPause(pauseRatio = 1 / 3): EasingFunction {
     const a = pauseRatio / 2;
     return (t) => {
@@ -68,11 +65,7 @@ export function thereAndBackWithPause(pauseRatio = 1 / 3): EasingFunction {
     };
 }
 
-/**
- * Overshoots slightly then settles (like a running start).
- * Uses cubic bezier with control points for overshoot effect.
- * @param pullFactor How far back to pull (default 0.2).
- */
+/** Overshoots slightly then settles (like a running start). */
 export function runningStart(pullFactor = 0.2): EasingFunction {
     return (t) => {
         // Cubic bezier from (0,0) to (1,1) with control points for overshoot
@@ -90,19 +83,12 @@ export const wiggle: EasingFunction = (t) => {
     return t + (1 - t) * Math.sin(wiggles * 2 * Math.PI * t) * 0.3;
 };
 
-/**
- * Approaches but doesn't quite reach 1 (asymptotic approach).
- * @param proportion How close to get (default 0.7).
- */
+/** Approaches but doesn't quite reach 1 (asymptotic approach). */
 export function notQuiteThere(proportion = 0.7): EasingFunction {
     return (t) => t === 1 ? 1 : proportion * smooth(t);
 }
 
-/**
- * Reaches the destination early and stays there.
- * Creates a lingering effect at the end.
- * @param proportion The time fraction to reach destination (default 0.75).
- */
+/** Reaches the destination early and stays there. */
 export function lingering(proportion = 0.75): EasingFunction {
     return (t) => {
         if (t >= proportion) {
@@ -112,11 +98,7 @@ export function lingering(proportion = 0.75): EasingFunction {
     };
 }
 
-/**
- * Exponential decay rate function.
- * Starts fast and asymptotically approaches 1.
- * @param halfLife Controls how quickly it approaches 1 (default 0.1).
- */
+/** Asymptotically approaches 1 via exponential decay. */
 export function exponentialDecay(halfLife = 0.1): EasingFunction {
     return (t) => {
         if (t === 1) return 1;

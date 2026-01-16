@@ -121,8 +121,6 @@ export class VGroup extends VMobject {
         return { minX, maxX, minY, maxY };
     }
 
-    // Layout convenience methods (delegate to layout.ts functions)
-
     center(): this {
         centerGroup(this);
         return this;

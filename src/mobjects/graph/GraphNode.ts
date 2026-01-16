@@ -81,9 +81,6 @@ export class GraphNode extends VMobject {
         this.pathList = [path];
     }
 
-    /**
-     * Returns the center position of the node in world space.
-     */
     getCenter(): Vector2 {
         return this.position;
     }

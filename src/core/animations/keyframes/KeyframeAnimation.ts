@@ -39,17 +39,13 @@ export class KeyframeAnimation<T extends Mobject = Mobject> extends Animation<T>
         return this;
     }
 
-    /**
-     * Returns the track with the given name, or undefined if not found.
-     */
+    /** Gets a track by name. */
     getTrack<V extends KeyframeValue>(name: string): KeyframeTrack<V> | undefined {
         const entry = this.tracks.get(name);
         return entry?.track as KeyframeTrack<V> | undefined;
     }
 
-    /**
-     * Returns all track names.
-     */
+    /** All track names. */
     getTrackNames(): string[] {
         return Array.from(this.tracks.keys());
     }

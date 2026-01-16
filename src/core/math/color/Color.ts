@@ -27,22 +27,12 @@ export class Color {
         return new Color(r, g, b, a);
     }
 
-    /**
-     * Creates a Color from HSL values.
-     * @param h Hue in degrees [0, 360).
-     * @param s Saturation [0, 1].
-     * @param l Lightness [0, 1].
-     * @param a Alpha [0, 1].
-     */
+    /** Creates a Color from HSL values. */
     static fromHSL(h: number, s: number, l: number, a: number = 1.0): Color {
         const rgb = hslToRgb(h, s, l, a);
         return new Color(rgb.r, rgb.g, rgb.b, rgb.a);
     }
 
-    /**
-     * Returns the hex string representation of the color.
-     * If alpha is 1, returns #RRGGBB. Otherwise #RRGGBBAA.
-     */
     toHex(): string {
         const r = Math.round(this.r).toString(16).padStart(2, '0');
         const g = Math.round(this.g).toString(16).padStart(2, '0');
@@ -56,19 +46,10 @@ export class Color {
         }
     }
 
-    /**
-     * Returns the rgba string representation of the color.
-     * Format: rgba(r, g, b, a)
-     */
     toRGBA(): string {
         return `rgba(${Math.round(this.r)}, ${Math.round(this.g)}, ${Math.round(this.b)}, ${this.a})`;
     }
 
-    /**
-     * Linearly interpolates between this color and another.
-     * @param other The target color.
-     * @param t The interpolation factor (0-1).
-     */
     lerp(other: Color, t: number): Color {
         t = Math.max(0, Math.min(1, t));
         const r = this.r + (other.r - this.r) * t;

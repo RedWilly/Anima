@@ -50,13 +50,7 @@ export function parseHex(hex: string): { r: number; g: number; b: number; a: num
     return { r, g, b, a };
 }
 
-/**
- * Converts HSL values to RGB.
- * @param h Hue in degrees [0, 360).
- * @param s Saturation [0, 1].
- * @param l Lightness [0, 1].
- * @param a Alpha [0, 1].
- */
+/** Converts HSL values to RGB. */
 export function hslToRgb(
     h: number,
     s: number,

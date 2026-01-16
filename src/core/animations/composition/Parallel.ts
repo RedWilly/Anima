@@ -19,12 +19,10 @@ export class Parallel extends Animation<Mobject> {
         this.durationSeconds = this.maxChildDuration;
     }
 
-    /** Returns the total duration (max of all child durations). */
     override getDuration(): number {
         return this.durationSeconds;
     }
 
-    /** Returns the child animations. */
     getChildren(): readonly Animation[] {
         return this.children;
     }
