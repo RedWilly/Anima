@@ -13,6 +13,9 @@ export { MorphTo } from './morph';
 // Draw animations
 export { Create, Draw, Write, Unwrite } from './draw';
 
+// Composition containers
+export { Sequence, Parallel } from './composition';
+
 // Animation types
 export type { AnimationConfig } from './types';
 

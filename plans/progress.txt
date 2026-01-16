@@ -173,4 +173,14 @@ IMPLEMENTED PRD ITEMS #43-46: Create, Draw, Write, Unwrite Animations
 - Verified all tests pass (509 total tests).
 - Updated PRD.
 
-Next: Sequence/Parallel animation containers or FluentAPI implementation.
+IMPLEMENTED PRD ITEMS #47-48: Sequence/Parallel Animation Containers
+- Created `src/core/animations/composition/` module.
+- Implemented `Sequence.ts` - executes animations one after another, total duration = sum of durations.
+- Implemented `Parallel.ts` - executes animations simultaneously, total duration = max of durations.
+- Created `composition/index.ts` and updated `animations/index.ts` with exports.
+- Created `tests/unit/core/animations/Sequence.test.ts` - 13 tests.
+- Created `tests/unit/core/animations/Parallel.test.ts` - 12 tests.
+- All 553 tests pass.
+- Updated PRD.
+
+Next: Keyframes or FluentAPI implementation.
