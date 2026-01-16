@@ -10,6 +10,9 @@ export { MoveTo, Rotate, Scale } from './transform';
 // Morph animations
 export { MorphTo } from './morph';
 
+// Draw animations
+export { Create, Draw, Write, Unwrite } from './draw';
+
 // Animation types
 export type { AnimationConfig } from './types';
 

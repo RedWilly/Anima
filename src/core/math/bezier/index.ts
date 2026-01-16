@@ -9,3 +9,5 @@ export {
 export { getQuadraticLength, getCubicLength } from './length';
 export { getPathLength, getPointAtPath, getTangentAtPath } from './sampling';
 export { toCubicCommands, splitCubic, subdividePath } from './morphing';
+export { splitCubicAt, splitQuadraticAt } from './split';
+export type { CubicSegment, QuadraticSegment } from './split';

@@ -160,4 +160,17 @@ IMPLEMENTED PRD ITEMS #40-42: Rotate, Scale, MorphTo Animations
 - Verified all tests pass (447 total tests).
 - Updated PRD.
 
-Next: Create animation implementation.
+IMPLEMENTED PRD ITEMS #43-46: Create, Draw, Write, Unwrite Animations
+- Created `src/core/animations/draw/` module with modular structure.
+- Created `src/core/math/bezier/split.ts` - de Casteljau curve splitting (splitCubicAt, splitQuadraticAt).
+- Created `src/core/animations/draw/partialPath.ts` - partial path generation utility.
+- Implemented `Create.ts` - progressively draws VMobject paths from 0% to 100%.
+- Implemented `Draw.ts` - first half draws border, second half fades in fill.
+- Implemented `Write.ts` - simulates hand-writing with stroke-only progressive drawing.
+- Implemented `Unwrite.ts` - reverse of Write, erases stroke progressively.
+- Updated `src/core/animations/index.ts` with exports.
+- Created test files: `Create.test.ts`, `Draw.test.ts`, `Write.test.ts`, `Unwrite.test.ts`.
+- Verified all tests pass (509 total tests).
+- Updated PRD.
+
+Next: Sequence/Parallel animation containers or FluentAPI implementation.

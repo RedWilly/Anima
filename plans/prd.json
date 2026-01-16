@@ -528,7 +528,7 @@
       "Verify interpolate(0.5) shows partial path",
       "Verify interpolate(1) shows complete path"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Animations - Draw",
@@ -540,7 +540,7 @@
       "Verify second half fills shape",
       "Verify animation completes with full shape visible"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Animations - Write",
@@ -554,7 +554,7 @@
       "Verify interpolate(0.5) shows half the stroke",
       "Verify interpolate(1) shows complete stroke"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Animations - Unwrite",
@@ -568,7 +568,7 @@
       "Verify interpolate(0.5) shows half the stroke",
       "Verify interpolate(1) shows nothing"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Animations - Sequence",
