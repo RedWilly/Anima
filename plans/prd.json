@@ -800,7 +800,7 @@
       "Render both animations",
       "Verify visual output is identical"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Hybrid API",
@@ -811,7 +811,7 @@
       "Schedule on Timeline with explicit start time",
       "Verify animation starts at specified time"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Hybrid API",
@@ -822,7 +822,7 @@
       "Use ProAPI for other Mobjects",
       "Verify all animations render correctly together"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Timeline",

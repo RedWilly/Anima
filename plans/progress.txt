@@ -294,4 +294,16 @@ IMPLEMENTED PRD ITEMS #69-76: Camera Module
 - All 725 tests pass.
 - Updated PRD.
 
-Next: Hybrid API consistency or Serialization.
+IMPLEMENTED PRD ITEMS #61-63: Hybrid API Consistency
+- Created `tests/unit/hybrid/` directory.
+- Created `HybridAPI.test.ts` with 19 comprehensive tests covering:
+  - PRD #61: FluentAPI and ProAPI produce consistent results (7 tests).
+  - PRD #62: FluentAPI chain embeds in ProAPI Timeline (4 tests).
+  - PRD #63: Mixing APIs in same Scene works (4 tests).
+  - Property-based tests for API equivalence (4 tests using fast-check).
+- Verified FluentAPI `toAnimation()` integrates with Timeline `schedule()`.
+- Verified Scene `play()` accepts both FluentAPI and ProAPI animations.
+- All 744 tests pass.
+- Updated PRD.
+
+Next: Serialization or Renderer implementation.
