@@ -152,4 +152,51 @@ describe('Mobject Fluent API', () => {
             expect(c.getQueuedDuration()).toBe(4);
         });
     });
+
+    describe('parallel() with factory functions', () => {
+        test('parallel() returns same instance', async () => {
+            const { moveTo, rotate } = await import('../../../src/fluent/factories');
+            const c = new Circle();
+            const result = c.parallel(moveTo(100, 50), rotate(Math.PI));
+            expect(result).toBe(c);
+        });
+
+        test('parallel animations have duration of longest animation', async () => {
+            const { moveTo, rotate, scaleTo } = await import('../../../src/fluent/factories');
+            const c = new Circle();
+            c.parallel(
+                moveTo(100, 50, 2),
+                rotate(Math.PI, 1),
+                scaleTo(2, 3)
+            );
+            // Parallel duration = max of children = 3
+            expect(c.getQueuedDuration()).toBe(3);
+        });
+
+        test('sequential then parallel then sequential', async () => {
+            const { moveTo, rotate } = await import('../../../src/fluent/factories');
+            const c = new Circle();
+            c.fadeIn(1)
+                .parallel(moveTo(100, 50, 2), rotate(Math.PI, 2))
+                .fadeOut(1);
+            // 1 + 2 (parallel takes max) + 1 = 4
+            expect(c.getQueuedDuration()).toBe(4);
+        });
+
+        test('toAnimation() includes parallel animations in sequence', async () => {
+            const { moveTo, rotate } = await import('../../../src/fluent/factories');
+            const { Parallel } = await import('../../../src/core/animations/composition');
+            const c = new Circle();
+            c.fadeIn(1).parallel(moveTo(100, 50, 2), rotate(Math.PI, 2));
+            const anim = c.toAnimation();
+            expect(anim).toBeInstanceOf(Sequence);
+            expect(anim.getDuration()).toBe(3); // 1 + 2
+        });
+
+        test('empty parallel() is a no-op', async () => {
+            const c = new Circle();
+            c.fadeIn(1).parallel();
+            expect(c.getQueuedDuration()).toBe(1);
+        });
+    });
 });

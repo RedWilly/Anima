@@ -13,7 +13,6 @@ export interface FluentConfig {
 
 /**
  * Factory function that creates an Animation for a given target.
- * Uses Mobject as base type to avoid covariance issues.
  */
 export type AnimationFactory = (target: Mobject) => Animation<Mobject>;
 
@@ -23,6 +22,21 @@ export type AnimationFactory = (target: Mobject) => Animation<Mobject>;
 export interface QueuedAnimation {
     factory: AnimationFactory;
     config: FluentConfig;
+}
+
+/**
+ * A pre-built animation that's already configured (e.g., from parallel()).
+ */
+export interface QueuedPrebuilt {
+    animation: Animation<Mobject>;
+}
+
+/** Union type for queue entries */
+export type QueueEntry = QueuedAnimation | QueuedPrebuilt;
+
+/** Type guard to check if entry is a pre-built animation */
+export function isPrebuilt(entry: QueueEntry): entry is QueuedPrebuilt {
+    return 'animation' in entry;
 }
 
 /** Default animation duration in seconds. */

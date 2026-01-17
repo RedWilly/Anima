@@ -2,16 +2,17 @@ import type { Mobject } from '../mobjects/Mobject';
 import type { Animation } from '../core/animations/Animation';
 import type { EasingFunction } from '../core/animations/easing';
 import { Sequence } from '../core/animations/composition';
-import type { QueuedAnimation, FluentConfig } from './types';
-import { DEFAULT_DURATION } from './types';
+import type { QueuedAnimation, FluentConfig, QueueEntry } from './FluentTypes';
+import { DEFAULT_DURATION, isPrebuilt } from './FluentTypes';
+
 
 /**
  * Manages a queue of animations for fluent chaining.
- * Uses Mobject as base type to avoid covariance issues with subclasses.
+ * Supports both factory-based animations and pre-built compositions like Parallel.
  */
 export class AnimationQueue {
     private readonly target: Mobject;
-    private readonly queue: QueuedAnimation[] = [];
+    private readonly queue: QueueEntry[] = [];
 
     constructor(target: Mobject) {
         this.target = target;
@@ -31,10 +32,17 @@ export class AnimationQueue {
         return config;
     }
 
+    /**
+     * Adds a pre-built animation (like Parallel) directly to the queue.
+     */
+    enqueueAnimation(animation: Animation<Mobject>): void {
+        this.queue.push({ animation });
+    }
+
     /** Sets the duration of the last queued animation. */
     setLastDuration(seconds: number): void {
         const last = this.queue[this.queue.length - 1];
-        if (last) {
+        if (last && !isPrebuilt(last)) {
             last.config.durationSeconds = seconds;
         }
     }
@@ -42,7 +50,7 @@ export class AnimationQueue {
     /** Sets the easing of the last queued animation. */
     setLastEasing(easing: EasingFunction): void {
         const last = this.queue[this.queue.length - 1];
-        if (last) {
+        if (last && !isPrebuilt(last)) {
             last.config.easing = easing;
         }
     }
@@ -62,19 +70,25 @@ export class AnimationQueue {
     toAnimation(): Animation<Mobject> {
         const animations: Array<Animation<Mobject>> = [];
 
-        for (const queued of this.queue) {
-            const anim = queued.factory(this.target);
-            anim.duration(queued.config.durationSeconds);
+        for (const entry of this.queue) {
+            if (isPrebuilt(entry)) {
+                // Pre-built animation (e.g., Parallel)
+                animations.push(entry.animation);
+            } else {
+                // Factory-based animation
+                const anim = entry.factory(this.target);
+                anim.duration(entry.config.durationSeconds);
 
-            if (queued.config.easing) {
-                anim.ease(queued.config.easing);
+                if (entry.config.easing) {
+                    anim.ease(entry.config.easing);
+                }
+
+                if (entry.config.delaySeconds !== undefined) {
+                    anim.delay(entry.config.delaySeconds);
+                }
+
+                animations.push(anim);
             }
-
-            if (queued.config.delaySeconds !== undefined) {
-                anim.delay(queued.config.delaySeconds);
-            }
-
-            animations.push(anim);
         }
 
         this.queue.length = 0;
@@ -89,10 +103,14 @@ export class AnimationQueue {
     /** Returns the total duration of all queued animations. */
     getTotalDuration(): number {
         let total = 0;
-        for (const queued of this.queue) {
-            total += queued.config.durationSeconds;
-            if (queued.config.delaySeconds) {
-                total += queued.config.delaySeconds;
+        for (const entry of this.queue) {
+            if (isPrebuilt(entry)) {
+                total += entry.animation.getDuration();
+            } else {
+                total += entry.config.durationSeconds;
+                if (entry.config.delaySeconds) {
+                    total += entry.config.delaySeconds;
+                }
             }
         }
         return total;

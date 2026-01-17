@@ -5,6 +5,8 @@ import type { EasingFunction } from '../core/animations/easing';
 import { AnimationQueue } from '../fluent/AnimationQueue';
 import { FadeIn, FadeOut } from '../core/animations/fade';
 import { MoveTo, Rotate, Scale } from '../core/animations/transform';
+import { Parallel } from '../core/animations/composition';
+import type { AnimFactory } from '../fluent/factories';
 
 /**
  * Base class for all mathematical objects.
@@ -180,4 +182,20 @@ export class Mobject {
   hasQueuedAnimations(): boolean {
     return !this.getQueue().isEmpty();
   }
+
+  /**
+   * Queues multiple animations to run in parallel (simultaneously).
+   * Uses factory functions from fluent/factories.
+   * @example
+   * circle.fadeIn(1).parallel(moveTo(100, 50), rotate(Math.PI)).fadeOut(1);
+   */
+  parallel(...factories: AnimFactory[]): this {
+    if (factories.length === 0) {
+      return this;
+    }
+    const animations = factories.map(factory => factory(this));
+    this.getQueue().enqueueAnimation(new Parallel(animations));
+    return this;
+  }
 }
+
