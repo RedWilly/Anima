@@ -239,3 +239,22 @@ IMPLEMENTED PRD ITEM #52: ProAPI Raw Keyframe Manipulation
 - Updated PRD.
 
 Next: Timeline implementation or Hybrid API consistency.
+
+IMPLEMENTED PRD ITEMS #54-60: Timeline Module
+- Created `src/core/timeline/` module with modular structure.
+- Implemented `types.ts` - ScheduledAnimation, TimelineConfig, ResolvedScheduledAnimation interfaces.
+- Implemented `Timeline.ts` - Timeline class with:
+  - `schedule(animation, startTime)` - schedule at specific time.
+  - `scheduleSequence(animations, startTime)` - schedule in order.
+  - `scheduleParallel(animations, startTime)` - schedule at same time.
+  - `seek(time)` - jump to time and update all animations.
+  - `getTotalDuration()` - returns end time of last animation.
+  - Animation delay handling via `getDelay()`.
+  - Overlapping animation support.
+- Created `index.ts` with barrel exports.
+- Updated `src/core/animations/index.ts` to re-export Timeline.
+- Created `tests/unit/core/timeline/Timeline.test.ts` with 27 tests including property-based tests.
+- All 670 tests pass.
+- Updated PRD.
+
+Next: Scene implementation or Camera module.

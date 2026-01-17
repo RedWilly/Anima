@@ -834,7 +834,7 @@
       "Verify animations start at correct times",
       "Verify getTotalDuration() returns correct value"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Timeline",
@@ -846,7 +846,7 @@
       "Verify B starts after A",
       "Verify C starts after B"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Timeline",
@@ -856,7 +856,7 @@
       "Call scheduleParallel(A, B, C)",
       "Verify all animations start at same time"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Timeline",
@@ -868,7 +868,7 @@
       "Call seek(totalDuration)",
       "Verify state is at end"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Timeline",
@@ -890,7 +890,7 @@
       "Schedule on Timeline",
       "Verify animation starts 1 second after scheduled time"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Timeline",

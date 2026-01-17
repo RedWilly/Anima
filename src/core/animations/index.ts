@@ -25,3 +25,7 @@ export type { AnimationConfig } from './types';
 
 // Easing - re-export all from easing module
 export * from './easing';
+
+// Timeline - re-export from timeline module
+export { Timeline } from '../timeline';
+export type { ScheduledAnimation, TimelineConfig } from '../timeline';
