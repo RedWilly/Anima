@@ -40,7 +40,6 @@ export class Vector2 {
     return this.multiply(1 / len);
   }
 
-  /** Linearly interpolates between this vector and another. */
   lerp(other: Vector2, t: number): Vector2 {
     return this.multiply(1 - t).add(other.multiply(t));
   }

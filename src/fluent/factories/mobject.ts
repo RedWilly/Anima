@@ -12,7 +12,6 @@ import { FadeIn, FadeOut } from '../../core/animations/fade';
 import { MoveTo, Rotate, Scale } from '../../core/animations/transform';
 import { DEFAULT_DURATION } from '../FluentTypes';
 
-/** Factory function type for creating animations */
 export type AnimFactory = (target: Mobject) => Animation<Mobject>;
 
 export function fadeIn(duration: number = DEFAULT_DURATION): AnimFactory {

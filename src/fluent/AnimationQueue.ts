@@ -18,9 +18,6 @@ export class AnimationQueue {
         this.target = target;
     }
 
-    /**
-     * Adds an animation factory with default config to the queue.
-     */
     enqueue(
         factory: (target: Mobject) => Animation<Mobject>,
         durationOverride?: number
@@ -32,9 +29,6 @@ export class AnimationQueue {
         return config;
     }
 
-    /**
-     * Adds a pre-built animation (like Parallel) directly to the queue.
-     */
     enqueueAnimation(animation: Animation<Mobject>): void {
         this.queue.push({ animation });
     }
@@ -47,7 +41,6 @@ export class AnimationQueue {
         }
     }
 
-    /** Sets the easing of the last queued animation. */
     setLastEasing(easing: EasingFunction): void {
         const last = this.queue[this.queue.length - 1];
         if (last && !isPrebuilt(last)) {
@@ -100,7 +93,6 @@ export class AnimationQueue {
         return new Sequence(animations);
     }
 
-    /** Returns the total duration of all queued animations. */
     getTotalDuration(): number {
         let total = 0;
         for (const entry of this.queue) {

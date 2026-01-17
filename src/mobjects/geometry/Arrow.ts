@@ -6,8 +6,8 @@ export class Arrow extends Line {
     constructor(
         start: Vector2 = Vector2.ZERO,
         end: Vector2 = Vector2.RIGHT,
-        public readonly tipLength: number = 0.25,
-        public readonly tipAngle: number = Math.PI / 6
+        readonly tipLength: number = 0.25,
+        readonly tipAngle: number = Math.PI / 6
     ) {
         super(start, end);
         this.addTip();
@@ -16,7 +16,7 @@ export class Arrow extends Line {
     private addTip(): void {
         const direction = this.end.subtract(this.start);
         if (direction.length() === 0) return;
-        
+
         const normalizedDir = direction.normalize();
         const angle = Math.atan2(normalizedDir.y, normalizedDir.x);
 
@@ -35,7 +35,7 @@ export class Arrow extends Line {
         tipPath.closePath();
 
         this.addPath(tipPath);
-        
+
         // Ensure the tip is filled
         this.fillOpacity = 1;
     }

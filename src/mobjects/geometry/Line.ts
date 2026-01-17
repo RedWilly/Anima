@@ -4,8 +4,8 @@ import { Vector2 } from '../../core/math/Vector2/Vector2';
 
 export class Line extends VMobject {
     constructor(
-        public readonly start: Vector2 = Vector2.ZERO,
-        public readonly end: Vector2 = Vector2.RIGHT
+        readonly start: Vector2 = Vector2.ZERO,
+        readonly end: Vector2 = Vector2.RIGHT
     ) {
         super();
         this.generatePath();

@@ -4,9 +4,9 @@ import { Vector2 } from '../../core/math/Vector2/Vector2';
 
 export class Arc extends VMobject {
     constructor(
-        public readonly radius: number = 1.0,
-        public readonly startAngle: number = 0,
-        public readonly endAngle: number = Math.PI / 2
+        readonly radius: number = 1.0,
+        readonly startAngle: number = 0,
+        readonly endAngle: number = Math.PI / 2
     ) {
         super();
         this.generatePath();

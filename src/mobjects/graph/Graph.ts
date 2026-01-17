@@ -60,14 +60,10 @@ export class Graph extends VGroup {
         return this.nodes.get(id);
     }
 
-    /**
-     * Returns all nodes in the graph.
-     */
     getNodes(): GraphNode[] {
         return Array.from(this.nodes.values());
     }
 
-    /** Adds an edge between two nodes. */
     addEdge(
         sourceId: GraphNodeId,
         targetId: GraphNodeId,
@@ -92,7 +88,6 @@ export class Graph extends VGroup {
         return edge;
     }
 
-    /** Removes an edge between two nodes. */
     removeEdge(sourceId: GraphNodeId, targetId: GraphNodeId): this {
         const edge = this.edges.find(
             e => (e.source === sourceId && e.target === targetId) ||
@@ -123,9 +118,6 @@ export class Graph extends VGroup {
         return edge?.getPath();
     }
 
-    /**
-     * Returns all edges in the graph.
-     */
     getEdges(): GraphEdge[] {
         return [...this.edges];
     }
@@ -161,9 +153,6 @@ export class Graph extends VGroup {
         return this;
     }
 
-    /**
-     * Updates all edge paths to reflect current node positions.
-     */
     updateEdges(): this {
         for (const edge of this.edges) {
             edge.updatePath();

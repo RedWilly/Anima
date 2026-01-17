@@ -27,7 +27,6 @@ export class Color {
         return new Color(r, g, b, a);
     }
 
-    /** Creates a Color from HSL values. */
     static fromHSL(h: number, s: number, l: number, a: number = 1.0): Color {
         const rgb = hslToRgb(h, s, l, a);
         return new Color(rgb.r, rgb.g, rgb.b, rgb.a);

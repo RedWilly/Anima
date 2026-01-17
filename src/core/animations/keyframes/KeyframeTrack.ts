@@ -38,10 +38,6 @@ export class KeyframeTrack<T extends KeyframeValue = number> {
         return this;
     }
 
-    /**
-     * Removes the keyframe at the specified time.
-     * Returns true if a keyframe was removed.
-     */
     removeKeyframe(time: number): boolean {
         const initialLength = this.keyframes.length;
         this.keyframes = this.keyframes.filter((kf) => kf.time !== time);
@@ -93,7 +89,6 @@ export class KeyframeTrack<T extends KeyframeValue = number> {
         return this.interpolator(prevKeyframe.value, nextKeyframe.value, easedProgress);
     }
 
-    /** Number of keyframes in this track. */
     getKeyframeCount(): number {
         return this.keyframes.length;
     }

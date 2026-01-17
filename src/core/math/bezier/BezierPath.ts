@@ -231,7 +231,6 @@ export class BezierPath {
         return newPath;
     }
 
-    /** Interpolates between two paths. */
     static interpolate(path1: BezierPath, path2: BezierPath, t: number): BezierPath {
         const [p1, p2] = BezierPath.matchPoints(path1, path2);
         const result = new BezierPath();
@@ -282,7 +281,6 @@ export class BezierPath {
         return [p1, p2];
     }
 
-    /** Creates a BezierPath from an array of commands. */
     private static fromCommands(commands: PathCommand[]): BezierPath {
         const path = new BezierPath();
         for (const cmd of commands) {

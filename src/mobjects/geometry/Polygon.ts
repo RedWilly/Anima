@@ -3,7 +3,7 @@ import { BezierPath } from '../../core/math/bezier/BezierPath';
 import { Vector2 } from '../../core/math/Vector2/Vector2';
 
 export class Polygon extends VMobject {
-    constructor(public readonly vertices: Vector2[]) {
+    constructor(readonly vertices: Vector2[]) {
         super();
         this.generatePath();
     }
