@@ -994,7 +994,7 @@
       "Verify 1080x1080 (1:1 square) produces frameWidth of 8.0",
       "VGroup layout functions use Camera frame dimensions instead of constants"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Camera",
@@ -1006,7 +1006,7 @@
       "Call panTo(position)",
       "Verify position is set to target"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Camera",
@@ -1017,7 +1017,7 @@
       "Verify zoom level is 2",
       "Verify view is magnified"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Camera",
@@ -1027,7 +1027,7 @@
       "Call rotateTo(45)",
       "Verify rotation is 45 degrees"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Camera",
@@ -1078,7 +1078,7 @@
       "Call getViewMatrix()",
       "Verify Matrix3x3 combines all transformations correctly"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Serialization",

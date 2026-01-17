@@ -276,3 +276,22 @@ IMPLEMENTED PRD ITEMS #63-68: Scene Module
 
 Next: Camera module or Hybrid API consistency.
 
+IMPLEMENTED PRD ITEMS #69-76: Camera Module
+- Created `src/core/camera/` module with modular structure.
+- Implemented `types.ts` - CameraConfig, ResolvedCameraConfig interfaces.
+- Implemented `Camera.ts` - Camera class with:
+  - Frame dimensions: `frameHeight` fixed at 8.0 (Manim standard), `frameWidth` calculated from aspect ratio.
+  - Getters: `frameXRadius`, `frameYRadius`, `pixelWidth`, `pixelHeight`.
+  - Pan: `pan(delta)`, `panTo(position)`.
+  - Zoom: `zoomTo(level)`.
+  - Rotation: `rotateTo(angle)`.
+  - View matrix: `getViewMatrix()` returns Matrix3x3.
+  - `reset()` returns to default state.
+- Updated Scene to create Camera from pixel dimensions with `getCamera()` method.
+- Added deprecation notice to `src/core/constants.ts` (use Camera instead).
+- Updated `src/core/animations/index.ts` to re-export Camera.
+- Created `tests/unit/core/camera/Camera.test.ts` with 27 tests including property-based tests.
+- All 725 tests pass.
+- Updated PRD.
+
+Next: Hybrid API consistency or Serialization.

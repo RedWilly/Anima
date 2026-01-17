@@ -1,11 +1,14 @@
 import { VGroup } from './VGroup';
 import { VMobject } from '../VMobject';
 import { Matrix3x3 } from '../../core/math/matrix/Matrix3x3';
-import { FRAME_X_RADIUS, FRAME_Y_RADIUS } from '../../core/constants';
+import { Camera } from '../../core/camera';
 
 export type CornerPosition = 'TOP_LEFT' | 'TOP_RIGHT' | 'BOTTOM_LEFT' | 'BOTTOM_RIGHT';
 export type Direction = 'RIGHT' | 'LEFT' | 'UP' | 'DOWN';
 export type Edge = 'TOP' | 'BOTTOM' | 'LEFT' | 'RIGHT';
+
+/** Default camera for layout functions when none is provided. */
+const defaultCamera = new Camera();
 
 /** Centers a VGroup's bounding box at the origin (0, 0). */
 export function centerGroup(group: VGroup): VGroup {
@@ -21,31 +24,45 @@ export function centerGroup(group: VGroup): VGroup {
     return group;
 }
 
-/** Moves a VGroup's bounding box to a corner of the frame. */
-export function toCorner(group: VGroup, corner: CornerPosition, buff: number = 0.0): VGroup {
+/**
+ * Moves a VGroup's bounding box to a corner of the frame.
+ * @param group The VGroup to position
+ * @param corner Which corner to move to
+ * @param buff Buffer/margin from the corner
+ * @param camera Camera providing frame dimensions (defaults to 1920x1080)
+ */
+export function toCorner(
+    group: VGroup,
+    corner: CornerPosition,
+    buff: number = 0.0,
+    camera: Camera = defaultCamera
+): VGroup {
     const bounds = group.getBoundingBox();
     const width = bounds.maxX - bounds.minX;
     const height = bounds.maxY - bounds.minY;
+
+    const frameXRadius = camera.frameXRadius;
+    const frameYRadius = camera.frameYRadius;
 
     let targetX = 0;
     let targetY = 0;
 
     switch (corner) {
         case 'TOP_LEFT':
-            targetX = -FRAME_X_RADIUS + width / 2 + buff;
-            targetY = -FRAME_Y_RADIUS + height / 2 + buff;
+            targetX = -frameXRadius + width / 2 + buff;
+            targetY = -frameYRadius + height / 2 + buff;
             break;
         case 'TOP_RIGHT':
-            targetX = FRAME_X_RADIUS - width / 2 - buff;
-            targetY = -FRAME_Y_RADIUS + height / 2 + buff;
+            targetX = frameXRadius - width / 2 - buff;
+            targetY = -frameYRadius + height / 2 + buff;
             break;
         case 'BOTTOM_LEFT':
-            targetX = -FRAME_X_RADIUS + width / 2 + buff;
-            targetY = FRAME_Y_RADIUS - height / 2 - buff;
+            targetX = -frameXRadius + width / 2 + buff;
+            targetY = frameYRadius - height / 2 - buff;
             break;
         case 'BOTTOM_RIGHT':
-            targetX = FRAME_X_RADIUS - width / 2 - buff;
-            targetY = FRAME_Y_RADIUS - height / 2 - buff;
+            targetX = frameXRadius - width / 2 - buff;
+            targetY = frameYRadius - height / 2 - buff;
             break;
     }
 

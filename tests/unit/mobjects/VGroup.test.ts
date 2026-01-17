@@ -2,7 +2,7 @@ import { describe, test, expect } from 'bun:test';
 import { VGroup } from '../../../src/mobjects/VGroup';
 import { Circle } from '../../../src/mobjects/geometry/Circle';
 import { Rectangle } from '../../../src/mobjects/geometry/Rectangle';
-import { FRAME_X_RADIUS, FRAME_Y_RADIUS } from '../../../src/core/constants';
+import { Camera } from '../../../src/core/camera';
 import type { Mobject } from '../../../src/mobjects/Mobject';
 
 // Helper to get world position from a Mobject
@@ -106,12 +106,13 @@ describe('VGroup', () => {
     test('toCorner positions group at corner', () => {
         const r = new Rectangle(2, 2);
         const group = new VGroup(r);
+        const camera = new Camera(); // Default 1920x1080
 
         group.toCorner('TOP_LEFT', 0);
 
         const bounds = group.getBoundingBox();
-        expect(bounds.minX).toBeCloseTo(-FRAME_X_RADIUS);
-        expect(bounds.minY).toBeCloseTo(-FRAME_Y_RADIUS);
+        expect(bounds.minX).toBeCloseTo(-camera.frameXRadius);
+        expect(bounds.minY).toBeCloseTo(-camera.frameYRadius);
     });
 
     test('alignTo aligns to target edge (moves children locally)', () => {

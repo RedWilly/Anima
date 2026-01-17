@@ -33,3 +33,7 @@ export type { ScheduledAnimation, TimelineConfig } from '../timeline';
 // Scene - re-export from scene module
 export { Scene } from '../scene';
 export type { SceneConfig, ResolvedSceneConfig } from '../scene';
+
+// Camera - re-export from camera module
+export { Camera } from '../camera';
+export type { CameraConfig, ResolvedCameraConfig } from '../camera';

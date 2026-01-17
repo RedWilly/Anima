@@ -1,5 +1,6 @@
 import { Color } from '../math/color/Color';
 import { Timeline } from '../timeline';
+import { Camera } from '../camera';
 import { Mobject } from '../../mobjects/Mobject';
 import type { Animation } from '../animations/Animation';
 import type { SceneConfig, ResolvedSceneConfig } from './types';
@@ -7,12 +8,13 @@ import type { SceneConfig, ResolvedSceneConfig } from './types';
 /**
  * Scene is the core container that manages Mobjects and coordinates animations.
  * It provides both a simple API for playing animations and access to the
- * underlying Timeline for advanced control.
+ * underlying Timeline and Camera for advanced control.
  */
 export class Scene {
     private readonly config: ResolvedSceneConfig;
     private readonly mobjects: Set<Mobject> = new Set();
     private readonly timeline: Timeline;
+    private readonly camera: Camera;
     private playheadTime = 0;
 
     constructor(config: SceneConfig = {}) {
@@ -23,6 +25,10 @@ export class Scene {
             frameRate: config.frameRate ?? 60,
         };
         this.timeline = new Timeline();
+        this.camera = new Camera({
+            pixelWidth: this.config.width,
+            pixelHeight: this.config.height,
+        });
     }
 
     // ========== Configuration Getters ==========
@@ -139,4 +145,13 @@ export class Scene {
     getTimeline(): Timeline {
         return this.timeline;
     }
+
+    /**
+     * Get the Camera for view control and frame dimensions.
+     * Camera calculates Manim-compatible frame dimensions from pixel resolution.
+     */
+    getCamera(): Camera {
+        return this.camera;
+    }
 }
+
