@@ -29,3 +29,7 @@ export * from './easing';
 // Timeline - re-export from timeline module
 export { Timeline } from '../timeline';
 export type { ScheduledAnimation, TimelineConfig } from '../timeline';
+
+// Scene - re-export from scene module
+export { Scene } from '../scene';
+export type { SceneConfig, ResolvedSceneConfig } from '../scene';

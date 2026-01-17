@@ -912,7 +912,7 @@
       "Verify Scene has correct background color",
       "Verify Scene has correct frame rate"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Scene",
@@ -924,7 +924,7 @@
       "Call remove(mobject1)",
       "Verify mobject1 is removed"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Scene",
@@ -934,7 +934,7 @@
       "Call play(animation1, animation2)",
       "Verify animations are scheduled on Timeline"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Scene",
@@ -945,7 +945,7 @@
       "Call wait(2)",
       "Verify 2 second gap before next animation"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Scene",
@@ -979,7 +979,7 @@
       "Call scene.add(mobject)",
       "Verify mobject opacity is 0 (invisible)"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Camera",
