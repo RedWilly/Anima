@@ -228,9 +228,14 @@ REFACTORED: FluentAPI Directory Structure
 
 ## 2026-01-17
 
-Next: Timeline implementation
-- Create Timeline to schedule animations at specific absolute times.
-- Implement scheduleSequence() and scheduleParallel() for complex timing.
-- Implement seek(t) and getStateAt(t) for arbitrary time access.
-- Handle animation delays and additive blending for overlapping animations (Additive animation blending).
-- Ensure total duration calculation reflects the last animation's end time including delays.
+IMPLEMENTED PRD ITEM #52: ProAPI Raw Keyframe Manipulation
+- Added `getKeyframe(time)` method to `KeyframeTrack` - retrieves keyframe at specified time.
+- Added `setKeyframe(time, value, easing?)` method to `KeyframeTrack` - modifies existing keyframe value/easing.
+- Added 10 new tests in `KeyframeTrack.test.ts`:
+  - getKeyframe: returns keyframe, undefined for non-existent, undefined for empty track.
+  - setKeyframe: modifies value, modifies easing, preserves existing easing, returns false for non-existent, does not create new keyframe.
+  - Integration: modifying keyframe value/easing changes getValueAt output.
+- All 648 tests pass.
+- Updated PRD.
+
+Next: Timeline implementation or Hybrid API consistency.

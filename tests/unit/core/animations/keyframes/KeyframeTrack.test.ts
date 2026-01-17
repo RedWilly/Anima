@@ -85,6 +85,91 @@ describe('KeyframeTrack', () => {
         });
     });
 
+    describe('getKeyframe', () => {
+        it('returns keyframe at specified time', () => {
+            const track = new KeyframeTrack();
+            track.addKeyframe(0.5, 100, easeInQuad);
+            const keyframe = track.getKeyframe(0.5);
+            expect(keyframe).toBeDefined();
+            expect(keyframe?.value).toBe(100);
+            expect(keyframe?.easing).toBe(easeInQuad);
+        });
+
+        it('returns undefined for non-existent time', () => {
+            const track = new KeyframeTrack();
+            track.addKeyframe(0.5, 100);
+            expect(track.getKeyframe(0.7)).toBeUndefined();
+        });
+
+        it('returns undefined for empty track', () => {
+            const track = new KeyframeTrack();
+            expect(track.getKeyframe(0.5)).toBeUndefined();
+        });
+    });
+
+    describe('setKeyframe', () => {
+        it('modifies existing keyframe value', () => {
+            const track = new KeyframeTrack();
+            track.addKeyframe(0.5, 100);
+            const modified = track.setKeyframe(0.5, 200);
+            expect(modified).toBe(true);
+            expect(track.getKeyframe(0.5)?.value).toBe(200);
+        });
+
+        it('modifies existing keyframe easing', () => {
+            const track = new KeyframeTrack();
+            track.addKeyframe(0.5, 100);
+            track.setKeyframe(0.5, 100, easeOutQuad);
+            expect(track.getKeyframe(0.5)?.easing).toBe(easeOutQuad);
+        });
+
+        it('preserves existing easing if not provided', () => {
+            const track = new KeyframeTrack();
+            track.addKeyframe(0.5, 100, easeInQuad);
+            track.setKeyframe(0.5, 200);
+            expect(track.getKeyframe(0.5)?.easing).toBe(easeInQuad);
+        });
+
+        it('returns false for non-existent keyframe', () => {
+            const track = new KeyframeTrack();
+            track.addKeyframe(0.5, 100);
+            const modified = track.setKeyframe(0.7, 200);
+            expect(modified).toBe(false);
+            expect(track.getKeyframeCount()).toBe(1);
+        });
+
+        it('does not create new keyframe', () => {
+            const track = new KeyframeTrack();
+            track.setKeyframe(0.5, 100);
+            expect(track.getKeyframeCount()).toBe(0);
+        });
+    });
+
+    describe('keyframe modification affects animation', () => {
+        it('modifying keyframe value changes getValueAt output', () => {
+            const track = new KeyframeTrack();
+            track.addKeyframe(0, 0).addKeyframe(1, 100);
+
+            expect(track.getValueAt(0.5)).toBe(50);
+
+            track.setKeyframe(1, 200);
+            expect(track.getValueAt(0.5)).toBe(100);
+        });
+
+        it('modifying keyframe easing changes interpolation', () => {
+            const track = new KeyframeTrack();
+            track.addKeyframe(0, 0).addKeyframe(1, 100);
+
+            const linearValue = track.getValueAt(0.5);
+
+            track.setKeyframe(1, 100, easeOutQuad);
+            const easedValue = track.getValueAt(0.5);
+
+            expect(easedValue).not.toBe(linearValue);
+            expect(easedValue).toBeGreaterThan(linearValue);
+        });
+    });
+
     describe('getValueAt', () => {
         it('throws for empty track', () => {
             const track = new KeyframeTrack();

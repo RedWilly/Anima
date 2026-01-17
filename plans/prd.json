@@ -767,7 +767,7 @@
       "Remove keyframes",
       "Verify keyframe changes affect animation"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ProAPI",
