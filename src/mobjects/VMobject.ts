@@ -3,10 +3,11 @@ import { BezierPath } from '../core/math/bezier/BezierPath';
 import type { PathCommand } from '../core/math/bezier/types';
 import { Color } from '../core/math/color/Color';
 import { Vector2 } from '../core/math/Vector2/Vector2';
+import { Write, Unwrite, Draw, Create } from '../core/animations/draw';
 
 /**
  * A Mobject that is defined by one or more BezierPaths.
- * Supports stroke and fill styling.
+ * Supports stroke and fill styling, plus VMobject-specific fluent animations.
  */
 export class VMobject extends Mobject {
     protected pathList: BezierPath[] = [];
@@ -45,11 +46,6 @@ export class VMobject extends Mobject {
         return this;
     }
 
-    /**
-     * Returns all path commands defining this VMobject's geometry.
-     * This is the lossless representation of the shape.
-     * Use with setPoints() for perfect round-trip.
-     */
     getPoints(): PathCommand[] {
         const commands: PathCommand[] = [];
         for (const path of this.pathList) {
@@ -58,13 +54,11 @@ export class VMobject extends Mobject {
         return commands;
     }
 
-    /** Sets paths from PathCommands. Use with getPoints() for lossless round-trip. */
     setPoints(commands: PathCommand[]): this {
         if (commands.length === 0) {
             this.pathList = [];
             return this;
         }
-
         const path = new BezierPath();
         for (const cmd of commands) {
             switch (cmd.type) {
@@ -89,15 +83,10 @@ export class VMobject extends Mobject {
                     break;
             }
         }
-
         this.pathList = [path];
         return this;
     }
 
-    /**
-     * Returns a flat array of all anchor/control Vector2 points for bounding box calculations.
-     * For path manipulation, use getPoints() instead.
-     */
     private getPointsAsVectors(): Vector2[] {
         const points: Vector2[] = [];
         for (const cmd of this.getPoints()) {
@@ -108,21 +97,17 @@ export class VMobject extends Mobject {
         return points;
     }
 
-    /** World-space axis-aligned bounding box. */
     getBoundingBox(): { minX: number; maxX: number; minY: number; maxY: number } {
         const points = this.getPointsAsVectors();
         const worldMatrix = this.getWorldMatrix();
-
         if (points.length === 0) {
             const pos = this.position;
             return { minX: pos.x, maxX: pos.x, minY: pos.y, maxY: pos.y };
         }
-
         let minX = Infinity;
         let maxX = -Infinity;
         let minY = Infinity;
         let maxY = -Infinity;
-
         for (const point of points) {
             const transformed = worldMatrix.transformPoint(point);
             if (transformed.x < minX) minX = transformed.x;
@@ -130,7 +115,28 @@ export class VMobject extends Mobject {
             if (transformed.y < minY) minY = transformed.y;
             if (transformed.y > maxY) maxY = transformed.y;
         }
-
         return { minX, maxX, minY, maxY };
+    }
+
+    // ========== VMobject-Specific Fluent Animation API ==========
+
+    write(durationSeconds?: number): this {
+        this.getQueue().enqueue((t: Mobject) => new Write(t as VMobject), durationSeconds);
+        return this;
+    }
+
+    unwrite(durationSeconds?: number): this {
+        this.getQueue().enqueue((t: Mobject) => new Unwrite(t as VMobject), durationSeconds);
+        return this;
+    }
+
+    draw(durationSeconds?: number): this {
+        this.getQueue().enqueue((t: Mobject) => new Draw(t as VMobject), durationSeconds);
+        return this;
+    }
+
+    create(durationSeconds?: number): this {
+        this.getQueue().enqueue((t: Mobject) => new Create(t as VMobject), durationSeconds);
+        return this;
     }
 }

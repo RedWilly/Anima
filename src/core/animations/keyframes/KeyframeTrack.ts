@@ -74,7 +74,6 @@ export class KeyframeTrack<T extends KeyframeValue = number> {
             }
         }
 
-        // Handle edge cases
         if (prevKeyframe === undefined) {
             return this.keyframes[0]!.value;
         }
@@ -85,11 +84,9 @@ export class KeyframeTrack<T extends KeyframeValue = number> {
             return prevKeyframe.value;
         }
 
-        // Interpolate between keyframes
         const span = nextKeyframe.time - prevKeyframe.time;
         const localProgress = (clampedTime - prevKeyframe.time) / span;
 
-        // Apply easing from the target keyframe (or linear if none)
         const easing = nextKeyframe.easing ?? linear;
         const easedProgress = easing(localProgress);
 

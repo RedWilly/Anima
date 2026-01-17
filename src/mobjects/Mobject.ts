@@ -1,28 +1,41 @@
 import { Matrix3x3 } from '../core/math/matrix/Matrix3x3';
 import { Vector2 } from '../core/math/Vector2/Vector2';
+import type { Animation } from '../core/animations/Animation';
+import type { EasingFunction } from '../core/animations/easing';
+import { AnimationQueue } from '../fluent/AnimationQueue';
+import { FadeIn, FadeOut } from '../core/animations/fade';
+import { MoveTo, Rotate, Scale } from '../core/animations/transform';
 
 /**
  * Base class for all mathematical objects.
  * Manages position, rotation, scale, and opacity via a local transformation matrix.
- * Supports Scene Graph hierarchy where world transforms are computed from parent chain.
+ * Includes fluent animation API for chainable animations.
  */
 export class Mobject {
   protected localMatrix: Matrix3x3;
   protected opacityValue: number;
+  protected animQueue: AnimationQueue | null = null;
 
-  /** Parent in the scene graph hierarchy. Set by VGroup when adding children. */
   parent: Mobject | null = null;
 
   constructor() {
     this.localMatrix = Matrix3x3.identity();
-    this.opacityValue = 0; // Invisible by default
+    this.opacityValue = 0;
   }
+
+  protected getQueue(): AnimationQueue {
+    if (!this.animQueue) {
+      this.animQueue = new AnimationQueue(this);
+    }
+    return this.animQueue;
+  }
+
+  // ========== Transform Properties ==========
 
   get matrix(): Matrix3x3 {
     return this.localMatrix;
   }
 
-  /** World transform matrix (local * parent chain). */
   getWorldMatrix(): Matrix3x3 {
     if (this.parent === null) {
       return this.localMatrix;
@@ -40,7 +53,6 @@ export class Mobject {
     return Math.atan2(m[3]!, m[0]!);
   }
 
-  /** Effective scale of the Mobject (column vector magnitudes). */
   get scale(): Vector2 {
     const m = this.localMatrix.values;
     const sx = Math.sqrt(m[0]! * m[0]! + m[3]! * m[3]!);
@@ -51,6 +63,8 @@ export class Mobject {
   get opacity(): number {
     return this.opacityValue;
   }
+
+  // ========== Immediate State Setters ==========
 
   pos(x: number, y: number): this {
     const newValues = new Float32Array(this.localMatrix.values);
@@ -70,22 +84,18 @@ export class Mobject {
     return this;
   }
 
-  /** Sets opacity value in [0, 1]. */
   setOpacity(value: number): this {
     this.opacityValue = Math.max(0, Math.min(1, value));
     return this;
   }
 
-  /** Sets the rotation (radians). */
   setRotation(angle: number): this {
     const m = this.localMatrix.values;
     const posX = m[2]!;
     const posY = m[5]!;
     const currentScale = this.scale;
-
     const cos = Math.cos(angle);
     const sin = Math.sin(angle);
-
     const newValues = new Float32Array(9);
     newValues[0] = cos * currentScale.x;
     newValues[1] = -sin * currentScale.y;
@@ -93,24 +103,18 @@ export class Mobject {
     newValues[3] = sin * currentScale.x;
     newValues[4] = cos * currentScale.y;
     newValues[5] = posY;
-    newValues[6] = 0;
-    newValues[7] = 0;
     newValues[8] = 1;
-
     this.localMatrix = new Matrix3x3(newValues);
     return this;
   }
 
-  /** Sets the scale. */
   setScale(sx: number, sy: number): this {
     const m = this.localMatrix.values;
     const posX = m[2]!;
     const posY = m[5]!;
     const currentRotation = this.rotation;
-
     const cos = Math.cos(currentRotation);
     const sin = Math.sin(currentRotation);
-
     const newValues = new Float32Array(9);
     newValues[0] = cos * sx;
     newValues[1] = -sin * sy;
@@ -118,17 +122,62 @@ export class Mobject {
     newValues[3] = sin * sx;
     newValues[4] = cos * sy;
     newValues[5] = posY;
-    newValues[6] = 0;
-    newValues[7] = 0;
     newValues[8] = 1;
-
     this.localMatrix = new Matrix3x3(newValues);
     return this;
   }
 
-  /** New = Transform * Old. */
   applyMatrix(m: Matrix3x3): this {
     this.localMatrix = m.multiply(this.localMatrix);
     return this;
+  }
+
+  // ========== Fluent Animation API ==========
+
+  fadeIn(durationSeconds?: number): this {
+    this.getQueue().enqueue((t: Mobject) => new FadeIn(t), durationSeconds);
+    return this;
+  }
+
+  fadeOut(durationSeconds?: number): this {
+    this.getQueue().enqueue((t: Mobject) => new FadeOut(t), durationSeconds);
+    return this;
+  }
+
+  moveTo(x: number, y: number, durationSeconds?: number): this {
+    this.getQueue().enqueue((t: Mobject) => new MoveTo(t, x, y), durationSeconds);
+    return this;
+  }
+
+  rotate(angle: number, durationSeconds?: number): this {
+    this.getQueue().enqueue((t: Mobject) => new Rotate(t, angle), durationSeconds);
+    return this;
+  }
+
+  scaleTo(factor: number, durationSeconds?: number): this {
+    this.getQueue().enqueue((t: Mobject) => new Scale(t, factor), durationSeconds);
+    return this;
+  }
+
+  duration(seconds: number): this {
+    this.getQueue().setLastDuration(seconds);
+    return this;
+  }
+
+  ease(easing: EasingFunction): this {
+    this.getQueue().setLastEasing(easing);
+    return this;
+  }
+
+  toAnimation(): Animation<Mobject> {
+    return this.getQueue().toAnimation();
+  }
+
+  getQueuedDuration(): number {
+    return this.getQueue().getTotalDuration();
+  }
+
+  hasQueuedAnimations(): boolean {
+    return !this.getQueue().isEmpty();
   }
 }
