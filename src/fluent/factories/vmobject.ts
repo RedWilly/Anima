@@ -8,7 +8,6 @@
  */
 import type { Mobject } from '../../mobjects/Mobject';
 import type { VMobject } from '../../mobjects/VMobject';
-import type { Animation } from '../../core/animations/Animation';
 import { Write, Unwrite, Draw, Create } from '../../core/animations/draw';
 import { DEFAULT_DURATION } from '../FluentTypes';
 import type { AnimFactory } from './mobject';
