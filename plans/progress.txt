@@ -226,4 +226,11 @@ REFACTORED: FluentAPI Directory Structure
 - Clean index.ts with documentation and organized exports.
 - Structure is now scalable for adding new animation factories.
 
-Next: ProAPI implementation.
+## 2026-01-17
+
+Next: Timeline implementation
+- Create Timeline to schedule animations at specific absolute times.
+- Implement scheduleSequence() and scheduleParallel() for complex timing.
+- Implement seek(t) and getStateAt(t) for arbitrary time access.
+- Handle animation delays and additive blending for overlapping animations (Additive animation blending).
+- Ensure total duration calculation reflects the last animation's end time including delays.

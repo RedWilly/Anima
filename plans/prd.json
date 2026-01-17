@@ -628,7 +628,7 @@
       "Call scaleTo() and verify returns same instance",
       "Chain multiple methods: mobject.fadeIn().moveTo(x,y).rotate(45)"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "FluentAPI",
@@ -640,7 +640,7 @@
       "Call moveTo(x, y) without duration",
       "Verify animation duration is 1 second"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "FluentAPI",
@@ -656,7 +656,7 @@
       "Call scaleTo(2, 3) with inline duration",
       "Verify animation duration is 3 seconds"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "FluentAPI",
@@ -669,7 +669,7 @@
       "Verify both produce same animation duration",
       "Verify both produce same visual result"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "FluentAPI",
@@ -681,7 +681,7 @@
       "Call moveTo(x, y).ease(Easing.easeIn)",
       "Verify easing function is applied"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "FluentAPI",
@@ -695,7 +695,7 @@
       "Call unwrite(1.5) with inline duration",
       "Verify animation duration is 1.5 seconds"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "FluentAPI",
@@ -709,7 +709,7 @@
       "Call create().duration(3) with method",
       "Verify animation duration is 3 seconds"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "FluentAPI",
@@ -721,7 +721,7 @@
       "Verify moveTo starts after fadeIn completes",
       "Verify rotate starts after moveTo completes"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "FluentAPI",
@@ -733,7 +733,7 @@
       "Verify returned Animation has same easing",
       "Verify returned Animation produces same result"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "FluentAPI - VGroup",
@@ -745,7 +745,7 @@
       "Call vgroup.moveTo(x, y)",
       "Verify all children move together"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ProAPI",
@@ -755,7 +755,7 @@
       "Configure duration, easing, delay explicitly",
       "Verify Animation can be scheduled on Timeline"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ProAPI",
@@ -778,7 +778,7 @@
       "Create Parallel with multiple Animations",
       "Verify simultaneous execution"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ProAPI",
@@ -789,7 +789,7 @@
       "Add custom Mobject to Scene",
       "Verify custom Mobject renders correctly"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Hybrid API",
@@ -1610,7 +1610,7 @@
       "Verify keyframes affect all children together",
       "Verify easing is applied uniformly to group"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - VGroup",
@@ -1634,7 +1634,7 @@
       "Verify no animation is created",
       "Verify method returns this for chaining"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ProAPI",
@@ -1646,7 +1646,7 @@
       "Verify no default easing is forced",
       "Verify professional user has full control"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Hybrid API",
@@ -1759,7 +1759,7 @@
       "Verify method returns this for chaining",
       "Verify draw animation is created"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "FluentAPI",
@@ -1771,7 +1771,7 @@
       "Verify write animation is created",
       "Verify stroke is drawn progressively"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "FluentAPI",
@@ -1783,7 +1783,7 @@
       "Verify unwrite animation is created",
       "Verify stroke is removed progressively in reverse"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Mobjects - Text",
@@ -1971,7 +1971,7 @@
       "Property: linear easing is identity (linear(t) == t)",
       "Property: easing output is in reasonable range near [0, 1]"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Property Testing - Mobject",
