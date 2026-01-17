@@ -84,10 +84,12 @@ describe('Mobject Property Tests', () => {
         fc.assert(fc.property(arbCoord, arbCoord, arbCoord, arbCoord, (x1, y1, x2, y2) => {
             const obj = new Mobject();
             obj.pos(x1, y1).pos(x2, y2);
-            return Math.abs(obj.position.x - x2) < 1e-6 &&
-                Math.abs(obj.position.y - y2) < 1e-6;
+            // Float32Array has ~7 significant digits precision, use 1e-3 tolerance
+            return Math.abs(obj.position.x - x2) < 1e-3 &&
+                Math.abs(obj.position.y - y2) < 1e-3;
         }));
     });
+
 
     test('scale transformation extracts correctly', () => {
         fc.assert(fc.property(arbScale, arbScale, (sx, sy) => {
