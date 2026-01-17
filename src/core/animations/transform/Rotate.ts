@@ -19,4 +19,8 @@ export class Rotate<T extends Mobject = Mobject> extends Animation<T> {
         const newRotation = this.startRotation + (this.endRotation - this.startRotation) * progress;
         this.target.setRotation(newRotation);
     }
+
+    getAngle(): number {
+        return this.endRotation - this.startRotation;
+    }
 }

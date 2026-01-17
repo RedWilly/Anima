@@ -26,4 +26,8 @@ export class MoveTo<T extends Mobject = Mobject> extends Animation<T> {
         const newPosition = this.startPosition.lerp(this.endPosition, progress);
         this.target.pos(newPosition.x, newPosition.y);
     }
+
+    getDestination(): Vector2 {
+        return this.endPosition;
+    }
 }

@@ -37,3 +37,5 @@ export type { SceneConfig, ResolvedSceneConfig } from '../scene';
 // Camera - re-export from camera module
 export { Camera } from '../camera';
 export type { CameraConfig, ResolvedCameraConfig } from '../camera';
+
+export { serialize, deserialize } from '../serialization';

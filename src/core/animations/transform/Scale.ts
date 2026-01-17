@@ -24,4 +24,8 @@ export class Scale<T extends Mobject = Mobject> extends Animation<T> {
         const newScale = this.startScale.lerp(this.endScale, progress);
         this.target.setScale(newScale.x, newScale.y);
     }
+
+    getFactor(): number {
+        return this.endScale.x;
+    }
 }
