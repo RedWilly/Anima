@@ -2,7 +2,6 @@ import { describe, it, expect } from 'bun:test';
 import * as fc from 'fast-check';
 import { Camera } from '../../../../src/core/camera';
 import { Vector2 } from '../../../../src/core/math/Vector2/Vector2';
-import { Matrix3x3 } from '../../../../src/core/math/matrix/Matrix3x3';
 
 describe('Camera', () => {
     describe('Constructor and Defaults', () => {
