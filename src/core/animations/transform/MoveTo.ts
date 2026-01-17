@@ -27,6 +27,7 @@ export class MoveTo<T extends Mobject = Mobject> extends Animation<T> {
         this.target.pos(newPosition.x, newPosition.y);
     }
 
+    /** Returns the target position of the move animation. */
     getDestination(): Vector2 {
         return this.endPosition;
     }

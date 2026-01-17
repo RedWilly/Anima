@@ -73,14 +73,14 @@ register('lingering', lingering());
 register('runningStart', runningStart());
 
 /**
- * Get the name of an easing function.
+ * Resolves the name of an easing function for serialization.
  */
 export function getEasingName(fn: EasingFunction): string {
     return easingToName.get(fn) ?? 'smooth';
 }
 
 /**
- * Get an easing function by name.
+ * Resolves an easing function by its serialized name.
  */
 export function getEasingByName(name: string): EasingFunction | undefined {
     return nameToEasing.get(name);

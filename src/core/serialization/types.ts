@@ -1,17 +1,21 @@
 /**
  * Serialization types and interfaces.
- * All serialized types are plain JSON-compatible objects.
+ *
+ * All serialized types are plain JSON-compatible objects that represent
+ * the state of a component in a format that can be persisted or transmitted.
  */
 
 import type { PathCommandType } from '../math/bezier/types';
 
 // ========== Primitive Serialized Types ==========
 
+/** Serialized 2D vector */
 export interface SerializedVector2 {
     readonly x: number;
     readonly y: number;
 }
 
+/** Serialized RGBA color */
 export interface SerializedColor {
     readonly r: number;
     readonly g: number;
@@ -19,10 +23,12 @@ export interface SerializedColor {
     readonly a: number;
 }
 
+/** Serialized 3x3 transformation matrix */
 export interface SerializedMatrix3x3 {
     readonly values: readonly number[];
 }
 
+/** Serialized Bezier path command */
 export interface SerializedPathCommand {
     readonly type: PathCommandType;
     readonly end: SerializedVector2;
@@ -30,6 +36,7 @@ export interface SerializedPathCommand {
     readonly control2?: SerializedVector2;
 }
 
+/** Serialized Bezier path composed of multiple commands */
 export interface SerializedBezierPath {
     readonly commands: readonly SerializedPathCommand[];
 }
@@ -55,6 +62,7 @@ export type MobjectType =
     | 'GraphEdge'
     | string; // Allow custom types
 
+/** Base properties for all serialized Mobjects */
 export interface SerializedMobject {
     readonly type: MobjectType;
     readonly id: string;
@@ -62,6 +70,7 @@ export interface SerializedMobject {
     readonly opacity: number;
 }
 
+/** Serialized properties for Vector Mobjects (VMobjects) */
 export interface SerializedVMobject extends SerializedMobject {
     readonly paths: readonly SerializedBezierPath[];
     readonly strokeColor: SerializedColor;
@@ -133,6 +142,7 @@ export interface SerializedAnimationConfig {
     readonly easingName: string;
 }
 
+/** Base properties for all serialized animations */
 export interface SerializedAnimation {
     readonly type: AnimationType;
     readonly targetId: string;
@@ -176,6 +186,7 @@ export interface SerializedScheduledAnimation {
     readonly startTime: number;
 }
 
+/** Serialized timeline state including all scheduled animations */
 export interface SerializedTimeline {
     readonly loop: boolean;
     readonly scheduled: readonly SerializedScheduledAnimation[];
@@ -188,6 +199,7 @@ export interface SerializedSceneConfig {
     readonly frameRate: number;
 }
 
+/** Top-level serialized scene container */
 export interface SerializedScene {
     readonly version: string;
     readonly config: SerializedSceneConfig;
@@ -197,8 +209,15 @@ export interface SerializedScene {
 
 // ========== Custom Serializer Hook ==========
 
+/**
+ * Interface for custom serializers.
+ *
+ * Allows extending the serialization system to support user-defined Mobject types.
+ */
 export interface CustomSerializer<T> {
     readonly typeName: string;
+    /** Serialize an instance to a plain object */
     serialize(instance: T): SerializedMobject;
+    /** Restore an instance from a plain object */
     deserialize(data: SerializedMobject): T;
 }

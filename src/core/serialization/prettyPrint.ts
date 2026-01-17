@@ -5,16 +5,16 @@
 import type { SerializedScene } from './types';
 
 /**
- * Pretty print a serialized scene with indentation.
+ * Formats a serialized scene as a JSON string with 2-space indentation.
  */
 export function prettyPrint(scene: SerializedScene): string {
     return JSON.stringify(scene, null, 2);
 }
 
 /**
- * Pretty print a scene to a JSON string with custom formatting.
+ * Formats a serialized scene as a JSON string using a compact yet readable format.
  */
 export function prettyPrintCompact(scene: SerializedScene): string {
-    // Use 2-space indentation
+    // Current implementation uses 2-space indentation; could be adjusted for more compactness.
     return JSON.stringify(scene, null, 2);
 }

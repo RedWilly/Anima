@@ -155,6 +155,12 @@ function serializeVGroup(g: VGroup): SerializedVGroup {
 
 // ========== Main Serialization Entry Point ==========
 
+/**
+ * Serializes a Mobject or any of its subclasses to a plain object.
+ *
+ * This function handles built-in types like Circle, Rectangle, etc.,
+ * and also checks the custom serializer registry for user-defined types.
+ */
 export function serializeMobject(m: Mobject): SerializedMobject {
     // Check for custom serializer first
     const typeName = m.constructor.name;
@@ -193,6 +199,12 @@ function applyVMobjectBase(v: VMobject, data: SerializedVMobject): void {
     v.fillOpacity = data.fillOpacity;
 }
 
+/**
+ * Restores a Mobject or subclass instance from serialized data.
+ *
+ * Uses the 'type' field to determine the correct class to instantiate
+ * and restores its state including transformations and styles.
+ */
 export function deserializeMobject(data: SerializedMobject): Mobject {
     // Check for custom serializer first
     const customSerializer = getSerializer(data.type);

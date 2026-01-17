@@ -64,7 +64,10 @@ function serializeTimeline(scene: Scene): SerializedTimeline {
 }
 
 /**
- * Serialize a Scene to a JSON-compatible object.
+ * Serializes a Scene into a plain object format.
+ *
+ * This captures all added Mobjects, their hierarchical structure,
+ * and the entire timeline of scheduled animations.
  */
 export function serializeScene(scene: Scene): SerializedScene {
     resetSerializationState();
@@ -81,7 +84,9 @@ export function serializeScene(scene: Scene): SerializedScene {
 }
 
 /**
- * Serialize a Scene to a JSON string.
+ * Serializes a Scene into a JSON-formatted string.
+ *
+ * Useful for saving scene state to a file or transmitting it over a network.
  */
 export function serialize(scene: Scene): string {
     const data = serializeScene(scene);
@@ -91,7 +96,9 @@ export function serialize(scene: Scene): string {
 // ========== Scene Deserialization ==========
 
 /**
- * Deserialize a Scene from a JSON-compatible object.
+ * Restores a complete Scene from a serialized object.
+ *
+ * Reconstructs all Mobjects and reschedules all animations onto the timeline.
  */
 export function deserializeScene(data: SerializedScene): Scene {
     // Verify version compatibility
@@ -131,7 +138,7 @@ export function deserializeScene(data: SerializedScene): Scene {
 }
 
 /**
- * Deserialize a Scene from a JSON string.
+ * Restores a complete Scene from a JSON-formatted string.
  */
 export function deserialize(json: string): Scene {
     const data = JSON.parse(json) as SerializedScene;

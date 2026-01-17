@@ -55,6 +55,12 @@ function getAnimationType(anim: Animation): AnimationType {
 
 // ========== Main Serialization ==========
 
+/**
+ * Serializes an animation instance to a plain object.
+ *
+ * @param anim The animation to serialize
+ * @param getMobjectId Callback to resolve mobject references to stable IDs
+ */
 export function serializeAnimation(
     anim: Animation,
     getMobjectId: (m: Mobject) => string
@@ -125,6 +131,12 @@ function applyConfig(anim: Animation, config: SerializedAnimationConfig): void {
     }
 }
 
+/**
+ * Restores an animation instance from serialized data.
+ *
+ * @param data The serialized animation data
+ * @param registry Map of mobject IDs to restored instances for resolving targets
+ */
 export function deserializeAnimation(
     data: SerializedAnimation,
     registry: MobjectRegistry

@@ -25,6 +25,7 @@ export class Scale<T extends Mobject = Mobject> extends Animation<T> {
         this.target.setScale(newScale.x, newScale.y);
     }
 
+    /** Returns the scale factor. */
     getFactor(): number {
         return this.endScale.x;
     }

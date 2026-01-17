@@ -17,20 +17,24 @@ import type {
 
 // ========== Vector2 ==========
 
+/** Converts a Vector2 to a plain object for serialization. */
 export function serializeVector2(v: Vector2): SerializedVector2 {
     return { x: v.x, y: v.y };
 }
 
+/** Restores a Vector2 from serialized data. */
 export function deserializeVector2(data: SerializedVector2): Vector2 {
     return new Vector2(data.x, data.y);
 }
 
 // ========== Matrix3x3 ==========
 
+/** Converts a Matrix3x3 to a plain object for serialization. */
 export function serializeMatrix3x3(m: Matrix3x3): SerializedMatrix3x3 {
     return { values: Array.from(m.values) };
 }
 
+/** Restores a Matrix3x3 from serialized data. */
 export function deserializeMatrix3x3(data: SerializedMatrix3x3): Matrix3x3 {
     const values = new Float32Array(data.values);
     return new Matrix3x3(values);
@@ -38,10 +42,12 @@ export function deserializeMatrix3x3(data: SerializedMatrix3x3): Matrix3x3 {
 
 // ========== Color ==========
 
+/** Converts a Color to a plain object for serialization. */
 export function serializeColor(c: Color): SerializedColor {
     return { r: c.r, g: c.g, b: c.b, a: c.a };
 }
 
+/** Restores a Color from serialized data. */
 export function deserializeColor(data: SerializedColor): Color {
     return new Color(data.r, data.g, data.b, data.a);
 }
@@ -82,11 +88,13 @@ function deserializePathCommand(data: SerializedPathCommand): PathCommand {
 
 // ========== BezierPath ==========
 
+/** Converts a BezierPath to a plain object for serialization. */
 export function serializeBezierPath(path: BezierPath): SerializedBezierPath {
     const commands = path.getCommands().map(serializePathCommand);
     return { commands };
 }
 
+/** Restores a BezierPath from serialized data. */
 export function deserializeBezierPath(data: SerializedBezierPath): BezierPath {
     const path = new BezierPath();
     for (const cmd of data.commands) {

@@ -1,14 +1,16 @@
 /**
- * Serialization module for Anima animation engine.
+ * Serialization module for the Anima animation engine.
  *
- * Provides complete serialization/deserialization of Scenes, Mobjects, and Animations.
+ * This module provides functionality to convert Scenes, Mobjects, and Animations
+ * into JSON-compatible objects and back, enabling project persistence, undo/redo,
+ * and cross-process communication.
  *
- * Usage:
+ * Example usage:
  * ```typescript
- * import { serialize, deserialize, prettyPrint } from './serialization';
+ * import { serialize, deserialize } from './serialization';
  *
  * const json = serialize(scene);
- * const restored = deserialize(json);
+ * const restoredScene = deserialize(json);
  * ```
  */
 

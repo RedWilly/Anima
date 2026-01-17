@@ -20,6 +20,7 @@ export class Rotate<T extends Mobject = Mobject> extends Animation<T> {
         this.target.setRotation(newRotation);
     }
 
+    /** Returns the total rotation angle in radians. */
     getAngle(): number {
         return this.endRotation - this.startRotation;
     }
