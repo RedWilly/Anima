@@ -39,3 +39,14 @@ export { Camera } from '../camera';
 export type { CameraConfig, ResolvedCameraConfig } from '../camera';
 
 export { serialize, deserialize } from '../serialization';
+
+// Renderer - re-export from renderer module
+export { Renderer, FrameRenderer, ProgressReporter, Resolution } from '../renderer';
+export type {
+    RenderConfig,
+    ResolvedRenderConfig,
+    RenderFormat,
+    RenderQuality,
+    RenderProgress,
+    ProgressCallback,
+} from '../renderer';

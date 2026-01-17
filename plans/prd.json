@@ -1089,7 +1089,7 @@
       "Verify output is valid JSON string",
       "Verify JSON can be parsed"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Serialization",
@@ -1101,7 +1101,7 @@
       "Verify all animation definitions are in JSON",
       "Verify BezierPath control points are preserved"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Serialization",
@@ -1112,7 +1112,7 @@
       "Deserialize back to Scene",
       "Verify reconstructed Scene matches original"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Serialization",
@@ -1123,7 +1123,7 @@
       "Serialize again",
       "Verify both JSON outputs are identical"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Serialization",
@@ -1134,7 +1134,7 @@
       "Verify output is formatted with indentation",
       "Verify output is human-readable"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Serialization",
@@ -1145,7 +1145,7 @@
       "Serialize Scene with custom VMobject",
       "Deserialize and verify custom VMobject is restored"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Renderer",
@@ -1160,7 +1160,7 @@
       "Create Renderer with 4K config",
       "Verify output is 3840x2160"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Renderer",
@@ -1173,7 +1173,7 @@
       "Create Renderer with 60 FPS",
       "Verify frames are generated at 60 FPS"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Renderer",
@@ -1185,7 +1185,7 @@
       "Verify progress includes percentage",
       "Verify progress includes estimatedTimeRemaining"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Renderer",
@@ -1196,7 +1196,7 @@
       "Verify rendering is faster than production",
       "Verify output is lower quality"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Renderer",
@@ -1236,7 +1236,7 @@
       "Render with format: 'sprite'",
       "Verify PNG files are generated for each frame"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Renderer",
@@ -1247,7 +1247,7 @@
       "Verify single PNG file is generated",
       "Verify PNG shows final animation state"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Renderer",
@@ -1257,7 +1257,7 @@
       "Render frame",
       "Verify parent-child transforms are applied in order"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "Renderer",
@@ -1267,7 +1267,7 @@
       "Verify frame numbers start at 0",
       "Verify frame numbers are sequential with no gaps"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "CLI",
