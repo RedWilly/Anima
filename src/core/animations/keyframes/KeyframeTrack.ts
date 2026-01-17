@@ -52,21 +52,6 @@ export class KeyframeTrack<T extends KeyframeValue = number> {
         return this.keyframes.find((kf) => kf.time === time);
     }
 
-    /**
-     * Modifies an existing keyframe's value and optionally its easing.
-     * Returns true if keyframe was found and modified, false otherwise.
-     * Unlike addKeyframe, this does NOT create a new keyframe if one doesn't exist.
-     */
-    setKeyframe(time: number, value: T, easing?: EasingFunction): boolean {
-        const index = this.keyframes.findIndex((kf) => kf.time === time);
-        if (index === -1) {
-            return false;
-        }
-        const existingEasing = this.keyframes[index]?.easing;
-        this.keyframes[index] = { time, value, easing: easing ?? existingEasing };
-        return true;
-    }
-
     /** All keyframes sorted by time. */
     getKeyframes(): ReadonlyArray<Keyframe<T>> {
         return this.keyframes;
