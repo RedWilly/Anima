@@ -372,3 +372,12 @@ IMPLEMENTED PRD ITEMS: Video Export Module (FFmpeg Integration)
 - Updated PRD.
 
 Next: CLI implementation.
+
+IMPLEMENTED PRD ITEMS: Anima CLI & Engine Refinement
+- Implemented `Timeline.getStateAt(time)` in `src/core/timeline/Timeline.ts`.
+- Created `src/cli/SceneLoader.ts` for dynamic Scene discovery.
+- Built full-featured CLI in `src/cli/` using `commander` with `list-scenes`, `render`, `preview`, and `export-frame` commands.
+- Verified end-to-end rendering pipeline via CLI with example scenes.
+- Updated PRD with 10+ completed items.
+
+Next: Error handling and further integration tests.

@@ -119,6 +119,17 @@ export class Timeline {
     }
 
     /**
+     * Get the timeline state at a specific time without modifying the
+     * current playhead position.
+     * @param time Time in seconds
+     */
+    getStateAt(time: number): void {
+        const savedTime = this.currentTime;
+        this.seek(time);
+        this.currentTime = savedTime;
+    }
+
+    /**
      * Get the current time of the timeline.
      */
     getCurrentTime(): number {
