@@ -60,6 +60,30 @@ describe('Example Scenes', () => {
             expect(visibleMobjects.length).toBeGreaterThan(0);
         });
 
+        it('FadeOut should gradually decrease opacity', () => {
+            const scene = new ProAPIScene();
+            const timeline = scene.getTimeline();
+
+            // FadeOut starts at 2.5s and ends at 3.0s
+            // First, check that opacity is 1 before FadeOut
+            timeline.seek(2.4);
+            const mobjects = scene.getMobjects();
+            const opacitiesBefore = mobjects.map(m => m.opacity);
+
+            // At midpoint of FadeOut (t=2.75), opacity should be around 0.5
+            timeline.seek(2.75);
+            const opacitiesMid = mobjects.map(m => m.opacity);
+
+            // At end (t=3.0), opacity should be 0
+            timeline.seek(3.0);
+            const opacitiesEnd = mobjects.map(m => m.opacity);
+
+            // Verify FadeOut starts from 1 and ends at 0
+            expect(opacitiesBefore[0]).toBe(1);
+            expect(opacitiesMid[0]).toBeCloseTo(0.5, 1);
+            expect(opacitiesEnd[0]).toBe(0);
+        });
+
         it('mobjects should move during animation', () => {
             const scene = new ProAPIScene();
             const timeline = scene.getTimeline();

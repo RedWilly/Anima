@@ -21,16 +21,17 @@ export class MixedAPIScene extends Scene {
         const circle = new Circle(1).pos(-3, 0);
         const rect = new Rectangle(2, 1).pos(3, 0);
 
-        // --- ProAPI for circle (more control) ---
+        // --- Mix ProAPI and FluentAPI ---
+        // ProAPI for circle
         const circleIntro = new FadeIn(circle)
             .duration(0.5)
             .ease(easeInOutQuad);
 
-        // --- FluentAPI for rect (quick and simple) ---
+        // FluentAPI for rect (simpler syntax!)
         rect.fadeIn(0.5).ease(easeInOutQuad);
 
-        // Mix them in the same play() call
-        this.play(circleIntro, rect.toAnimation());
+        // Mix them - both Animation and Mobject work in play()!
+        this.play(circleIntro, rect);
 
         // --- ProAPI: Complex animation sequence on circle ---
         const moveUp = new MoveTo(circle, -3, 2).duration(0.5).ease(linear);
@@ -49,7 +50,7 @@ export class MixedAPIScene extends Scene {
 
         // --- FluentAPI: Quick transformations on rect ---
         rect.moveTo(-3, -1, 0.5).scaleTo(1.5, 0.5);
-        this.play(rect.toAnimation());
+        this.play(rect);
 
         this.wait(0.5);
 
@@ -57,6 +58,6 @@ export class MixedAPIScene extends Scene {
         const circleExit = new FadeOut(circle).duration(0.5);
         rect.fadeOut(0.5);
 
-        this.play(circleExit, rect.toAnimation());
+        this.play(circleExit, rect);
     }
 }

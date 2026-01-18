@@ -20,27 +20,25 @@ export class FluentAPIScene extends Scene {
         const rect = new Rectangle(2, 1).pos(3, 0);
 
         // FluentAPI: Chain animations directly on mobjects
-        // Define intro animations
+        // Simply pass the mobject to play() - no need for toAnimation()!
         circle.fadeIn(0.5).ease(easeInOutQuad);
         rect.fadeIn(0.5).ease(easeInOutQuad);
+        this.play(circle, rect);
 
-        // Play intro animations (converts fluent chain to Animation)
-        this.play(circle.toAnimation(), rect.toAnimation());
-
-        // FluentAPI: Chain multiple transformations
+        // FluentAPI: Chain transformations
         circle.moveTo(0, 2, 1).rotate(Math.PI, 1);
-        this.play(circle.toAnimation());
+        this.play(circle);
 
         // Scale transformations
         circle.scaleTo(0.5, 0.5);
         rect.scaleTo(2, 0.5);
-        this.play(circle.toAnimation(), rect.toAnimation());
+        this.play(circle, rect);
 
         this.wait(0.5);
 
         // FluentAPI: Exit animations
         circle.fadeOut(0.5);
         rect.fadeOut(0.5);
-        this.play(circle.toAnimation(), rect.toAnimation());
+        this.play(circle, rect);
     }
 }

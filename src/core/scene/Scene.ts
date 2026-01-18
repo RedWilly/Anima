@@ -98,15 +98,38 @@ export class Scene {
     /**
      * Schedule animations to play at the current playhead position.
      * 
+     * Accepts either Animation objects or Mobjects with queued fluent animations.
+     * When a Mobject is passed, its queued animation chain is automatically extracted.
+     * 
      * - Introductory animations (FadeIn, Create, Draw, Write) auto-register
      *   their targets with the scene if not already present.
      * - Transformative animations (MoveTo, Rotate, Scale) require the target
      *   to already be in the scene, otherwise an error is thrown.
+     * 
+     * @example
+     * // ProAPI style
+     * this.play(new FadeIn(circle), new MoveTo(rect, 2, 0));
+     * 
+     * // FluentAPI style
+     * circle.fadeIn(1).moveTo(2, 0, 1);
+     * this.play(circle);
+     * 
+     * // Mixed
+     * circle.fadeIn(1);
+     * this.play(circle, new FadeIn(rect));
      */
-    play(...animations: Animation[]): this {
-        if (animations.length === 0) {
+    play(...items: Array<Animation | Mobject>): this {
+        if (items.length === 0) {
             return this;
         }
+
+        // Convert Mobjects to Animations
+        const animations: Animation[] = items.map(item => {
+            if (item instanceof Mobject) {
+                return item.toAnimation();
+            }
+            return item;
+        });
 
         // Validate and auto-register based on animation lifecycle
         for (const anim of animations) {
