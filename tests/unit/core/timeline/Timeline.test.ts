@@ -200,13 +200,15 @@ describe('Timeline', () => {
             expect(a.lastProgress).toBeCloseTo(0.5, 5);
         });
 
-        it('should not start animation before its scheduled time', () => {
+        it('should not update animation before its scheduled time', () => {
             const timeline = new Timeline();
             const a = new TrackingAnimation(1);
             timeline.schedule(a, 2);
 
+            // Animation starts at t=2, so at t=1 it should NOT be updated
+            // (to avoid overwriting state from earlier animations)
             timeline.seek(1);
-            expect(a.lastProgress).toBe(0);
+            expect(a.lastProgress).toBe(-1); // Initial value, never updated
         });
 
         it('should handle negative time by clamping to 0', () => {
@@ -224,8 +226,9 @@ describe('Timeline', () => {
             anim.delay(1); // effective start at 1
             timeline.schedule(anim, 0);
 
-            timeline.seek(0); // before delay
-            expect(anim.lastProgress).toBe(0);
+            // Before delay - animation not updated (stays at initial value)
+            timeline.seek(0);
+            expect(anim.lastProgress).toBe(-1);
 
             timeline.seek(1); // at delay (animation starts)
             expect(anim.lastProgress).toBe(0);
