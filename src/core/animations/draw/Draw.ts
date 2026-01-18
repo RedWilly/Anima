@@ -1,4 +1,4 @@
-import { Animation } from '../Animation';
+import { IntroductoryAnimation } from '../categories';
 import { VMobject } from '../../../mobjects/VMobject';
 import { BezierPath } from '../../math/bezier/BezierPath';
 import { getPartialPath } from './partialPath';
@@ -6,8 +6,14 @@ import { getPartialPath } from './partialPath';
 /**
  * Animation that first draws the border progressively, then fills the shape.
  * The first 50% of the animation draws the stroke, the second 50% fades in the fill.
+ * 
+ * This is an introductory animation - it auto-registers the target with the scene.
+ * 
+ * @example
+ * const rect = new Rectangle(2, 1);
+ * scene.play(new Draw(rect));  // Border draws, then fill fades in
  */
-export class Draw<T extends VMobject = VMobject> extends Animation<T> {
+export class Draw<T extends VMobject = VMobject> extends IntroductoryAnimation<T> {
     private readonly originalPaths: BezierPath[];
     private readonly originalFillOpacity: number;
     private readonly originalOpacity: number;

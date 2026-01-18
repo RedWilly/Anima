@@ -1,4 +1,4 @@
-import { Animation } from '../Animation';
+import { IntroductoryAnimation } from '../categories';
 import { VMobject } from '../../../mobjects/VMobject';
 import { BezierPath } from '../../math/bezier/BezierPath';
 import { getPartialPath } from './partialPath';
@@ -7,8 +7,14 @@ import { getPartialPath } from './partialPath';
  * Animation that progressively draws a VMobject by revealing the stroke.
  * Preserves both stroke and fill properties - the complete object is visible at the end.
  * Similar to Create but commonly used for Text objects.
+ * 
+ * This is an introductory animation - it auto-registers the target with the scene.
+ * 
+ * @example
+ * const text = new Text('Hello');
+ * scene.play(new Write(text));  // Text is written progressively
  */
-export class Write<T extends VMobject = VMobject> extends Animation<T> {
+export class Write<T extends VMobject = VMobject> extends IntroductoryAnimation<T> {
     private readonly originalPaths: BezierPath[];
     private readonly originalOpacity: number;
     private readonly originalFillOpacity: number;

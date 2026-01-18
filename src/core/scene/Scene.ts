@@ -4,6 +4,7 @@ import { Camera } from '../camera';
 import { Mobject } from '../../mobjects/Mobject';
 import type { Animation } from '../animations/Animation';
 import type { SceneConfig, ResolvedSceneConfig } from './types';
+import { AnimationTargetNotInSceneError } from '../errors';
 
 /**
  * Scene is the core container that manages Mobjects and coordinates animations.
@@ -56,12 +57,14 @@ export class Scene {
     // ========== Mobject Management ==========
 
     /**
-     * Add mobjects to the scene.
-     * Mobjects are added with opacity 0 (invisible by default).
+     * Add mobjects to the scene and make them immediately visible.
+     * Use this for static elements or backgrounds that should be visible
+     * before any animations begin.
      */
     add(...mobjects: Mobject[]): this {
         for (const m of mobjects) {
             this.mobjects.add(m);
+            m.setOpacity(1); // Immediately visible
         }
         return this;
     }
@@ -77,6 +80,13 @@ export class Scene {
     }
 
     /**
+     * Check if a mobject is registered with this scene.
+     */
+    has(mobject: Mobject): boolean {
+        return this.mobjects.has(mobject);
+    }
+
+    /**
      * Get all mobjects in the scene.
      */
     getMobjects(): readonly Mobject[] {
@@ -87,12 +97,20 @@ export class Scene {
 
     /**
      * Schedule animations to play at the current playhead position.
-     * Animations are scheduled in parallel (all start at the same time).
-     * The playhead advances to the end of the longest animation.
+     * 
+     * - Introductory animations (FadeIn, Create, Draw, Write) auto-register
+     *   their targets with the scene if not already present.
+     * - Transformative animations (MoveTo, Rotate, Scale) require the target
+     *   to already be in the scene, otherwise an error is thrown.
      */
     play(...animations: Animation[]): this {
         if (animations.length === 0) {
             return this;
+        }
+
+        // Validate and auto-register based on animation lifecycle
+        for (const anim of animations) {
+            this.validateAndRegisterAnimation(anim);
         }
 
         this.timeline.scheduleParallel(animations, this.playheadTime);
@@ -152,6 +170,57 @@ export class Scene {
      */
     getCamera(): Camera {
         return this.camera;
+    }
+
+    // ========== Private Helpers ==========
+
+    /**
+     * Validates and registers animation targets based on lifecycle.
+     * Handles composition animations (Sequence, Parallel) by processing children.
+     */
+    private validateAndRegisterAnimation(anim: Animation): void {
+        // Check if this is a composition animation with children
+        const children = this.getAnimationChildren(anim);
+
+        if (children.length > 0) {
+            // For composition animations, process each child
+            for (const child of children) {
+                this.validateAndRegisterAnimation(child);
+            }
+            return;
+        }
+
+        // Regular animation - validate/register based on lifecycle
+        const target = anim.getTarget();
+
+        switch (anim.lifecycle) {
+            case 'introductory':
+                // Auto-register if not already in scene
+                if (!this.mobjects.has(target)) {
+                    this.mobjects.add(target);
+                }
+                break;
+
+            case 'transformative':
+            case 'exit':
+                // Validate object is in scene
+                if (!this.mobjects.has(target)) {
+                    throw new AnimationTargetNotInSceneError(anim, target);
+                }
+                break;
+        }
+    }
+
+    /**
+     * Gets children of composition animations (Sequence, Parallel).
+     * Returns empty array for non-composition animations.
+     */
+    private getAnimationChildren(anim: Animation): readonly Animation[] {
+        // Check for getChildren method (Sequence, Parallel have this)
+        if ('getChildren' in anim && typeof anim.getChildren === 'function') {
+            return anim.getChildren();
+        }
+        return [];
     }
 }
 

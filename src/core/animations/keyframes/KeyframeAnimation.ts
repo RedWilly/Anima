@@ -1,4 +1,5 @@
 import { Animation } from '../Animation';
+import type { AnimationLifecycle } from '../types';
 import type { Mobject } from '../../../mobjects/Mobject';
 import { KeyframeTrack } from './KeyframeTrack';
 import type { KeyframeValue } from './types';
@@ -19,9 +20,13 @@ interface TrackEntry<T extends Mobject, V extends KeyframeValue> {
 /**
  * Animation that interpolates multiple property tracks via keyframes.
  * Each track controls a single property and is interpolated independently.
+ * 
+ * This is a transformative animation - the target must already be in the scene.
  */
 export class KeyframeAnimation<T extends Mobject = Mobject> extends Animation<T> {
     private readonly tracks: Map<string, TrackEntry<T, KeyframeValue>> = new Map();
+
+    readonly lifecycle: AnimationLifecycle = 'transformative';
 
     /**
      * Adds a named keyframe track with its property setter.

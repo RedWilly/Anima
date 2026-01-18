@@ -4,6 +4,7 @@ import { Timeline } from '../../../../src/core/timeline';
 import { Animation } from '../../../../src/core/animations/Animation';
 import { linear } from '../../../../src/core/animations/easing';
 import { Mobject } from '../../../../src/mobjects/Mobject';
+import type { AnimationLifecycle } from '../../../../src/core/animations/types';
 
 /**
  * Test animation that tracks update calls with progress values.
@@ -11,6 +12,7 @@ import { Mobject } from '../../../../src/mobjects/Mobject';
 class TrackingAnimation extends Animation<Mobject> {
     calls: number[] = [];
     lastProgress = -1;
+    readonly lifecycle: AnimationLifecycle = 'introductory';
 
     constructor(duration = 1) {
         super(new Mobject());

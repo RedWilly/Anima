@@ -1,18 +1,24 @@
 import { Mobject } from '../../mobjects/Mobject';
 import type { EasingFunction } from './easing';
 import { defaultEasing } from './easing';
-import type { AnimationConfig } from './types';
+import type { AnimationConfig, AnimationLifecycle } from './types';
 
 /**
  * Abstract base class for all animations.
  * Provides configuration for duration, easing, and delay.
- * Subclasses implement interpolate() to define the animation behavior.
+ * Subclasses must specify their lifecycle category.
  */
 export abstract class Animation<T extends Mobject = Mobject> {
     protected readonly target: T;
     protected durationSeconds: number;
     protected easingFn: EasingFunction;
     protected delaySeconds: number;
+
+    /**
+     * The lifecycle category of this animation.
+     * Determines how Scene.play() handles scene registration and validation.
+     */
+    abstract readonly lifecycle: AnimationLifecycle;
 
     constructor(target: T) {
         this.target = target;

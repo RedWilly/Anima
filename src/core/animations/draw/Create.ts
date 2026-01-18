@@ -1,4 +1,4 @@
-import { Animation } from '../Animation';
+import { IntroductoryAnimation } from '../categories';
 import { VMobject } from '../../../mobjects/VMobject';
 import { BezierPath } from '../../math/bezier/BezierPath';
 import { getPartialPath } from './partialPath';
@@ -6,8 +6,14 @@ import { getPartialPath } from './partialPath';
 /**
  * Animation that progressively draws a VMobject's paths from start to end.
  * At progress 0, nothing is shown. At progress 1, the complete path is shown.
+ * 
+ * This is an introductory animation - it auto-registers the target with the scene.
+ * 
+ * @example
+ * const circle = new Circle(1);
+ * scene.play(new Create(circle));  // Circle is drawn progressively
  */
-export class Create<T extends VMobject = VMobject> extends Animation<T> {
+export class Create<T extends VMobject = VMobject> extends IntroductoryAnimation<T> {
     private readonly originalPaths: BezierPath[];
     private readonly originalOpacity: number;
 

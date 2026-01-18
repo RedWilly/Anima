@@ -1,12 +1,19 @@
-import { Animation } from '../Animation';
+import { TransformativeAnimation } from '../categories';
 import { VMobject } from '../../../mobjects/VMobject';
 import { BezierPath } from '../../math/bezier/BezierPath';
 
 /**
  * Animation that morphs a VMobject from its current shape to a target shape.
  * Uses BezierPath interpolation for smooth path transitions.
+ * 
+ * This is a transformative animation - the source must already be in the scene.
+ * The target VMobject is used only as a shape template and is NOT added to the scene.
+ * 
+ * @example
+ * scene.add(circle);
+ * scene.play(new MorphTo(circle, square));  // circle morphs into square's shape
  */
-export class MorphTo<T extends VMobject = VMobject> extends Animation<T> {
+export class MorphTo<T extends VMobject = VMobject> extends TransformativeAnimation<T> {
     private readonly sourcePaths: BezierPath[];
     private readonly targetPaths: BezierPath[];
 

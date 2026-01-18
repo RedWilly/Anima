@@ -68,6 +68,9 @@ export class Renderer {
                     progressReporter
                 );
                 break;
+
+            default:
+                throw new Error(`Unsupported render format: ${resolved.format}`);
         }
     }
 

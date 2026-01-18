@@ -1,0 +1,1 @@
+export { AnimationTargetNotInSceneError } from './AnimationErrors';

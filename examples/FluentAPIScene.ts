@@ -1,0 +1,46 @@
+/**
+ * Example: FluentAPI Only
+ * 
+ * This example demonstrates the FluentAPI approach where animations
+ * are chained directly on mobjects for a more declarative style.
+ * 
+ * Best for: Quick prototyping, simple animations, readable code
+ */
+import { Scene } from '../src/core/scene/Scene';
+import { Circle } from '../src/mobjects/geometry/Circle';
+import { Rectangle } from '../src/mobjects/geometry/Rectangle';
+import { easeInOutQuad } from '../src/core/animations/easing';
+
+export class FluentAPIScene extends Scene {
+    constructor() {
+        super({ width: 1920, height: 1080, frameRate: 60 });
+
+        // Create mobjects
+        const circle = new Circle(1).pos(-3, 0);
+        const rect = new Rectangle(2, 1).pos(3, 0);
+
+        // FluentAPI: Chain animations directly on mobjects
+        // Define intro animations
+        circle.fadeIn(0.5).ease(easeInOutQuad);
+        rect.fadeIn(0.5).ease(easeInOutQuad);
+
+        // Play intro animations (converts fluent chain to Animation)
+        this.play(circle.toAnimation(), rect.toAnimation());
+
+        // FluentAPI: Chain multiple transformations
+        circle.moveTo(0, 2, 1).rotate(Math.PI, 1);
+        this.play(circle.toAnimation());
+
+        // Scale transformations
+        circle.scaleTo(0.5, 0.5);
+        rect.scaleTo(2, 0.5);
+        this.play(circle.toAnimation(), rect.toAnimation());
+
+        this.wait(0.5);
+
+        // FluentAPI: Exit animations
+        circle.fadeOut(0.5);
+        rect.fadeOut(0.5);
+        this.play(circle.toAnimation(), rect.toAnimation());
+    }
+}

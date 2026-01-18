@@ -1,14 +1,24 @@
 import { Mobject } from '../../../mobjects/Mobject';
 import { Animation } from '../Animation';
+import type { AnimationLifecycle } from '../types';
 
 /**
  * Executes animations in sequence, one after another.
  * Total duration equals the sum of all child animation durations.
+ * 
+ * This is a composition animation - its lifecycle is determined by its children.
  */
 export class Sequence extends Animation<Mobject> {
     private readonly children: Animation[];
     private readonly childDurations: number[];
     private readonly totalChildDuration: number;
+
+    /**
+     * The lifecycle of Sequence is determined by its FIRST child animation.
+     * If the first animation is introductory, it will register the target,
+     * allowing subsequent transformative animations to work.
+     */
+    readonly lifecycle: AnimationLifecycle;
 
     constructor(animations: Animation[]) {
         super(new Mobject());
@@ -16,6 +26,11 @@ export class Sequence extends Animation<Mobject> {
         this.childDurations = animations.map((a) => a.getDuration());
         this.totalChildDuration = this.childDurations.reduce((sum, d) => sum + d, 0);
         this.durationSeconds = this.totalChildDuration;
+
+        // Lifecycle is determined by FIRST animation in the sequence
+        // If first is introductory, it registers the target for subsequent animations
+        const first = animations[0];
+        this.lifecycle = first?.lifecycle === 'introductory' ? 'introductory' : 'transformative';
     }
 
     override getDuration(): number {

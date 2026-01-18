@@ -1,13 +1,23 @@
 import { Mobject } from '../../../mobjects/Mobject';
 import { Animation } from '../Animation';
+import type { AnimationLifecycle } from '../types';
 
 /**
  * Executes animations in parallel, all starting at the same time.
  * Total duration equals the maximum of all child animation durations.
+ * 
+ * This is a composition animation - its lifecycle is determined by its children.
+ * By default, uses 'transformative' lifecycle if children are mixed.
  */
 export class Parallel extends Animation<Mobject> {
     private readonly children: Animation[];
     private readonly maxChildDuration: number;
+
+    /**
+     * The lifecycle of Parallel is 'introductory' only if ALL children are introductory.
+     * Otherwise, it defaults to 'transformative'.
+     */
+    readonly lifecycle: AnimationLifecycle;
 
     constructor(animations: Animation[]) {
         super(new Mobject());
@@ -17,6 +27,11 @@ export class Parallel extends Animation<Mobject> {
             0
         );
         this.durationSeconds = this.maxChildDuration;
+
+        // Lifecycle is introductory only if ALL children are introductory
+        this.lifecycle = animations.every(a => a.lifecycle === 'introductory')
+            ? 'introductory'
+            : 'transformative';
     }
 
     override getDuration(): number {

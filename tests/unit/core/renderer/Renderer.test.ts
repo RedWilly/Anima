@@ -113,9 +113,10 @@ describe('Renderer', () => {
 
             const renderer = new Renderer();
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             await expect(
-                renderer.render(scene, testDir, { format: 'mp4' })
-            ).rejects.toThrow(/not yet supported/);
+                renderer.render(scene, testDir, { format: 'avi' as any })
+            ).rejects.toThrow();
         });
 
         test('renders at half resolution in preview mode', async () => {

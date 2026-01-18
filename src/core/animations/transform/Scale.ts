@@ -1,12 +1,18 @@
-import { Animation } from '../Animation';
+import { TransformativeAnimation } from '../categories';
 import { Mobject } from '../../../mobjects/Mobject';
 import { Vector2 } from '../../math/Vector2/Vector2';
 
 /**
  * Animation that scales a Mobject to a target scale factor.
  * Uses linear interpolation between start and end scale.
+ * 
+ * This is a transformative animation - the target must already be in the scene.
+ * 
+ * @example
+ * scene.add(circle);
+ * scene.play(new Scale(circle, 2));  // Scale to 2x
  */
-export class Scale<T extends Mobject = Mobject> extends Animation<T> {
+export class Scale<T extends Mobject = Mobject> extends TransformativeAnimation<T> {
     private readonly startScale: Vector2;
     private readonly endScale: Vector2;
 

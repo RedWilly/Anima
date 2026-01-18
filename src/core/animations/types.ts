@@ -11,3 +11,12 @@ export interface AnimationConfig {
     /** Delay before animation starts in seconds. Default: 0 */
     readonly delaySeconds: number;
 }
+
+
+/**
+ * Animation lifecycle category determines how Scene.play() handles the target.
+ * - 'introductory': Auto-registers target with scene (FadeIn, Create, Draw, Write)
+ * - 'transformative': Requires target to already be in scene (MoveTo, Rotate, Scale)
+ * - 'exit': Requires target in scene, may auto-remove after (FadeOut)
+ */
+export type AnimationLifecycle = 'introductory' | 'transformative' | 'exit';

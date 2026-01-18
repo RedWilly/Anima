@@ -4,12 +4,14 @@ import { Parallel, linear } from '../../../../src/core/animations';
 import { Animation } from '../../../../src/core/animations/Animation';
 import { Mobject } from '../../../../src/mobjects/Mobject';
 import type { EasingFunction } from '../../../../src/core/animations/easing';
+import type { AnimationLifecycle } from '../../../../src/core/animations/types';
 
 /**
  * Test animation that tracks interpolate calls with progress values.
  */
 class TrackingAnimation extends Animation<Mobject> {
     calls: number[] = [];
+    readonly lifecycle: AnimationLifecycle = 'introductory';
 
     constructor(duration = 1, easing: EasingFunction = linear) {
         super(new Mobject());

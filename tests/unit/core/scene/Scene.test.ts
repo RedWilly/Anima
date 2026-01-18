@@ -2,15 +2,18 @@ import { describe, it, expect } from 'bun:test';
 import * as fc from 'fast-check';
 import { Scene } from '../../../../src/core/scene';
 import { Animation } from '../../../../src/core/animations/Animation';
+import type { AnimationLifecycle } from '../../../../src/core/animations/types';
 import { linear } from '../../../../src/core/animations/easing';
 import { Mobject } from '../../../../src/mobjects/Mobject';
 import { Color } from '../../../../src/core/math/color/Color';
 
 /**
  * Test animation that tracks update calls.
+ * Uses 'introductory' lifecycle so it auto-registers targets with the scene.
  */
 class TrackingAnimation extends Animation<Mobject> {
     lastProgress = -1;
+    readonly lifecycle: AnimationLifecycle = 'introductory';
 
     constructor(duration = 1) {
         super(new Mobject());
@@ -104,13 +107,13 @@ describe('Scene', () => {
             expect(scene.getMobjects().length).toBe(1);
         });
 
-        it('mobjects added to scene keep opacity 0 by default', () => {
+        it('mobjects added to scene are immediately visible (opacity = 1)', () => {
             const scene = new Scene();
             const m = new Mobject();
 
             scene.add(m);
 
-            expect(m.opacity).toBe(0);
+            expect(m.opacity).toBe(1);
         });
     });
 

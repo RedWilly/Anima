@@ -1,11 +1,17 @@
-import { Animation } from '../Animation';
-import { Mobject } from '../../../mobjects/Mobject';
+import { TransformativeAnimation } from '../categories';
+import type { Mobject } from '../../../mobjects/Mobject';
 
 /**
  * Animation that rotates a Mobject by a specified angle.
  * Uses linear interpolation between start and end rotation.
+ * 
+ * This is a transformative animation - the target must already be in the scene.
+ * 
+ * @example
+ * scene.add(square);
+ * scene.play(new Rotate(square, Math.PI / 4));  // Rotate 45 degrees
  */
-export class Rotate<T extends Mobject = Mobject> extends Animation<T> {
+export class Rotate<T extends Mobject = Mobject> extends TransformativeAnimation<T> {
     private readonly startRotation: number;
     private readonly endRotation: number;
 

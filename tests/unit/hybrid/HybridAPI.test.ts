@@ -264,7 +264,9 @@ describe('Hybrid API Consistency', () => {
             const circle = new Circle();
             const rect = new Rectangle();
 
-            scene.add(circle, rect);
+            // Only add rect (needed for MoveTo which is transformative)
+            // circle will be auto-registered by FadeIn
+            scene.add(rect);
 
             // First: FluentAPI animation
             circle.fadeIn(1);
@@ -293,7 +295,8 @@ describe('Hybrid API Consistency', () => {
             const circle = new Circle();
             const rect = new Rectangle();
 
-            scene.add(circle, rect);
+            // Both use FadeIn which is introductory - no need for add()
+            // FadeIn will auto-register them with the scene
 
             // FluentAPI - use linear easing for predictable values
             circle.fadeIn(2).ease(linear);

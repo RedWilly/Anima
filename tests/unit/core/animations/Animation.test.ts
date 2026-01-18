@@ -3,6 +3,7 @@ import * as fc from 'fast-check';
 import { Animation, defaultEasing, easeInQuad, smooth, linear } from '../../../../src/core/animations';
 import { Mobject } from '../../../../src/mobjects/Mobject';
 import type { EasingFunction } from '../../../../src/core/animations/easing';
+import type { AnimationLifecycle } from '../../../../src/core/animations/types';
 
 /**
  * Concrete Animation subclass for testing the base class.
@@ -10,6 +11,7 @@ import type { EasingFunction } from '../../../../src/core/animations/easing';
  */
 class TestAnimation extends Animation<Mobject> {
     interpolateCalls: number[] = [];
+    readonly lifecycle: AnimationLifecycle = 'introductory';
 
     interpolate(progress: number): void {
         this.interpolateCalls.push(progress);

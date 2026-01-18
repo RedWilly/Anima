@@ -1,4 +1,4 @@
-import { Animation } from '../Animation';
+import { ExitAnimation } from '../categories';
 import { VMobject } from '../../../mobjects/VMobject';
 import { BezierPath } from '../../math/bezier/BezierPath';
 import { getPartialPath } from './partialPath';
@@ -7,9 +7,14 @@ import { getPartialPath } from './partialPath';
  * Animation that progressively removes a VMobject by erasing the path.
  * Reverse of Write animation - at progress 0, full object is visible;
  * at progress 1, nothing is visible.
- * Preserves both stroke and fill properties during the animation.
+ * 
+ * This is an exit animation - the target must already be in the scene.
+ * 
+ * @example
+ * scene.play(new Write(text));
+ * scene.play(new Unwrite(text));  // Text is erased progressively
  */
-export class Unwrite<T extends VMobject = VMobject> extends Animation<T> {
+export class Unwrite<T extends VMobject = VMobject> extends ExitAnimation<T> {
     private readonly originalPaths: BezierPath[];
     private readonly originalOpacity: number;
     private readonly originalFillOpacity: number;

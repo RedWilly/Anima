@@ -104,8 +104,11 @@ export class Timeline {
             const { animation, effectiveStartTime, duration, endTime } = r;
 
             if (clampedTime < effectiveStartTime) {
-                // Before animation starts - set to initial state
-                animation.update(0);
+                // Before animation starts - do NOT update the animation.
+                // This prevents future animations from overwriting state
+                // that earlier animations have already set.
+                // The animation will be initialized when it first becomes active.
+                continue;
             } else if (clampedTime >= endTime) {
                 // Animation completed - set to final state
                 animation.update(1);

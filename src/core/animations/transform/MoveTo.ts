@@ -1,12 +1,18 @@
-import { Animation } from '../Animation';
+import { TransformativeAnimation } from '../categories';
 import { Mobject } from '../../../mobjects/Mobject';
 import { Vector2 } from '../../math/Vector2/Vector2';
 
 /**
  * Animation that moves a Mobject from its current position to a destination.
  * Uses linear interpolation between start and end positions.
+ * 
+ * This is a transformative animation - the target must already be in the scene.
+ * 
+ * @example
+ * scene.add(circle);  // or use FadeIn first
+ * scene.play(new MoveTo(circle, 2, 0));  // Move to (2, 0)
  */
-export class MoveTo<T extends Mobject = Mobject> extends Animation<T> {
+export class MoveTo<T extends Mobject = Mobject> extends TransformativeAnimation<T> {
     private readonly startPosition: Vector2;
     private readonly endPosition: Vector2;
 
