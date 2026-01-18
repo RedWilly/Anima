@@ -20,7 +20,6 @@ export class FluentAPIScene extends Scene {
         const rect = new Rectangle(2, 1).pos(3, 0);
 
         // FluentAPI: Chain animations directly on mobjects
-        // Simply pass the mobject to play() - no need for toAnimation()!
         circle.fadeIn(0.5).ease(easeInOutQuad);
         rect.fadeIn(0.5).ease(easeInOutQuad);
         this.play(circle, rect);

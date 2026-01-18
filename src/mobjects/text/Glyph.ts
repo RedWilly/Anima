@@ -17,7 +17,9 @@ function convertFontkitPath(
     const commands = fontkitPath.commands;
 
     const transformX = (val: number) => val * scale + offsetX;
-    const transformY = (val: number) => -val * scale + offsetY;
+    // Note: Fontkit uses Y-up coordinates (same as Manim world coords)
+    // The renderer handles the flip to screen Y-down coordinates
+    const transformY = (val: number) => val * scale + offsetY;
 
     for (const cmd of commands) {
         const type = cmd.command;
