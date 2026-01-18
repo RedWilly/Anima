@@ -361,4 +361,14 @@ IMPLEMENTED PRD ITEMS: Renderer Module (Core)
 - All 808 tests pass.
 - Updated PRD.
 
-Next: CLI implementation or video format encoding (FFmpeg integration).
+Next: CLI implementation or video format encoding (FFmpeg integration - no extenal library only ffmpeg).
+
+IMPLEMENTED PRD ITEMS: Video Export Module (FFmpeg Integration)
+- Created `src/core/renderer/formats/video.ts` implementing `renderVideo` using `Bun.spawn` and FFmpeg.
+- Supported MP4 (H.264), WebP (lossless/lossy), and GIF (high-quality palette) outputs.
+- Integrated FFmpeg stdin piping for efficient frame processing without intermediate disk usage.
+- Created `tests/unit/core/renderer/formats/Video.test.ts` verifying all three formats.
+- All 811+ tests pass.
+- Updated PRD.
+
+Next: CLI implementation.

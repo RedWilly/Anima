@@ -2,7 +2,7 @@ import type { Scene } from '../scene';
 import type { RenderConfig, ResolvedRenderConfig } from './types';
 import { FrameRenderer } from './FrameRenderer';
 import { ProgressReporter } from './ProgressReporter';
-import { writePng, renderSpriteSequence } from './formats';
+import { writePng, renderSpriteSequence, renderVideo } from './formats';
 import { mkdir } from 'fs/promises';
 import { dirname } from 'path';
 
@@ -58,10 +58,16 @@ export class Renderer {
             case 'mp4':
             case 'webp':
             case 'gif':
-                throw new Error(
-                    `Format '${resolved.format}' is not yet supported. ` +
-                    `Use 'sprite' or 'png' format, or wait for FFmpeg integration.`
+                await this.ensureDirectory(dirname(outputPath));
+                await renderVideo(
+                    frameRenderer,
+                    outputPath,
+                    resolved.format,
+                    resolved.frameRate,
+                    totalDuration,
+                    progressReporter
                 );
+                break;
         }
     }
 
