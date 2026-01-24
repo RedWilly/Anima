@@ -1,7 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import fc from 'fast-check';
-import { Circle } from '../../../src/mobjects/geometry/Circle';
-import { Rectangle } from '../../../src/mobjects/geometry/Rectangle';
+
 import {
     FadeIn,
     FadeOut,
@@ -11,7 +10,9 @@ import {
     Scene,
     Timeline,
     linear,
-} from '../../../src/core/animations';
+    Circle,
+    Rectangle
+} from '../../../src';
 
 /**
  * PRD Items #61-63: Hybrid API Consistency Tests

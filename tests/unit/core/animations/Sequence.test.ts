@@ -1,9 +1,7 @@
 import { describe, it, expect } from 'bun:test';
 import * as fc from 'fast-check';
-import { Sequence, linear } from '../../../../src/core/animations';
-import { Animation } from '../../../../src/core/animations/Animation';
-import { Mobject } from '../../../../src/mobjects/Mobject';
-import type { EasingFunction } from '../../../../src/core/animations/easing';
+import { Sequence, linear, Animation, Mobject } from '../../../../src';
+import type { EasingFunction } from '../../../../src';
 import type { AnimationLifecycle } from '../../../../src/core/animations/types';
 
 /**
