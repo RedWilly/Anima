@@ -72,13 +72,13 @@ describe('Mobject Serialization', () => {
 
     describe('Line', () => {
         test('serializes Line with start and end', () => {
-            const line = new Line(new Vector2(0, 0), new Vector2(100, 50));
+            const line = new Line(0, 0, 100, 50);
             const serialized = serializeMobject(line);
             expect(serialized.type).toBe('Line');
         });
 
         test('round-trip preserves Line endpoints', () => {
-            const original = new Line(new Vector2(10, 20), new Vector2(30, 40));
+            const original = new Line(10, 20, 30, 40);
             const serialized = serializeMobject(original);
             const restored = deserializeMobject(serialized) as Line;
 

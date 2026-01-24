@@ -9,8 +9,6 @@ export class Rectangle extends Polygon {
         const halfW = width / 2;
         const halfH = height / 2;
 
-        // Vertices in clockwise order starting from Top-Left
-        // Y is down, so Top is -Y, Bottom is +Y
         super([
             new Vector2(-halfW, -halfH), // Top-Left
             new Vector2(halfW, -halfH),  // Top-Right

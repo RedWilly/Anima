@@ -4,12 +4,14 @@ import { BezierPath } from '../../core/math/bezier/BezierPath';
 
 export class Arrow extends Line {
     constructor(
-        start: Vector2 = Vector2.ZERO,
-        end: Vector2 = Vector2.RIGHT,
+        x1: number = 0,
+        y1: number = 0,
+        x2: number = 1,
+        y2: number = 0,
         readonly tipLength: number = 0.25,
         readonly tipAngle: number = Math.PI / 6
     ) {
-        super(start, end);
+        super(x1, y1, x2, y2);
         this.addTip();
     }
 

@@ -229,7 +229,7 @@ export function deserializeMobject(data: SerializedMobject): Mobject {
             const d = data as SerializedLine;
             const start = deserializeVector2(d.start);
             const end = deserializeVector2(d.end);
-            const line = new Line(start, end);
+            const line = new Line(start.x, start.y, end.x, end.y);
             applyVMobjectBase(line, d);
             return line;
         }

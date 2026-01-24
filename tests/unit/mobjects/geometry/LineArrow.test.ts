@@ -5,19 +5,17 @@ import { Vector2 } from '../../../../src/core/math/Vector2/Vector2';
 
 describe('Line', () => {
     test('creates straight line', () => {
-        const start = new Vector2(1, 1);
-        const end = new Vector2(3, 4);
-        const line = new Line(start, end);
+        const line = new Line(1, 1, 3, 4);
         const path = line.paths[0]!;
         
-        expect(path.getPointAt(0).equals(start)).toBe(true);
-        expect(path.getPointAt(1).equals(end)).toBe(true);
+        expect(path.getPointAt(0).equals(new Vector2(1, 1))).toBe(true);
+        expect(path.getPointAt(1).equals(new Vector2(3, 4))).toBe(true);
     });
 });
 
 describe('Arrow', () => {
     test('has line and tip', () => {
-        const arrow = new Arrow(Vector2.ZERO, Vector2.RIGHT);
+        const arrow = new Arrow(0, 0, 1, 0);
         expect(arrow.paths.length).toBe(2);
         
         // Line

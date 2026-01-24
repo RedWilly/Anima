@@ -3,11 +3,13 @@ import { BezierPath } from '../../core/math/bezier/BezierPath';
 import { Vector2 } from '../../core/math/Vector2/Vector2';
 
 export class Line extends VMobject {
-    constructor(
-        readonly start: Vector2 = Vector2.ZERO,
-        readonly end: Vector2 = Vector2.RIGHT
-    ) {
+    readonly start: Vector2;
+    readonly end: Vector2;
+
+    constructor(x1: number = 0, y1: number = 0, x2: number = 1, y2: number = 0) {
         super();
+        this.start = new Vector2(x1, y1);
+        this.end = new Vector2(x2, y2);
         this.generatePath();
     }
 
