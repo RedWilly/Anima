@@ -36,14 +36,22 @@ export class AnimationQueue {
     /** Sets the duration of the last queued animation. */
     setLastDuration(seconds: number): void {
         const last = this.queue[this.queue.length - 1];
-        if (last && !isPrebuilt(last)) {
+        if (!last) return;
+        
+        if (isPrebuilt(last)) {
+            last.animation.duration(seconds);
+        } else {
             last.config.durationSeconds = seconds;
         }
     }
 
     setLastEasing(easing: EasingFunction): void {
         const last = this.queue[this.queue.length - 1];
-        if (last && !isPrebuilt(last)) {
+        if (!last) return;
+        
+        if (isPrebuilt(last)) {
+            last.animation.ease(easing);
+        } else {
             last.config.easing = easing;
         }
     }
@@ -54,6 +62,29 @@ export class AnimationQueue {
 
     isEmpty(): boolean {
         return this.queue.length === 0;
+    }
+
+    /**
+     * Removes and returns the last queued animation.
+     * Used by parallel() to extract individual animations without double-counting.
+     */
+    popLastAnimation(): Animation<Mobject> | null {
+        const last = this.queue.pop();
+        if (!last) return null;
+        
+        if (isPrebuilt(last)) {
+            return last.animation;
+        } else {
+            const anim = last.factory(this.target);
+            anim.duration(last.config.durationSeconds);
+            if (last.config.easing) {
+                anim.ease(last.config.easing);
+            }
+            if (last.config.delaySeconds !== undefined) {
+                anim.delay(last.config.delaySeconds);
+            }
+            return anim;
+        }
     }
 
     /**

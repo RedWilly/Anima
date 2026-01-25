@@ -1,12 +1,11 @@
 import { Matrix3x3 } from '../core/math/matrix/Matrix3x3';
 import { Vector2 } from '../core/math/Vector2/Vector2';
-import type { Animation } from '../core/animations/Animation';
+import { Animation } from '../core/animations/Animation';
 import type { EasingFunction } from '../core/animations/easing';
 import { AnimationQueue } from '../fluent/AnimationQueue';
 import { FadeIn, FadeOut } from '../core/animations/fade';
 import { MoveTo, Rotate, Scale } from '../core/animations/transform';
 import { Parallel } from '../core/animations/composition';
-import type { AnimFactory } from '../fluent/factories';
 
 /**
  * Base class for all mathematical objects.
@@ -136,28 +135,43 @@ export class Mobject {
 
   // ========== Fluent Animation API ==========
 
-  fadeIn(durationSeconds?: number): this {
-    this.getQueue().enqueue((t: Mobject) => new FadeIn(t), durationSeconds);
+  private createAnimation<T extends Animation<Mobject>>(animation: T, durationSeconds?: number): T {
+    if (durationSeconds !== undefined) {
+      animation.duration(durationSeconds);
+    }
+    return animation;
+  }
+
+  // ========== Unified Fluent Animation API ==========
+  // These methods work for both sequential chaining AND parallel usage
+
+  fadeIn(durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
+    const animation = this.createAnimation(new FadeIn(this), durationSeconds);
+    this.getQueue().enqueueAnimation(animation);
     return this;
   }
 
-  fadeOut(durationSeconds?: number): this {
-    this.getQueue().enqueue((t: Mobject) => new FadeOut(t), durationSeconds);
+  fadeOut(durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
+    const animation = this.createAnimation(new FadeOut(this), durationSeconds);
+    this.getQueue().enqueueAnimation(animation);
     return this;
   }
 
-  moveTo(x: number, y: number, durationSeconds?: number): this {
-    this.getQueue().enqueue((t: Mobject) => new MoveTo(t, x, y), durationSeconds);
+  moveTo(x: number, y: number, durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
+    const animation = this.createAnimation(new MoveTo(this, x, y), durationSeconds);
+    this.getQueue().enqueueAnimation(animation);
     return this;
   }
 
-  rotate(angle: number, durationSeconds?: number): this {
-    this.getQueue().enqueue((t: Mobject) => new Rotate(t, angle), durationSeconds);
+  rotate(angle: number, durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
+    const animation = this.createAnimation(new Rotate(this, angle), durationSeconds);
+    this.getQueue().enqueueAnimation(animation);
     return this;
   }
 
-  scaleTo(factor: number, durationSeconds?: number): this {
-    this.getQueue().enqueue((t: Mobject) => new Scale(t, factor), durationSeconds);
+  scaleTo(factor: number, durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
+    const animation = this.createAnimation(new Scale(this, factor), durationSeconds);
+    this.getQueue().enqueueAnimation(animation);
     return this;
   }
 
@@ -185,15 +199,32 @@ export class Mobject {
 
   /**
    * Queues multiple animations to run in parallel (simultaneously).
-   * Uses factory functions from fluent/factories.
+   * Automatically handles both Animation objects and mobject method calls.
    * @example
-   * circle.fadeIn(1).parallel(moveTo(100, 50), rotate(Math.PI)).fadeOut(1);
+   * circle.fadeIn(1).parallel(
+   *     circle.moveTo(100, 50),
+   *     circle.rotate(Math.PI)
+   * ).fadeOut(1);
    */
-  parallel(...factories: AnimFactory[]): this {
-    if (factories.length === 0) {
+  parallel(...items: (Animation<Mobject> | Mobject)[]): this {
+    if (items.length === 0) {
       return this;
     }
-    const animations = factories.map(factory => factory(this));
+    
+    // Convert any mobjects to animations by extracting and removing their last queued animation
+    const animations = items.map(item => {
+      if (item instanceof Animation) {
+        return item;
+      } else {
+        // item is a Mobject - pop its last queued animation (removes it to avoid double-counting)
+        const anim = item.getQueue().popLastAnimation();
+        if (!anim) {
+          throw new Error('No animation found on mobject for parallel execution');
+        }
+        return anim;
+      }
+    });
+    
     this.getQueue().enqueueAnimation(new Parallel(animations));
     return this;
   }
