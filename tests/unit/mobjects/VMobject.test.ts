@@ -10,11 +10,11 @@ describe('VMobject', () => {
         expect(vmobject).toBeInstanceOf(VMobject);
         expect(vmobject.paths).toEqual([]);
         // Default: strokeWidth=0 means no stroke renders
-        expect(vmobject.strokeColor).toEqual(Color.WHITE);
-        expect(vmobject.strokeWidth).toBe(0);
+        expect(vmobject.getStrokeColor()).toEqual(Color.WHITE);
+        expect(vmobject.getStrokeWidth()).toBe(0);
         // Default: fillOpacity=0 means no fill renders
-        expect(vmobject.fillColor).toEqual(Color.TRANSPARENT);
-        expect(vmobject.fillOpacity).toBe(0);
+        expect(vmobject.getFillColor()).toEqual(Color.TRANSPARENT);
+        expect(vmobject.getFillOpacity()).toBe(0);
     });
 
     test('addPath and paths access', () => {
@@ -32,32 +32,32 @@ describe('VMobject', () => {
         const vmobject = new VMobject();
 
         vmobject.stroke(Color.RED, 5);
-        expect(vmobject.strokeColor).toEqual(Color.RED);
-        expect(vmobject.strokeWidth).toBe(5);
+        expect(vmobject.getStrokeColor()).toEqual(Color.RED);
+        expect(vmobject.getStrokeWidth()).toBe(5);
     });
 
     test('stroke() defaults width to 2', () => {
         const vmobject = new VMobject();
 
         vmobject.stroke(Color.GREEN);
-        expect(vmobject.strokeColor).toEqual(Color.GREEN);
-        expect(vmobject.strokeWidth).toBe(2);
+        expect(vmobject.getStrokeColor()).toEqual(Color.GREEN);
+        expect(vmobject.getStrokeWidth()).toBe(2);
     });
 
     test('fill() with explicit opacity', () => {
         const vmobject = new VMobject();
 
         vmobject.fill(Color.BLUE, 0.5);
-        expect(vmobject.fillColor).toEqual(Color.BLUE);
-        expect(vmobject.fillOpacity).toBe(0.5);
+        expect(vmobject.getFillColor()).toEqual(Color.BLUE);
+        expect(vmobject.getFillOpacity()).toBe(0.5);
     });
 
     test('fill() defaults opacity to 1', () => {
         const vmobject = new VMobject();
 
         vmobject.fill(Color.RED);
-        expect(vmobject.fillColor).toEqual(Color.RED);
-        expect(vmobject.fillOpacity).toBe(1);
+        expect(vmobject.getFillColor()).toEqual(Color.RED);
+        expect(vmobject.getFillOpacity()).toBe(1);
     });
 
     test('getPoints returns PathCommand[] from path', () => {

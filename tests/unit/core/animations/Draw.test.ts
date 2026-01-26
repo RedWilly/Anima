@@ -22,7 +22,7 @@ describe('Draw Animation', () => {
             expect(partialLength).toBeLessThan(originalLength);
 
             // Fill should be disabled during stroke phase
-            expect(rect.fillOpacity).toBe(0);
+            expect(rect.getFillOpacity()).toBe(0);
         });
 
         it('should fill shape in second half', () => {
@@ -40,8 +40,8 @@ describe('Draw Animation', () => {
             expect(finalLength).toBeCloseTo(originalLength, 1);
 
             // Fill opacity should be partially visible
-            expect(rect.fillOpacity).toBeGreaterThan(0);
-            expect(rect.fillOpacity).toBeLessThan(0.8);
+            expect(rect.getFillOpacity()).toBeGreaterThan(0);
+            expect(rect.getFillOpacity()).toBeLessThan(0.8);
         });
 
         it('should show full shape with fill when interpolate(1)', () => {
@@ -55,7 +55,7 @@ describe('Draw Animation', () => {
             expect(rect.paths.length).toBeGreaterThan(0);
             const finalLength = rect.paths[0]?.getLength() ?? 0;
             expect(finalLength).toBeCloseTo(originalLength, 1);
-            expect(rect.fillOpacity).toBeCloseTo(0.8, 3);
+            expect(rect.getFillOpacity()).toBeCloseTo(0.8, 3);
         });
     });
 
@@ -78,7 +78,7 @@ describe('Draw Animation', () => {
 
             anim.interpolate(0.75);
 
-            expect(circle.fillOpacity).toBe(0);
+            expect(circle.getFillOpacity()).toBe(0);
         });
 
         it('should handle transition at exactly 50%', () => {
@@ -94,7 +94,7 @@ describe('Draw Animation', () => {
             expect(length).toBeCloseTo(originalLength, 1);
 
             // Fill should be starting (0% of original)
-            expect(rect.fillOpacity).toBe(0);
+            expect(rect.getFillOpacity()).toBe(0);
         });
 
         it('should inherit Animation defaults', () => {
@@ -114,33 +114,33 @@ describe('Draw Animation', () => {
 
     describe('Stroke/Fill Combinations', () => {
         it('should handle stroke only (no fill)', () => {
-            const circle = new Circle(50);
-            circle.stroke(Color.RED, 3);
-            circle.fillOpacity = 0;
-            const anim = new Draw(circle);
+           const circle = new Circle(50);
+           circle.stroke(Color.RED, 3);
+           circle.fill(circle.getFillColor(), 0);
+           const anim = new Draw(circle);
 
-            anim.interpolate(0.25);
-            expect(circle.paths.length).toBeGreaterThan(0);
-            expect(circle.fillOpacity).toBe(0);
+           anim.interpolate(0.25);
+           expect(circle.paths.length).toBeGreaterThan(0);
+           expect(circle.getFillOpacity()).toBe(0);
 
-            anim.interpolate(0.75);
-            expect(circle.fillOpacity).toBe(0);
+           anim.interpolate(0.75);
+           expect(circle.getFillOpacity()).toBe(0);
 
-            anim.interpolate(1);
-            expect(circle.fillOpacity).toBe(0);
+           anim.interpolate(1);
+           expect(circle.getFillOpacity()).toBe(0);
         });
 
         it('should handle fill only (no stroke in visual sense)', () => {
             const rect = new Rectangle(100, 50);
-            rect.strokeWidth = 0;
+            rect.stroke(rect.getStrokeColor(), 0);
             rect.fill(Color.BLUE, 1);
             const anim = new Draw(rect);
 
             anim.interpolate(0.5);
-            expect(rect.fillOpacity).toBe(0);
+            expect(rect.getFillOpacity()).toBe(0);
 
             anim.interpolate(1);
-            expect(rect.fillOpacity).toBe(1);
+            expect(rect.getFillOpacity()).toBe(1);
         });
 
         it('should handle both stroke and fill', () => {
@@ -151,18 +151,18 @@ describe('Draw Animation', () => {
 
             // First half - stroke only
             anim.interpolate(0.25);
-            expect(rect.fillOpacity).toBe(0);
-            expect(rect.strokeWidth).toBe(2);
+            expect(rect.getFillOpacity()).toBe(0);
+            expect(rect.getStrokeWidth()).toBe(2);
 
             // Second half - fill fades in
             anim.interpolate(0.75);
-            expect(rect.fillOpacity).toBeGreaterThan(0);
-            expect(rect.fillOpacity).toBeLessThan(0.8);
-            expect(rect.strokeWidth).toBe(2);
+            expect(rect.getFillOpacity()).toBeGreaterThan(0);
+            expect(rect.getFillOpacity()).toBeLessThan(0.8);
+            expect(rect.getStrokeWidth()).toBe(2);
 
             // Complete
             anim.interpolate(1);
-            expect(rect.fillOpacity).toBeCloseTo(0.8, 3);
+            expect(rect.getFillOpacity()).toBeCloseTo(0.8, 3);
         });
 
         it('should preserve stroke properties throughout animation', () => {
@@ -172,16 +172,16 @@ describe('Draw Animation', () => {
             const anim = new Draw(circle);
 
             anim.interpolate(0.1);
-            expect(circle.strokeWidth).toBe(5);
+            expect(circle.getStrokeWidth()).toBe(5);
 
             anim.interpolate(0.5);
-            expect(circle.strokeWidth).toBe(5);
+            expect(circle.getStrokeWidth()).toBe(5);
 
             anim.interpolate(0.9);
-            expect(circle.strokeWidth).toBe(5);
+            expect(circle.getStrokeWidth()).toBe(5);
 
             anim.interpolate(1);
-            expect(circle.strokeWidth).toBe(5);
+            expect(circle.getStrokeWidth()).toBe(5);
         });
 
         it('should correctly calculate fill opacity at various points', () => {
@@ -190,13 +190,13 @@ describe('Draw Animation', () => {
             const anim = new Draw(rect);
 
             anim.interpolate(0.5);
-            expect(rect.fillOpacity).toBe(0);
+            expect(rect.getFillOpacity()).toBe(0);
 
             anim.interpolate(0.75);
-            expect(rect.fillOpacity).toBeCloseTo(0.5, 2);
+            expect(rect.getFillOpacity()).toBeCloseTo(0.5, 2);
 
             anim.interpolate(1);
-            expect(rect.fillOpacity).toBeCloseTo(1, 2);
+            expect(rect.getFillOpacity()).toBeCloseTo(1, 2);
         });
     });
 });

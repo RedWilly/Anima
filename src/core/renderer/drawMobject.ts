@@ -73,17 +73,17 @@ function drawVMobject(
         applyPathCommands(ctx, commands, transform);
 
         // Fill first (so stroke is on top)
-        if (vmobject.fillOpacity > 0) {
-            const fillColor = vmobject.fillColor;
-            ctx.fillStyle = `rgba(${fillColor.r}, ${fillColor.g}, ${fillColor.b}, ${vmobject.fillOpacity})`;
+        if (vmobject.getFillOpacity() > 0) {
+            const fillColor = vmobject.getFillColor();
+            ctx.fillStyle = `rgba(${fillColor.r}, ${fillColor.g}, ${fillColor.b}, ${vmobject.getFillOpacity()})`;
             ctx.fill();
         }
 
         // Then stroke
-        if (vmobject.strokeWidth > 0) {
-            const strokeColor = vmobject.strokeColor;
+        if (vmobject.getStrokeWidth() > 0) {
+            const strokeColor = vmobject.getStrokeColor();
             ctx.strokeStyle = `rgba(${strokeColor.r}, ${strokeColor.g}, ${strokeColor.b}, ${strokeColor.a})`;
-            ctx.lineWidth = vmobject.strokeWidth;
+            ctx.lineWidth = vmobject.getStrokeWidth();
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.stroke();

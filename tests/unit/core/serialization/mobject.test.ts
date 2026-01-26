@@ -45,8 +45,8 @@ describe('Mobject Serialization', () => {
             const restored = deserializeMobject(serialized) as Circle;
 
             expect(restored).toBeInstanceOf(Circle);
-            expect((restored as VMobject).strokeWidth).toBe(3);
-            expect((restored as VMobject).fillOpacity).toBe(0.5);
+            expect((restored as VMobject).getStrokeWidth()).toBe(3);
+            expect((restored as VMobject).getFillOpacity()).toBe(0.5);
         });
     });
 

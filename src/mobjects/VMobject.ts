@@ -20,13 +20,13 @@ export class VMobject extends Mobject {
     protected pathList: BezierPath[] = [];
 
     /** Stroke color. Only rendered if strokeWidth > 0. */
-    strokeColor: Color = Color.WHITE;
+    protected strokeColor: Color = Color.WHITE;
     /** Stroke width. Default 0 means no stroke is rendered. */
-    strokeWidth: number = 0;
+    protected strokeWidth: number = 0;
     /** Fill color. Only rendered if fillOpacity > 0. */
-    fillColor: Color = Color.TRANSPARENT;
+    protected fillColor: Color = Color.TRANSPARENT;
     /** Fill opacity. Default 0 means no fill is rendered. */
-    fillOpacity: number = 0;
+    protected fillOpacity: number = 0;
 
     constructor() {
         super();
@@ -38,6 +38,34 @@ export class VMobject extends Mobject {
 
     set paths(value: BezierPath[]) {
         this.pathList = value;
+    }
+
+    /**
+     * Gets the stroke color.
+     */
+    getStrokeColor(): Color {
+        return this.strokeColor;
+    }
+
+    /**
+     * Gets the stroke width.
+     */
+    getStrokeWidth(): number {
+        return this.strokeWidth;
+    }
+
+    /**
+     * Gets the fill color.
+     */
+    getFillColor(): Color {
+        return this.fillColor;
+    }
+
+    /**
+     * Gets the fill opacity.
+     */
+    getFillOpacity(): number {
+        return this.fillOpacity;
     }
 
     /**

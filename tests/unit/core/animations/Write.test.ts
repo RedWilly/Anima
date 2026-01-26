@@ -52,7 +52,7 @@ describe('Write Animation', () => {
             anim.interpolate(0.5);
 
             // Write animation preserves fill (like Manim)
-            expect(rect.fillOpacity).toBe(1);
+            expect(rect.getFillOpacity()).toBe(1);
         });
     });
 
@@ -113,16 +113,16 @@ describe('Write Animation', () => {
 
     describe('Stroke/Fill Combinations', () => {
         it('should handle stroke only (no fill) - typical use case', () => {
-            const circle = new Circle(50);
-            circle.stroke(Color.RED, 3);
-            // circle.fillOpacity = 0; /not needed
-            const anim = new Write(circle);
+           const circle = new Circle(50);
+           circle.stroke(Color.RED, 3);
+           // circle.fill(circle.getFillColor(), 0); /not needed
+           const anim = new Write(circle);
 
-            anim.interpolate(1);
+           anim.interpolate(1);
 
-            expect(circle.paths.length).toBeGreaterThan(0);
-            expect(circle.strokeWidth).toBe(3);
-            expect(circle.fillOpacity).toBe(0);
+           expect(circle.paths.length).toBeGreaterThan(0);
+           expect(circle.getStrokeWidth()).toBe(3);
+           expect(circle.getFillOpacity()).toBe(0);
         });
 
         it('should preserve fill during animation', () => {
@@ -134,11 +134,11 @@ describe('Write Animation', () => {
             anim.interpolate(0.5);
 
             // Write preserves fill (like Manim)
-            expect(rect.fillOpacity).toBe(0.8);
+            expect(rect.getFillOpacity()).toBe(0.8);
             expect(rect.paths.length).toBeGreaterThan(0);
 
             anim.interpolate(1);
-            expect(rect.fillOpacity).toBe(0.8);
+            expect(rect.getFillOpacity()).toBe(0.8);
         });
 
         it('should preserve stroke color and width during animation', () => {
@@ -147,25 +147,25 @@ describe('Write Animation', () => {
             const anim = new Write(circle);
 
             anim.interpolate(0.3);
-            expect(circle.strokeWidth).toBe(5);
+            expect(circle.getStrokeWidth()).toBe(5);
 
             anim.interpolate(0.7);
-            expect(circle.strokeWidth).toBe(5);
+            expect(circle.getStrokeWidth()).toBe(5);
 
             anim.interpolate(1);
-            expect(circle.strokeWidth).toBe(5);
+            expect(circle.getStrokeWidth()).toBe(5);
         });
 
         it('should work with zero stroke width and preserve fill', () => {
             const circle = new Circle(50);
-            circle.strokeWidth = 0;
+            circle.stroke(circle.getStrokeColor(), 0);
             circle.fill(Color.RED, 1);
             const anim = new Write(circle);
 
             anim.interpolate(0.5);
 
             expect(circle.paths.length).toBeGreaterThan(0);
-            expect(circle.fillOpacity).toBe(1);
+            expect(circle.getFillOpacity()).toBe(1);
         });
     });
 });

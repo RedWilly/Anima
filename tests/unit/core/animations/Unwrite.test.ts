@@ -126,13 +126,13 @@ describe('Unwrite Animation', () => {
         it('should handle stroke only (no fill)', () => {
             const circle = new Circle(50);
             circle.stroke(Color.RED, 3);
-            circle.fillOpacity = 0;
+            circle.fill(circle.getFillColor(), 0);
             const anim = new Unwrite(circle);
 
             anim.interpolate(0.5);
 
             expect(circle.paths.length).toBeGreaterThan(0);
-            expect(circle.strokeWidth).toBe(3);
+            expect(circle.getStrokeWidth()).toBe(3);
         });
 
         it('should preserve fill during unwrite', () => {
@@ -144,7 +144,7 @@ describe('Unwrite Animation', () => {
             anim.interpolate(0.5);
 
             // Unwrite preserves fill (like Manim)
-            expect(rect.fillOpacity).toBe(0.8);
+            expect(rect.getFillOpacity()).toBe(0.8);
         });
 
         it('should preserve stroke properties during animation', () => {
@@ -153,10 +153,10 @@ describe('Unwrite Animation', () => {
             const anim = new Unwrite(circle);
 
             anim.interpolate(0);
-            expect(circle.strokeWidth).toBe(5);
+            expect(circle.getStrokeWidth()).toBe(5);
 
             anim.interpolate(0.5);
-            expect(circle.strokeWidth).toBe(5);
+            expect(circle.getStrokeWidth()).toBe(5);
         });
 
         it('should work with both stroke and fill set', () => {
@@ -167,10 +167,10 @@ describe('Unwrite Animation', () => {
 
             anim.interpolate(0);
             expect(rect.paths.length).toBeGreaterThan(0);
-            expect(rect.fillOpacity).toBe(1);
+            expect(rect.getFillOpacity()).toBe(1);
 
             anim.interpolate(0.5);
-            expect(rect.fillOpacity).toBe(1);
+            expect(rect.getFillOpacity()).toBe(1);
 
             anim.interpolate(1);
             expect(rect.paths.length).toBe(0);

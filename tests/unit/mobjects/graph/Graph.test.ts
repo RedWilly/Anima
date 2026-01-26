@@ -131,10 +131,10 @@ describe('Graph', () => {
                 fillOpacity: 0.5
             });
 
-            expect(node.strokeColor).toBe(Color.RED);
-            expect(node.strokeWidth).toBe(3);
-            expect(node.fillColor).toBe(Color.BLUE);
-            expect(node.fillOpacity).toBe(0.5);
+            expect(node.getStrokeColor()).toBe(Color.RED);
+            expect(node.getStrokeWidth()).toBe(3);
+            expect(node.getFillColor()).toBe(Color.BLUE);
+            expect(node.getFillOpacity()).toBe(0.5);
         });
 
         test('node stroke and fill can be changed', () => {
@@ -144,10 +144,10 @@ describe('Graph', () => {
             node.stroke(Color.GREEN, 5);
             node.fill(Color.YELLOW, 0.8);
 
-            expect(node.strokeColor).toBe(Color.GREEN);
-            expect(node.strokeWidth).toBe(5);
-            expect(node.fillColor).toBe(Color.YELLOW);
-            expect(node.fillOpacity).toBe(0.8);
+            expect(node.getStrokeColor()).toBe(Color.GREEN);
+            expect(node.getStrokeWidth()).toBe(5);
+            expect(node.getFillColor()).toBe(Color.YELLOW);
+            expect(node.getFillOpacity()).toBe(0.8);
         });
     });
 
@@ -173,8 +173,8 @@ describe('Graph', () => {
                 strokeWidth: 4
             });
 
-            expect(edge?.strokeColor).toBe(Color.RED);
-            expect(edge?.strokeWidth).toBe(4);
+            expect(edge?.getStrokeColor()).toBe(Color.RED);
+            expect(edge?.getStrokeWidth()).toBe(4);
         });
 
         test('curved edge creates quadratic bezier', () => {

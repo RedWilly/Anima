@@ -92,7 +92,7 @@ describe('Text Property Tests', () => {
                     for (let i = 0; i < str.length; i++) {
                         const glyph = text.getGlyph(i);
                         if (!glyph) return false;
-                        if (glyph.fillColor.toHex() !== Color.WHITE.toHex()) return false;
+                        if (glyph.getFillColor().toHex() !== Color.WHITE.toHex()) return false;
                     }
                     return true;
                 }
@@ -108,7 +108,7 @@ describe('Text Property Tests', () => {
                     for (let i = 0; i < str.length; i++) {
                         const glyph = text.getGlyph(i);
                         if (!glyph) return false;
-                        if (glyph.fillColor.toHex() !== color.toHex()) return false;
+                        if (glyph.getFillColor().toHex() !== color.toHex()) return false;
                     }
                     return true;
                 }
@@ -125,7 +125,7 @@ describe('Text Property Tests', () => {
                     for (let i = 0; i < str.length; i++) {
                         const glyph = text.getGlyph(i);
                         if (!glyph) return false;
-                        if (glyph.fillColor.toHex() !== newColor.toHex()) return false;
+                        if (glyph.getFillColor().toHex() !== newColor.toHex()) return false;
                     }
                     return true;
                 }

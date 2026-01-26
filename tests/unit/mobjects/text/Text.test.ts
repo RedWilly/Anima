@@ -72,15 +72,15 @@ describe('Text Styling', () => {
         const glyph = text.getGlyph(0);
 
         // Default style should fill with white
-        expect(glyph?.fillColor.toHex()).toBe(Color.WHITE.toHex());
-        expect(glyph?.fillOpacity).toBe(1);
+        expect(glyph?.getFillColor().toHex()).toBe(Color.WHITE.toHex());
+        expect(glyph?.getFillOpacity()).toBe(1);
     });
 
     test('custom color style is applied', () => {
         const text = new Text('A', FONT_PATH, { color: Color.RED });
         const glyph = text.getGlyph(0);
 
-        expect(glyph?.fillColor.toHex()).toBe(Color.RED.toHex());
+        expect(glyph?.getFillColor().toHex()).toBe(Color.RED.toHex());
     });
 
     test('setStyle updates all glyphs', () => {
@@ -90,8 +90,8 @@ describe('Text Styling', () => {
         const glyph0 = text.getGlyph(0);
         const glyph1 = text.getGlyph(1);
 
-        expect(glyph0?.fillColor.toHex()).toBe(Color.BLUE.toHex());
-        expect(glyph1?.fillColor.toHex()).toBe(Color.BLUE.toHex());
+        expect(glyph0?.getFillColor().toHex()).toBe(Color.BLUE.toHex());
+        expect(glyph1?.getFillColor().toHex()).toBe(Color.BLUE.toHex());
     });
 
     test('getStyle returns current style', () => {
@@ -110,9 +110,9 @@ describe('Text Per-Glyph Animation Support', () => {
         expect(glyph).toBeDefined();
         glyph!.fill(Color.GREEN, 1);
 
-        expect(glyph!.fillColor.toHex()).toBe(Color.GREEN.toHex());
+        expect(glyph!.getFillColor().toHex()).toBe(Color.GREEN.toHex());
         // Second glyph should be unaffected
-        expect(text.getGlyph(1)?.fillColor.toHex()).toBe(Color.WHITE.toHex());
+        expect(text.getGlyph(1)?.getFillColor().toHex()).toBe(Color.WHITE.toHex());
     });
 
     test('glyphs have character property', () => {

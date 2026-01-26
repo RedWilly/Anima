@@ -6,10 +6,10 @@ export class EntFlu extends Scene {
         const fontPath = 'assets/fonts/Inter.ttf';
 
         // Write - draws path progressively (preserves fill throughout)
-        const text = new Text("Hello", fontPath).pos(-4, 2);
+        const text = new Text("Hello", fontPath,{fontSize: 1} ).pos(-4, 2);
         text.fill(Color.WHITE);          
-        text.stroke(Color.BLACK, 2);  
-        text.write(1);
+        text.stroke(Color.RED, 2);  
+        text.write(1); // or text.draw(1);
         this.play(text);
 
         const blueCircle = new Circle(0.5).pos(0, 2).fill(Color.fromHex('#3498db'));
@@ -17,7 +17,7 @@ export class EntFlu extends Scene {
         this.play(blueCircle);
 
         // Draw - stroke first (0-50%), then fill fades in (50-100%)
-        const redRect = new Rectangle(1, 1).pos(0, 0).fill(Color.fromHex('#e74c3c'));
+        const redRect = new Rectangle(1, 1).pos(0, 0).fill(Color.WHITE).stroke(Color.WHITE, 2);
         redRect.draw(1);
         this.play(redRect);
 
@@ -25,6 +25,12 @@ export class EntFlu extends Scene {
         const greenCircle = new Circle(0.5).pos(0, -2).fill(Color.fromHex('#2ecc71'));
         greenCircle.write(1);
         this.play(greenCircle);
+
+        text.unwrite(1)
+        blueCircle.unwrite(1);
+        redRect.unwrite(1);
+        greenCircle.unwrite(1);
+        this.play(text, blueCircle, redRect, greenCircle);
     }
 }
 

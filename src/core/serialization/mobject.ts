@@ -85,10 +85,10 @@ function serializeVMobjectBase(v: VMobject): SerializedVMobject {
     return {
         ...base,
         paths: v.paths.map(serializeBezierPath),
-        strokeColor: serializeColor(v.strokeColor),
-        strokeWidth: v.strokeWidth,
-        fillColor: serializeColor(v.fillColor),
-        fillOpacity: v.fillOpacity,
+        strokeColor: serializeColor(v.getStrokeColor()),
+        strokeWidth: v.getStrokeWidth(),
+        fillColor: serializeColor(v.getFillColor()),
+        fillOpacity: v.getFillOpacity(),
     };
 }
 
@@ -193,10 +193,8 @@ function applyMobjectBase(m: Mobject, data: SerializedMobject): void {
 function applyVMobjectBase(v: VMobject, data: SerializedVMobject): void {
     applyMobjectBase(v, data);
     v.paths = data.paths.map(deserializeBezierPath);
-    v.strokeColor = deserializeColor(data.strokeColor);
-    v.strokeWidth = data.strokeWidth;
-    v.fillColor = deserializeColor(data.fillColor);
-    v.fillOpacity = data.fillOpacity;
+    v.stroke(deserializeColor(data.strokeColor), data.strokeWidth);
+    v.fill(deserializeColor(data.fillColor), data.fillOpacity);
 }
 
 /**
