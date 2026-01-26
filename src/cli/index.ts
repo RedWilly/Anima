@@ -1,3 +1,5 @@
+#!/usr/bin/env bun
+
 import { Command } from 'commander';
 import { listScenes } from './commands/list-scenes';
 import { render } from './commands/render';

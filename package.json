@@ -1,8 +1,16 @@
 {
   "name": "anima",
-  "module": "index.ts",
+  "version": "0.1.0",
+  "description": "Animation library for mathematical visualizations",
   "type": "module",
-  "private": true,
+  "main": "./src/index.ts",
+  "bin": {
+    "anima": "./src/cli/index.ts"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./cli": "./src/cli/index.ts"
+  },
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
