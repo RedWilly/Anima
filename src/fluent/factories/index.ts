@@ -17,7 +17,6 @@ export {
     write,
     unwrite,
     draw,
-    create,
 } from './vmobject';
 
 // Types

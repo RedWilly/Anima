@@ -24,11 +24,20 @@ export class GraphNode extends VMobject {
             this.pos(config.position.x, config.position.y);
         }
 
-        // Apply styling
-        this.strokeColor = config.strokeColor ?? Color.WHITE;
-        this.strokeWidth = config.strokeWidth ?? 2;
-        this.fillColor = config.fillColor ?? Color.TRANSPARENT;
-        this.fillOpacity = config.fillOpacity ?? 0;
+        // Apply styling only if explicitly provided in config
+        // If not provided, VMobject defaults apply (no stroke, no fill)
+        if (config.strokeColor !== undefined) {
+            this.strokeColor = config.strokeColor;
+        }
+        if (config.strokeWidth !== undefined) {
+            this.strokeWidth = config.strokeWidth;
+        }
+        if (config.fillColor !== undefined) {
+            this.fillColor = config.fillColor;
+        }
+        if (config.fillOpacity !== undefined) {
+            this.fillOpacity = config.fillOpacity;
+        }
 
         this.generateCirclePath();
     }

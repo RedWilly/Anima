@@ -84,7 +84,13 @@ export class VGroup extends VMobject {
         return this;
     }
 
-    override stroke(color: Color, width: number): this {
+    /**
+     * Sets the stroke color and width for this VGroup and all children.
+     * @param color - The stroke color.
+     * @param width - The stroke width. Default is 2.
+     * @returns this for chaining.
+     */
+    override stroke(color: Color, width: number = 2): this {
         super.stroke(color, width);
         for (const child of this.children) {
             child.stroke(color, width);
@@ -92,7 +98,13 @@ export class VGroup extends VMobject {
         return this;
     }
 
-    override fill(color: Color, opacity: number): this {
+    /**
+     * Sets the fill color and opacity for this VGroup and all children.
+     * @param color - The fill color.
+     * @param opacity - The fill opacity. Default is 1 (fully opaque).
+     * @returns this for chaining.
+     */
+    override fill(color: Color, opacity: number = 1): this {
         super.fill(color, opacity);
         for (const child of this.children) {
             child.fill(color, opacity);

@@ -7,7 +7,7 @@ import type { Animation } from '../animations/Animation';
 import { FadeIn, FadeOut } from '../animations/fade';
 import { MoveTo, Rotate, Scale } from '../animations/transform';
 import { MorphTo } from '../animations/morph';
-import { Create, Draw, Write, Unwrite } from '../animations/draw';
+import { Draw, Write, Unwrite } from '../animations/draw';
 import { Sequence, Parallel } from '../animations/composition';
 import { Mobject } from '../../mobjects/Mobject';
 import { VMobject } from '../../mobjects/VMobject';
@@ -37,6 +37,9 @@ function serializeAnimationConfig(anim: Animation): SerializedAnimationConfig {
     };
 }
 
+/**
+ * Maps animation instance to serializable type name.
+ */
 function getAnimationType(anim: Animation): AnimationType {
     if (anim instanceof FadeIn) return 'FadeIn';
     if (anim instanceof FadeOut) return 'FadeOut';
@@ -44,7 +47,6 @@ function getAnimationType(anim: Animation): AnimationType {
     if (anim instanceof Rotate) return 'Rotate';
     if (anim instanceof Scale) return 'Scale';
     if (anim instanceof MorphTo) return 'MorphTo';
-    if (anim instanceof Create) return 'Create';
     if (anim instanceof Draw) return 'Draw';
     if (anim instanceof Write) return 'Write';
     if (anim instanceof Unwrite) return 'Unwrite';
@@ -171,7 +173,7 @@ export function deserializeAnimation(
             break;
         }
         case 'Create':
-            anim = new Create(target as VMobject);
+            anim = new Write(target as VMobject);
             break;
         case 'Draw':
             anim = new Draw(target as VMobject);

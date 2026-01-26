@@ -3,18 +3,29 @@ import { BezierPath } from '../core/math/bezier/BezierPath';
 import type { PathCommand } from '../core/math/bezier/types';
 import { Color } from '../core/math/color/Color';
 import { Vector2 } from '../core/math/Vector2/Vector2';
-import { Write, Unwrite, Draw, Create } from '../core/animations/draw';
+import { Write, Unwrite, Draw } from '../core/animations/draw';
 
 /**
  * A Mobject that is defined by one or more BezierPaths.
  * Supports stroke and fill styling, plus VMobject-specific fluent animations.
+ *
+ * Default behavior: nothing renders until explicitly configured.
+ * - Stroke: not rendered by default (strokeWidth = 0)
+ * - Fill: not rendered by default (fillOpacity = 0)
+ *
+ * Use .stroke(color, width) to add a stroke.
+ * Use .fill(color) to add a fill (opacity defaults to 1).
  */
 export class VMobject extends Mobject {
     protected pathList: BezierPath[] = [];
 
+    /** Stroke color. Only rendered if strokeWidth > 0. */
     strokeColor: Color = Color.WHITE;
-    strokeWidth: number = 2;
+    /** Stroke width. Default 0 means no stroke is rendered. */
+    strokeWidth: number = 0;
+    /** Fill color. Only rendered if fillOpacity > 0. */
     fillColor: Color = Color.TRANSPARENT;
+    /** Fill opacity. Default 0 means no fill is rendered. */
     fillOpacity: number = 0;
 
     constructor() {
@@ -29,18 +40,35 @@ export class VMobject extends Mobject {
         this.pathList = value;
     }
 
+    /**
+     * Adds a new path to the VMobject.
+     * @param path - The BezierPath to add.
+     * @returns this for chaining.
+     */
     addPath(path: BezierPath): this {
         this.pathList.push(path);
         return this;
     }
 
-    stroke(color: Color, width: number): this {
+    /**
+     * Sets the stroke color and width.
+     * @param color - The stroke color.
+     * @param width - The stroke width. Default is 2.
+     * @returns this for chaining.
+     */
+    stroke(color: Color, width: number = 2): this {
         this.strokeColor = color;
         this.strokeWidth = width;
         return this;
     }
 
-    fill(color: Color, opacity: number): this {
+    /**
+     * Sets the fill color and opacity.
+     * @param color - The fill color.
+     * @param opacity - The fill opacity. Default is 1 (fully opaque).
+     * @returns this for chaining.
+     */
+    fill(color: Color, opacity: number = 1): this {
         this.fillColor = color;
         this.fillOpacity = opacity;
         return this;
@@ -120,23 +148,34 @@ export class VMobject extends Mobject {
 
     // ========== VMobject-Specific Fluent Animation API ==========
 
+    /**
+     * Progressively draws the VMobject's paths from start to end.
+     * Preserves fill throughout the animation.
+     * @param durationSeconds - Animation duration in seconds.
+     * @returns this for chaining.
+     */
     write(durationSeconds?: number): this {
         this.getQueue().enqueue((t: Mobject) => new Write(t as VMobject), durationSeconds);
         return this;
     }
 
+    /**
+     * Progressively removes the VMobject's paths (reverse of write).
+     * @param durationSeconds - Animation duration in seconds.
+     * @returns this for chaining.
+     */
     unwrite(durationSeconds?: number): this {
         this.getQueue().enqueue((t: Mobject) => new Unwrite(t as VMobject), durationSeconds);
         return this;
     }
 
+    /**
+     * First draws the stroke progressively (0-50%), then fades in the fill (50-100%).
+     * @param durationSeconds - Animation duration in seconds.
+     * @returns this for chaining.
+     */
     draw(durationSeconds?: number): this {
         this.getQueue().enqueue((t: Mobject) => new Draw(t as VMobject), durationSeconds);
-        return this;
-    }
-
-    create(durationSeconds?: number): this {
-        this.getQueue().enqueue((t: Mobject) => new Create(t as VMobject), durationSeconds);
         return this;
     }
 }

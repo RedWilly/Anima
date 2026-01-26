@@ -11,7 +11,7 @@ export { MoveTo, Rotate, Scale } from './transform';
 export { MorphTo } from './morph';
 
 // Draw animations
-export { Create, Draw, Write, Unwrite } from './draw';
+export { Draw, Write, Unwrite } from './draw';
 
 // Composition containers
 export { Sequence, Parallel } from './composition';

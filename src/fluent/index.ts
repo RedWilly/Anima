@@ -34,6 +34,5 @@ export {
     write,
     unwrite,
     draw,
-    create,
 } from './factories';
 export type { AnimFactory } from './factories';

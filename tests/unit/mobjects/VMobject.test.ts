@@ -5,12 +5,14 @@ import { Color } from '../../../src/core/math/color/Color';
 import { Vector2 } from '../../../src/core/math/Vector2/Vector2';
 
 describe('VMobject', () => {
-    test('initialization', () => {
+    test('initialization - nothing renders by default', () => {
         const vmobject = new VMobject();
         expect(vmobject).toBeInstanceOf(VMobject);
         expect(vmobject.paths).toEqual([]);
+        // Default: strokeWidth=0 means no stroke renders
         expect(vmobject.strokeColor).toEqual(Color.WHITE);
-        expect(vmobject.strokeWidth).toBe(2);
+        expect(vmobject.strokeWidth).toBe(0);
+        // Default: fillOpacity=0 means no fill renders
         expect(vmobject.fillColor).toEqual(Color.TRANSPARENT);
         expect(vmobject.fillOpacity).toBe(0);
     });
@@ -26,16 +28,36 @@ describe('VMobject', () => {
         expect(vmobject.paths[0]).toBe(path);
     });
 
-    test('styling methods', () => {
+    test('stroke() with explicit width', () => {
         const vmobject = new VMobject();
 
         vmobject.stroke(Color.RED, 5);
         expect(vmobject.strokeColor).toEqual(Color.RED);
         expect(vmobject.strokeWidth).toBe(5);
+    });
+
+    test('stroke() defaults width to 2', () => {
+        const vmobject = new VMobject();
+
+        vmobject.stroke(Color.GREEN);
+        expect(vmobject.strokeColor).toEqual(Color.GREEN);
+        expect(vmobject.strokeWidth).toBe(2);
+    });
+
+    test('fill() with explicit opacity', () => {
+        const vmobject = new VMobject();
 
         vmobject.fill(Color.BLUE, 0.5);
         expect(vmobject.fillColor).toEqual(Color.BLUE);
         expect(vmobject.fillOpacity).toBe(0.5);
+    });
+
+    test('fill() defaults opacity to 1', () => {
+        const vmobject = new VMobject();
+
+        vmobject.fill(Color.RED);
+        expect(vmobject.fillColor).toEqual(Color.RED);
+        expect(vmobject.fillOpacity).toBe(1);
     });
 
     test('getPoints returns PathCommand[] from path', () => {

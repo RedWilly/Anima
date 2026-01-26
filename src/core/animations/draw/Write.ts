@@ -4,13 +4,18 @@ import { BezierPath } from '../../math/bezier/BezierPath';
 import { getPartialPath } from './partialPath';
 
 /**
- * Animation that progressively draws a VMobject by revealing the stroke.
+ * Animation that progressively draws a VMobject's paths from start to end.
  * Preserves both stroke and fill properties - the complete object is visible at the end.
- * Similar to Create but commonly used for Text objects.
- * 
+ *
+ * This is the canonical animation for progressive path drawing.
+ * At progress 0, nothing is shown. At progress 1, the complete path is shown.
+ *
  * This is an introductory animation - it auto-registers the target with the scene.
- * 
+ *
  * @example
+ * const circle = new Circle(1);
+ * scene.play(new Write(circle));  // Circle is drawn progressively
+ *
  * const text = new Text('Hello');
  * scene.play(new Write(text));  // Text is written progressively
  */

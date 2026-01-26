@@ -38,15 +38,14 @@ export type {
 // No exports needed - methods are available on mobject instances
 
 // ProAPI - Explicit animation objects for advanced users
-export { 
+export {
     Animation,
-    FadeIn, 
-    FadeOut, 
-    MoveTo, 
-    Rotate, 
-    Scale, 
+    FadeIn,
+    FadeOut,
+    MoveTo,
+    Rotate,
+    Scale,
     MorphTo,
-    Create,
     Draw,
     Write,
     Unwrite,
