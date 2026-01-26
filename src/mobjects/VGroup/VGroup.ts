@@ -85,6 +85,19 @@ export class VGroup extends VMobject {
     }
 
     /**
+     * Sets the opacity for this VGroup and all children.
+     * @param value - The opacity value (0-1).
+     * @returns this for chaining.
+     */
+    override setOpacity(value: number): this {
+        super.setOpacity(value);
+        for (const child of this.children) {
+            child.setOpacity(value);
+        }
+        return this;
+    }
+
+    /**
      * Sets the stroke color and width for this VGroup and all children.
      * @param color - The stroke color.
      * @param width - The stroke width. Default is 2.

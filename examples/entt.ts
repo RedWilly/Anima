@@ -9,12 +9,16 @@ export class EntFlu extends Scene {
         const text = new Text("Hello", fontPath,{fontSize: 1} ).pos(-4, 2);
         text.fill(Color.WHITE);          
         text.stroke(Color.RED, 2);  
-        text.write(1); // or text.draw(1);
-        this.play(text);
+
+        // text.write(1); // or text.draw(1);
+        // this.play(text);
+        this.add(text);
+        // this.play(text);
 
         const blueCircle = new Circle(0.5).pos(0, 2).fill(Color.fromHex('#3498db'));
-        blueCircle.write(1);
-        this.play(blueCircle);
+        this.add(blueCircle);
+        // blueCircle.write(1);
+        // this.play(blueCircle);
 
         // Draw - stroke first (0-50%), then fill fades in (50-100%)
         const redRect = new Rectangle(1, 1).pos(0, 0).fill(Color.WHITE).stroke(Color.WHITE, 2);
