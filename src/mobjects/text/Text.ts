@@ -1,5 +1,6 @@
 import * as fontkit from 'fontkit';
 import { VGroup } from '../VGroup';
+import { centerGroup } from '../VGroup/layout';
 import { Glyph } from './Glyph';
 import type { TextStyle } from './types';
 import { DEFAULT_TEXT_STYLE } from './types';
@@ -24,6 +25,7 @@ export class Text extends VGroup {
         this.style = { ...DEFAULT_TEXT_STYLE, ...options };
 
         this.buildGlyphs();
+        centerGroup(this);
         this.applyStyle();
     }
 
