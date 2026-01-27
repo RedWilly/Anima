@@ -3,7 +3,7 @@
  *
  * The fluent API allows building animations through method chaining:
  * @example
- * circle.fadeIn(1).moveTo(100, 50, 2).rotate(Math.PI).toAnimation();
+ * circle.fadeIn(1).moveTo(100, 50, 2).rotate(Math.PI);
  *
  * For parallel animations, use factory functions:
  * @example
@@ -25,14 +25,14 @@ export type {
 export { DEFAULT_DURATION, isPrebuilt } from './FluentTypes';
 
 // Animation factories for .parallel()
-export {
-    fadeIn,
-    fadeOut,
-    moveTo,
-    rotate,
-    scaleTo,
-    write,
-    unwrite,
-    draw,
-} from './factories';
+// export {
+//     fadeIn,
+//     fadeOut,
+//     moveTo,
+//     rotate,
+//     scaleTo,
+//     write,
+//     unwrite,
+//     draw,
+// } from './factories';
 export type { AnimFactory } from './factories';

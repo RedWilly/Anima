@@ -198,21 +198,6 @@ export class EntPro extends Scene {
 
         this.wait(0.3);
 
-        // ========== Complex Sequence ==========
-        // Build a reusable animation sequence
-        const complexSequence = new Sequence([
-            new MoveTo(mainRectangle, 0, -3).duration(2).ease(easeInOutCubic),
-            new Parallel([
-                new Rotate(mainRectangle, Math.PI).duration(0.8),
-                new Scale(mainRectangle, 0.7).duration(0.8)
-            ]),
-            new MoveTo(mainRectangle, 0, 0).duration(0.5).ease(easeInOutCubic),
-            new Scale(mainRectangle, 1 / 0.7).duration(0.3).ease(easeOutBack)
-        ]);
-        this.play(complexSequence);
-
-        this.wait(0.5);
-
         // ========== Exit Sequence ==========
         // Fade out orbits
         const fadeOutOrbits = new Parallel([

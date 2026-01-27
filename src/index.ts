@@ -3,8 +3,7 @@ export { Scene } from './core/scene';
 export type { SceneConfig } from './core/scene';
 
 // Mobjects - Visual objects that can be animated
-export { Mobject, VMobject } from './mobjects';
-export { VGroup } from './mobjects/VGroup';
+export { Mobject, VMobject, VGroup } from './mobjects';
 
 // Camera
 export { Camera } from './core/camera';

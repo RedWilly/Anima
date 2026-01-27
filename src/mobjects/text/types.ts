@@ -12,6 +12,6 @@ export interface TextStyle {
  * Default text style values.
  */
 export const DEFAULT_TEXT_STYLE: TextStyle = {
-    fontSize: 48,
+    fontSize: 1,
     color: Color.WHITE
 };
