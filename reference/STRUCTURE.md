@@ -60,10 +60,7 @@ src/
 │
 ├── fluent/                           # Animation builder API
 │   ├── FluentTypes.ts                # Fluent API types
-│   ├── AnimationQueue.ts             # Queue for building animations
-│   └── factories/                    # Factory functions for mobjects
-│       ├── mobject.ts                # Mobject factories
-│       └── vmobject.ts               # VMobject factories
+│   └── AnimationQueue.ts             # Queue for building animations
 │
 ├── fonts/                            # Fonts
 │   └── Inter.ttf.ts                  # inter font
