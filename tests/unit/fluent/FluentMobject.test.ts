@@ -153,16 +153,14 @@ describe('Mobject Fluent API', () => {
         });
     });
 
-    describe('parallel() with factory functions', () => {
-        test('parallel() returns same instance', async () => {
-            const { moveTo, rotate } = await import('../../../src/fluent/factories');
+    describe('parallel() with method calls', () => {
+        test('parallel() returns same instance', () => {
             const c = new Circle();
             const result = c.parallel(c.moveTo(100, 50), c.rotate(Math.PI));
             expect(result).toBe(c);
         });
 
-        test('parallel animations have duration of longest animation', async () => {
-            const { moveTo, rotate, scaleTo } = await import('../../../src/fluent/factories');
+        test('parallel animations have duration of longest animation', () => {
             const c = new Circle();
             c.parallel(
                 c.moveTo(100, 50, 2),
@@ -173,8 +171,7 @@ describe('Mobject Fluent API', () => {
             expect(c.getQueuedDuration()).toBe(3);
         });
 
-        test('sequential then parallel then sequential', async () => {
-            const { moveTo, rotate } = await import('../../../src/fluent/factories');
+        test('sequential then parallel then sequential', () => {
             const c = new Circle();
             c.fadeIn(1)
                 .parallel(c.moveTo(100, 50, 2), c.rotate(Math.PI, 2))
@@ -183,9 +180,8 @@ describe('Mobject Fluent API', () => {
             expect(c.getQueuedDuration()).toBe(4);
         });
 
-        test('toAnimation() includes parallel animations in sequence', async () => {
-            const { moveTo, rotate } = await import('../../../src/fluent/factories');
-            const { Parallel } = await import('../../../src/core/animations/composition');
+        test('toAnimation() includes parallel animations in sequence', () => {
+            const { Parallel } = require('../../../src/core/animations/composition');
             const c = new Circle();
             c.fadeIn(1).parallel(c.moveTo(100, 50, 2), c.rotate(Math.PI, 2));
             const anim = c.toAnimation();

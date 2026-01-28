@@ -1,4 +1,5 @@
 import { Mobject } from './Mobject';
+import type { Animation } from '../core/animations/Animation';
 import { BezierPath } from '../core/math/bezier/BezierPath';
 import type { PathCommand } from '../core/math/bezier/types';
 import { Color } from '../core/math/color/Color';
@@ -182,8 +183,12 @@ export class VMobject extends Mobject {
      * @param durationSeconds - Animation duration in seconds.
      * @returns this for chaining.
      */
-    write(durationSeconds?: number): this {
-        this.getQueue().enqueue((t: Mobject) => new Write(t as VMobject), durationSeconds);
+    write(durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
+        const animation = new Write(this);
+        if (durationSeconds !== undefined) {
+            animation.duration(durationSeconds);
+        }
+        this.getQueue().enqueueAnimation(animation);
         return this;
     }
 
@@ -192,8 +197,12 @@ export class VMobject extends Mobject {
      * @param durationSeconds - Animation duration in seconds.
      * @returns this for chaining.
      */
-    unwrite(durationSeconds?: number): this {
-        this.getQueue().enqueue((t: Mobject) => new Unwrite(t as VMobject), durationSeconds);
+    unwrite(durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
+        const animation = new Unwrite(this);
+        if (durationSeconds !== undefined) {
+            animation.duration(durationSeconds);
+        }
+        this.getQueue().enqueueAnimation(animation);
         return this;
     }
 
@@ -202,8 +211,12 @@ export class VMobject extends Mobject {
      * @param durationSeconds - Animation duration in seconds.
      * @returns this for chaining.
      */
-    draw(durationSeconds?: number): this {
-        this.getQueue().enqueue((t: Mobject) => new Draw(t as VMobject), durationSeconds);
+    draw(durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
+        const animation = new Draw(this);
+        if (durationSeconds !== undefined) {
+            animation.duration(durationSeconds);
+        }
+        this.getQueue().enqueueAnimation(animation);
         return this;
     }
 }
