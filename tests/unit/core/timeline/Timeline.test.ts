@@ -25,7 +25,8 @@ class TrackingAnimation extends Animation<Mobject> {
         this.lastProgress = progress;
     }
 
-    reset(): void {
+    override reset(): void {
+        super.reset();
         this.calls = [];
         this.lastProgress = -1;
     }

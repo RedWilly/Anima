@@ -8,6 +8,9 @@ import type { AnimationLifecycle } from '../types';
  * 
  * This is a composition animation - its lifecycle is determined by its children.
  * By default, uses 'transformative' lifecycle if children are mixed.
+ * 
+ * All children are initialized together before any interpolation begins,
+ * ensuring they all capture state at the same moment.
  */
 export class Parallel extends Animation<Mobject> {
     private readonly children: Animation[];
@@ -43,6 +46,22 @@ export class Parallel extends Animation<Mobject> {
     }
 
     /**
+     * Ensures all children are initialized together.
+     * This captures start state for all parallel animations at the same moment.
+     */
+    override ensureInitialized(): void {
+        for (const child of this.children) {
+            child.ensureInitialized();
+        }
+    }
+
+    override reset(): void {
+        for (const child of this.children) {
+            child.reset();
+        }
+    }
+
+    /**
      * Interpolates all child animations at the given progress.
      * Each child's progress is scaled based on its duration relative to the container.
      */
@@ -65,5 +84,15 @@ export class Parallel extends Animation<Mobject> {
             const localProgress = Math.min(1, globalTime / childDuration);
             child.update(localProgress);
         }
+    }
+
+    override update(progress: number): void {
+        // Pre-initialize ALL children before ANY interpolation
+        // This ensures parallel animations capture state at the same moment
+        this.ensureInitialized();
+
+        const clampedProgress = Math.max(0, Math.min(1, progress));
+        // Composition animations should not apply easing to their children
+        this.interpolate(clampedProgress);
     }
 }

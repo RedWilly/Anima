@@ -74,6 +74,23 @@ export abstract class Animation<T extends Mobject = Mobject> {
 
     abstract interpolate(progress: number): void;
 
+    /**
+     * Ensures the animation is initialized before interpolation.
+     * Called before first update to capture start state.
+     * Default: no-op. Override in subclasses that need lazy initialization.
+     */
+    ensureInitialized(): void {
+        // Default: no-op
+    }
+
+    /**
+     * Resets the animation to its uninitialized state.
+     * Allows animations to be replayed or looped.
+     */
+    reset(): void {
+        // Default: no-op
+    }
+
     update(progress: number): void {
         const clampedProgress = Math.max(0, Math.min(1, progress));
         const easedProgress = this.easingFn(clampedProgress);

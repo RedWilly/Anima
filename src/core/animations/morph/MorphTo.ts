@@ -8,22 +8,27 @@ import { BezierPath } from '../../math/bezier/BezierPath';
  * 
  * This is a transformative animation - the source must already be in the scene.
  * The target VMobject is used only as a shape template and is NOT added to the scene.
+ * Source paths are captured lazily when animation becomes active.
  * 
  * @example
  * scene.add(circle);
  * scene.play(new MorphTo(circle, square));  // circle morphs into square's shape
  */
 export class MorphTo<T extends VMobject = VMobject> extends TransformativeAnimation<T> {
-    private readonly sourcePaths: BezierPath[];
+    private sourcePaths!: BezierPath[];
     private readonly targetPaths: BezierPath[];
 
     constructor(source: T, target: VMobject) {
         super(source);
-        this.sourcePaths = source.paths.map(p => p.clone());
         this.targetPaths = target.paths.map(p => p.clone());
     }
 
+    protected captureStartState(): void {
+        this.sourcePaths = this.target.paths.map(p => p.clone());
+    }
+
     interpolate(progress: number): void {
+        this.ensureInitialized();
         const maxPaths = Math.max(this.sourcePaths.length, this.targetPaths.length);
         const newPaths: BezierPath[] = [];
 

@@ -7,20 +7,20 @@ import { Vector2 } from '../../math/Vector2/Vector2';
  * Uses linear interpolation between start and end positions.
  * 
  * This is a transformative animation - the target must already be in the scene.
+ * Start position is captured lazily when animation becomes active.
  * 
  * @example
  * scene.add(circle);  // or use FadeIn first
  * scene.play(new MoveTo(circle, 2, 0));  // Move to (2, 0)
  */
 export class MoveTo<T extends Mobject = Mobject> extends TransformativeAnimation<T> {
-    private readonly startPosition: Vector2;
+    private startPosition!: Vector2;
     private readonly endPosition: Vector2;
 
     constructor(target: T, destination: Vector2);
     constructor(target: T, x: number, y: number);
     constructor(target: T, xOrDestination: number | Vector2, y?: number) {
         super(target);
-        this.startPosition = target.position;
         if (xOrDestination instanceof Vector2) {
             this.endPosition = xOrDestination;
         } else {
@@ -28,7 +28,12 @@ export class MoveTo<T extends Mobject = Mobject> extends TransformativeAnimation
         }
     }
 
+    protected captureStartState(): void {
+        this.startPosition = this.target.position;
+    }
+
     interpolate(progress: number): void {
+        this.ensureInitialized();
         const newPosition = this.startPosition.lerp(this.endPosition, progress);
         this.target.pos(newPosition.x, newPosition.y);
     }

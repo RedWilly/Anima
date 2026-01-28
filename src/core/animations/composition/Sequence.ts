@@ -7,6 +7,8 @@ import type { AnimationLifecycle } from '../types';
  * Total duration equals the sum of all child animation durations.
  * 
  * This is a composition animation - its lifecycle is determined by its children.
+ * Only the first child is initialized when the sequence starts; subsequent
+ * children are initialized when they become active.
  */
 export class Sequence extends Animation<Mobject> {
     private readonly children: Animation[];
@@ -42,8 +44,28 @@ export class Sequence extends Animation<Mobject> {
     }
 
     /**
+     * Initializes only the first child.
+     * Later children are initialized when they become active in interpolate().
+     */
+    override ensureInitialized(): void {
+        if (this.children.length > 0) {
+            this.children[0]!.ensureInitialized();
+        }
+    }
+
+    override reset(): void {
+        for (const child of this.children) {
+            child.reset();
+        }
+    }
+
+    /**
      * Interpolates the sequence at the given progress.
      * Maps global progress to the correct child animation.
+     * 
+     * IMPORTANT: We only update children that have started or completed.
+     * Children that haven't started yet are NOT updated to avoid
+     * premature initialization with incorrect state.
      */
     interpolate(progress: number): void {
         if (this.children.length === 0 || this.totalChildDuration === 0) {
@@ -65,8 +87,8 @@ export class Sequence extends Animation<Mobject> {
             const childEnd = accumulatedTime + childDuration;
 
             if (globalTime < childStart) {
-                // Before this child starts - should not happen in normal flow
-                child.update(0);
+                // Before this child starts - DO NOT UPDATE
+                // Updating would prematurely initialize with wrong state
             } else if (globalTime >= childEnd) {
                 // This child is complete
                 child.update(1);
@@ -78,5 +100,11 @@ export class Sequence extends Animation<Mobject> {
 
             accumulatedTime = childEnd;
         }
+    }
+
+    override update(progress: number): void {
+        const clampedProgress = Math.max(0, Math.min(1, progress));
+        // Composition animations should not apply easing to their children
+        this.interpolate(clampedProgress);
     }
 }
