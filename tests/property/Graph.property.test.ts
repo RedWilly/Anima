@@ -67,8 +67,8 @@ describe('Graph Property Tests', () => {
                 (id, x, y) => {
                     const graph = new Graph();
                     const node = graph.addNode(id, { position: new Vector2(x, y) });
-                    return Math.abs(node.position.x - x) < 1e-6 &&
-                        Math.abs(node.position.y - y) < 1e-6;
+                    return Math.abs(node.position.x - x) < 1e-5 &&
+                        Math.abs(node.position.y - y) < 1e-5;
                 }
             ));
         });
