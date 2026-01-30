@@ -1,4 +1,3 @@
-import { Vector2 } from '../../core/math/Vector2/Vector2';
 import { Color } from '../../core/math/color/Color';
 
 /** Unique identifier for graph nodes. */
@@ -6,7 +5,7 @@ export type GraphNodeId = string;
 
 /** Configuration for creating a graph node. */
 export interface NodeConfig {
-    position?: Vector2;
+    position?: { x: number; y: number };
     radius?: number;
     strokeColor?: Color;
     strokeWidth?: number;
