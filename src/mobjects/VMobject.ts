@@ -94,12 +94,12 @@ export class VMobject extends Mobject {
     /**
      * Sets the fill color and opacity.
      * @param color - The fill color.
-     * @param opacity - The fill opacity. Default is 1 (fully opaque).
+     * @param opacity - The fill opacity. Defaults to the color's alpha value.
      * @returns this for chaining.
      */
-    fill(color: Color, opacity: number = 1): this {
+    fill(color: Color, opacity?: number): this {
         this.fillColor = color;
-        this.fillOpacity = opacity;
+        this.fillOpacity = opacity ?? color.a;
         return this;
     }
 
