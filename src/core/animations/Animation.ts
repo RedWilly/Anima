@@ -92,6 +92,7 @@ export abstract class Animation<T extends Mobject = Mobject> {
     }
 
     update(progress: number): void {
+        // this.ensureInitialized();
         const clampedProgress = Math.max(0, Math.min(1, progress));
         const easedProgress = this.easingFn(clampedProgress);
         this.interpolate(easedProgress);

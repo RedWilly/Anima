@@ -7,6 +7,12 @@ import { FadeIn, FadeOut } from '../core/animations/fade';
 import { MoveTo, Rotate, Scale } from '../core/animations/transform';
 import { Parallel } from '../core/animations/composition';
 
+interface MobjectState {
+  position: Vector2;
+  scale: Vector2;
+  rotation: number;
+}
+
 /**
  * Base class for all mathematical objects.
  * Manages position, rotation, scale, and opacity via a local transformation matrix.
@@ -16,6 +22,7 @@ export class Mobject {
   protected localMatrix: Matrix3x3;
   protected opacityValue: number;
   protected animQueue: AnimationQueue | null = null;
+  private savedStates: MobjectState[] = [];
 
   parent: Mobject | null = null;
 
@@ -130,6 +137,54 @@ export class Mobject {
 
   applyMatrix(m: Matrix3x3): this {
     this.localMatrix = m.multiply(this.localMatrix);
+    return this;
+  }
+
+  // ========== State Save/Restore ==========
+
+  saveState(): this {
+    const pos = this.position;
+    const scl = this.scale;
+    this.savedStates.push({
+      position: new Vector2(pos.x, pos.y),
+      scale: new Vector2(scl.x, scl.y),
+      rotation: this.rotation,
+    });
+    return this;
+  }
+
+  getSavedState(): MobjectState | undefined {
+    return this.savedStates[this.savedStates.length - 1];
+  }
+
+  clearSavedStates(): this {
+    this.savedStates = [];
+    return this;
+  }
+
+  /**
+   * Animates back to the last saved state.
+   * Pops the saved state from the stack.
+   * @throws Error if no state was previously saved
+   */
+  restore(durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
+    const state = this.savedStates.pop();
+    if (!state) {
+      throw new Error('restore() called but no state was saved. Call saveState() first.');
+    }
+
+    const moveAnim = new MoveTo(this, state.position.x, state.position.y);
+    const scaleAnim = new Scale(this, state.scale.x, state.scale.y);
+    const rotateAnim = new Rotate(this, state.rotation - this.rotation);
+
+    if (durationSeconds !== undefined) {
+      moveAnim.duration(durationSeconds);
+      scaleAnim.duration(durationSeconds);
+      rotateAnim.duration(durationSeconds);
+    }
+
+    const parallelAnim = new Parallel([moveAnim, scaleAnim, rotateAnim]);
+    this.getQueue().enqueueAnimation(parallelAnim);
     return this;
   }
 

@@ -16,13 +16,11 @@ export class FrameRenderer {
     private readonly scene: Scene;
     private readonly width: number;
     private readonly height: number;
-    private readonly worldToScreen: Matrix3x3;
 
     constructor(scene: Scene, width: number, height: number) {
         this.scene = scene;
         this.width = width;
         this.height = height;
-        this.worldToScreen = this.calculateWorldToScreenMatrix();
     }
 
     /**
@@ -78,10 +76,13 @@ export class FrameRenderer {
         ctx.fillStyle = `rgb(${bgColor.r}, ${bgColor.g}, ${bgColor.b})`;
         ctx.fillRect(0, 0, this.width, this.height);
 
+        // Calculate world-to-screen matrix each frame to pick up camera animations
+        const worldToScreen = this.calculateWorldToScreenMatrix();
+
         // Draw all mobjects in order
         const mobjects = this.scene.getMobjects();
         for (const mobject of mobjects) {
-            drawMobject(ctx, mobject, this.worldToScreen);
+            drawMobject(ctx, mobject, worldToScreen);
         }
 
         return canvas;

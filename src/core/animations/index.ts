@@ -20,5 +20,8 @@ export { Sequence, Parallel } from './composition';
 export { KeyframeTrack, KeyframeAnimation } from './keyframes';
 export type { Keyframe } from './keyframes';
 
+// Camera animations
+export { Follow, Shake } from './camera';
+
 // Animation types
 export type { AnimationConfig } from './types';

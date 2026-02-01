@@ -6,7 +6,7 @@ export type { SceneConfig } from './core/scene';
 export { Mobject, VMobject, VGroup } from './mobjects';
 
 // Camera
-export { Camera } from './core/camera';
+export { Camera, CameraFrame } from './core/camera';
 export type { CameraConfig, ResolvedCameraConfig } from './core/camera';
 
 
@@ -51,7 +51,9 @@ export {
     Sequence,
     Parallel,
     KeyframeTrack,
-    KeyframeAnimation
+    KeyframeAnimation,
+    Follow,
+    Shake
 } from './core/animations';
 
 export type { 

@@ -70,16 +70,16 @@ export class SocialNetworkScene extends Scene {
         // Center the graph
         graph.pos(0, 0);
 
-        // Start scaled up (zoomed in) then scale down to reveal full graph
-        graph.setScale(3, 3);
+        // Add graph to scene
+        this.add(graph);
 
-        // Fade in while zoomed in
+        // Fade in the graph
         this.play(new FadeIn(graph).duration(1).ease(easeOutBack));
 
         this.wait(0.5);
 
-        // Animate "zoom out" by scaling the graph down
-        this.play(new Scale(graph, 1 / 3).duration(1.5).ease(easeInOutQuad));
+        // Use camera system to zoom out and reveal full graph
+        this.play(this.frame.zoomOut(3).duration(1.5).ease(easeInOutQuad));
 
         this.wait(1);
 

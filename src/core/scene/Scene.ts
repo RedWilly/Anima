@@ -1,6 +1,6 @@
 import { Color } from '../math/color/Color';
 import { Timeline } from '../timeline';
-import { Camera } from '../camera';
+import { Camera, CameraFrame } from '../camera';
 import { Mobject } from '../../mobjects/Mobject';
 import type { Animation } from '../animations/Animation';
 import type { SceneConfig, ResolvedSceneConfig } from './types';
@@ -15,7 +15,7 @@ export class Scene {
     private readonly config: ResolvedSceneConfig;
     private readonly mobjects: Set<Mobject> = new Set();
     private readonly timeline: Timeline;
-    private readonly camera: Camera;
+    private readonly _camera: Camera;
     private playheadTime = 0;
 
     constructor(config: SceneConfig = {}) {
@@ -26,10 +26,20 @@ export class Scene {
             frameRate: config.frameRate ?? 60,
         };
         this.timeline = new Timeline();
-        this.camera = new Camera({
+        this._camera = new Camera({
             pixelWidth: this.config.width,
             pixelHeight: this.config.height,
         });
+    }
+
+    // ========== Camera Shortcuts ==========
+
+    get camera(): Camera {
+        return this._camera;
+    }
+
+    get frame(): CameraFrame {
+        return this._camera.frame;
     }
 
     // ========== Configuration Getters ==========
@@ -192,7 +202,7 @@ export class Scene {
      * Camera calculates Manim-compatible frame dimensions from pixel resolution.
      */
     getCamera(): Camera {
-        return this.camera;
+        return this._camera;
     }
 
     // ========== Private Helpers ==========
@@ -226,6 +236,10 @@ export class Scene {
 
             case 'transformative':
             case 'exit':
+                // CameraFrame is exempt - it's owned by Camera, not added to scene
+                if (target instanceof CameraFrame) {
+                    break;
+                }
                 // Validate object is in scene
                 if (!this.mobjects.has(target)) {
                     throw new AnimationTargetNotInSceneError(anim, target);
