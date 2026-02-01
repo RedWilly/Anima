@@ -2,11 +2,7 @@ import { createCanvas, type Canvas } from '@napi-rs/canvas';
 import type { Scene } from '../scene';
 import { Matrix3x3 } from '../math/matrix/Matrix3x3';
 import { drawMobject } from './drawMobject';
-
-/**
- * Manim-compatible fixed frame height in logical units.
- */
-const MANIM_FRAME_HEIGHT = 8.0;
+import { MANIM_FRAME_HEIGHT } from '../camera/types';
 
 /**
  * Renders individual frames from a Scene.

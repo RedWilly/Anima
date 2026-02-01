@@ -1,9 +1,7 @@
 import { Vector2 } from '../math/Vector2/Vector2';
 import { Matrix3x3 } from '../math/matrix/Matrix3x3';
 import { CameraFrame } from './CameraFrame';
-import type { CameraConfig, ResolvedCameraConfig } from './types';
-
-const MANIM_FRAME_HEIGHT = 8.0;
+import { MANIM_FRAME_HEIGHT, type CameraConfig, type ResolvedCameraConfig } from './types';
 
 /**
  * Camera manages the view into the scene.

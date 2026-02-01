@@ -1,8 +1,7 @@
 import { Mobject } from '../../mobjects/Mobject';
 import { Parallel } from '../animations/composition';
 import type { Animation } from '../animations/Animation';
-
-const MANIM_FRAME_HEIGHT = 8.0;
+import { MANIM_FRAME_HEIGHT } from './types';
 
 interface BoundsResult {
   minX: number;
