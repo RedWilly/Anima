@@ -32,20 +32,20 @@ export class FluentAPIScene extends Scene {
         circle.moveTo(0, 2, 1).rotate(Math.PI, 1);
         this.play(circle);
 
-        // Scale transformations
+        // Scale transformations (duration specified as last parameter)
         circle.scaleTo(0.5, 0.5);
         rect.scaleTo(2, 0.5);
         this.play(circle, rect);
 
         this.wait(0.5);
 
-        arrow.rotate(Math.PI / 2, 1)
-        this.play(arrow)
+        arrow.rotate(Math.PI / 2, 1);
+        this.play(arrow);
 
         // FluentAPI: Exit animations
         circle.fadeOut(0.5);
         rect.fadeOut(0.5);
-        arrow.fadeOut(0.5)
+        arrow.fadeOut(0.5);
         this.play(circle, rect, arrow);
     }
 }

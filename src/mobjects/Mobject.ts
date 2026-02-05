@@ -2,10 +2,126 @@ import { Matrix3x3 } from '../core/math/matrix/Matrix3x3';
 import { Vector2 } from '../core/math/Vector2/Vector2';
 import { Animation } from '../core/animations/Animation';
 import type { EasingFunction } from '../core/animations/easing';
-import { AnimationQueue } from '../fluent/AnimationQueue';
 import { FadeIn, FadeOut } from '../core/animations/fade';
 import { MoveTo, Rotate, Scale } from '../core/animations/transform';
-import { Parallel } from '../core/animations/composition';
+import { Parallel, Sequence } from '../core/animations/composition';
+import { type QueueEntry, isPrebuilt } from '../core/animations/types';
+
+/**
+ * Manages a queue of animations for fluent chaining.
+ * This is an internal implementation detail of Mobject's fluent API.
+ */
+class AnimationQueue {
+  private readonly target: Mobject;
+  private readonly queue: QueueEntry[] = [];
+
+  constructor(target: Mobject) {
+    this.target = target;
+  }
+
+  enqueueAnimation(animation: Animation<Mobject>): void {
+    this.queue.push({ animation });
+  }
+
+  setLastDuration(seconds: number): void {
+    if (seconds <= 0) {
+      throw new Error('Duration must be positive');
+    }
+
+    const last = this.queue[this.queue.length - 1];
+    if (!last) return;
+
+    if (isPrebuilt(last)) {
+      last.animation.duration(seconds);
+    } else {
+      last.config.durationSeconds = seconds;
+    }
+  }
+
+  setLastEasing(easing: EasingFunction): void {
+    const last = this.queue[this.queue.length - 1];
+    if (!last) return;
+
+    if (isPrebuilt(last)) {
+      last.animation.ease(easing);
+    } else {
+      last.config.easing = easing;
+    }
+  }
+
+  isEmpty(): boolean {
+    return this.queue.length === 0;
+  }
+
+  popLastAnimation(): Animation<Mobject> | null {
+    const last = this.queue.pop();
+    if (!last) return null;
+
+    if (isPrebuilt(last)) {
+      return last.animation;
+    }
+
+    const anim = last.factory(this.target);
+    anim.duration(last.config.durationSeconds);
+    if (last.config.easing) {
+      anim.ease(last.config.easing);
+    }
+    if (last.config.delaySeconds !== undefined) {
+      anim.delay(last.config.delaySeconds);
+    }
+    return anim;
+  }
+
+  toAnimation(): Animation<Mobject> {
+    if (this.queue.length === 0) {
+      throw new Error('toAnimation() called with an empty animation queue.');
+    }
+
+    const animations: Array<Animation<Mobject>> = [];
+
+    for (const entry of this.queue) {
+      if (isPrebuilt(entry)) {
+        animations.push(entry.animation);
+      } else {
+        const anim = entry.factory(this.target);
+        anim.duration(entry.config.durationSeconds);
+
+        if (entry.config.easing) {
+          anim.ease(entry.config.easing);
+        }
+
+        if (entry.config.delaySeconds !== undefined) {
+          anim.delay(entry.config.delaySeconds);
+        }
+
+        animations.push(anim);
+      }
+    }
+
+    this.queue.length = 0;
+
+    if (animations.length === 1 && animations[0]) {
+      return animations[0];
+    }
+
+    return new Sequence(animations);
+  }
+
+  getTotalDuration(): number {
+    let total = 0;
+    for (const entry of this.queue) {
+      if (isPrebuilt(entry)) {
+        total += entry.animation.getDuration() + entry.animation.getDelay();
+      } else {
+        total += entry.config.durationSeconds;
+        if (entry.config.delaySeconds !== undefined) {
+          total += entry.config.delaySeconds;
+        }
+      }
+    }
+    return total;
+  }
+}
 
 interface MobjectState {
   position: Vector2;
@@ -230,6 +346,16 @@ export class Mobject {
     return this;
   }
 
+  scaleToXY(
+    factorX: number,
+    factorY: number,
+    durationSeconds?: number
+  ): this & { toAnimation(): Animation<Mobject> } {
+    const animation = this.createAnimation(new Scale(this, factorX, factorY), durationSeconds);
+    this.getQueue().enqueueAnimation(animation);
+    return this;
+  }
+
   duration(seconds: number): this {
     this.getQueue().setLastDuration(seconds);
     return this;
@@ -284,4 +410,3 @@ export class Mobject {
     return this;
   }
 }
-

@@ -24,4 +24,12 @@ export type { Keyframe } from './keyframes';
 export { Follow, Shake } from './camera';
 
 // Animation types
-export type { AnimationConfig } from './types';
+export type { 
+    AnimationConfig,
+    FluentConfig,
+    AnimationFactory,
+    QueuedAnimation,
+    QueuedPrebuilt,
+    QueueEntry,
+} from './types';
+export { DEFAULT_DURATION, isPrebuilt } from './types';
