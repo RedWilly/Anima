@@ -58,10 +58,6 @@ src/
 │   └── timeline/                     # Timeline management
 │       └── Timeline.ts               # Timeline for coordinating animations
 │
-├── fluent/                           # Animation builder API
-│   ├── FluentTypes.ts                # Fluent API types
-│   └── AnimationQueue.ts             # Queue for building animations
-│
 ├── fonts/                            # Fonts
 │   └── Inter.ttf.ts                  # inter font
 │

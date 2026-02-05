@@ -10,9 +10,12 @@ import { Write, Unwrite, Draw } from '../core/animations/draw';
  * A Mobject that is defined by one or more BezierPaths.
  * Supports stroke and fill styling, plus VMobject-specific fluent animations.
  *
- * Default behavior: nothing renders until explicitly configured.
- * - Stroke: not rendered by default (strokeWidth = 0)
+ * Default behavior: visible with white stroke, no fill.
+ * - Stroke: white, width 2 (visible by default)
  * - Fill: not rendered by default (fillOpacity = 0)
+ *
+ * When .fill(color) is called, the default stroke is disabled unless
+ * .stroke(color, width) was called explicitly.
  *
  * Use .stroke(color, width) to add a stroke.
  * Use .fill(color) to add a fill (opacity defaults to 1).
@@ -22,12 +25,14 @@ export class VMobject extends Mobject {
 
     /** Stroke color. Only rendered if strokeWidth > 0. */
     protected strokeColor: Color = Color.WHITE;
-    /** Stroke width. Default 0 means no stroke is rendered. */
-    protected strokeWidth: number = 0;
+    /** Stroke width. Default 2 for visibility. */
+    protected strokeWidth: number = 2;
     /** Fill color. Only rendered if fillOpacity > 0. */
     protected fillColor: Color = Color.TRANSPARENT;
     /** Fill opacity. Default 0 means no fill is rendered. */
     protected fillOpacity: number = 0;
+    /** Tracks whether stroke() was explicitly called. */
+    protected strokeExplicitlySet: boolean = false;
 
     constructor() {
         super();
@@ -88,11 +93,13 @@ export class VMobject extends Mobject {
     stroke(color: Color, width: number = 2): this {
         this.strokeColor = color;
         this.strokeWidth = width;
+        this.strokeExplicitlySet = true;
         return this;
     }
 
     /**
      * Sets the fill color and opacity.
+     * If stroke was not explicitly set, the default stroke is disabled.
      * @param color - The fill color.
      * @param opacity - The fill opacity. Defaults to the color's alpha value.
      * @returns this for chaining.
@@ -100,6 +107,10 @@ export class VMobject extends Mobject {
     fill(color: Color, opacity?: number): this {
         this.fillColor = color;
         this.fillOpacity = opacity ?? color.a;
+        // Disable default stroke when fill is set (unless stroke was explicitly set)
+        if (!this.strokeExplicitlySet) {
+            this.strokeWidth = 0;
+        }
         return this;
     }
 

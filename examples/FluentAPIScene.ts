@@ -6,11 +6,7 @@
  * 
  * Best for: Quick prototyping, simple animations, readable code
  */
-import { Scene } from '../src/core/scene/Scene';
-import { Circle } from '../src/mobjects/geometry/Circle';
-import { Rectangle } from '../src/mobjects/geometry/Rectangle';
-import { easeInOutQuad } from '../src/core/animations/easing';
-import { Arrow  } from '../src/mobjects';
+import { Scene, Circle, Rectangle, Arrow, Color, easeInOutQuad } from '../src';
 
 
 export class FluentAPIScene extends Scene {

@@ -4,7 +4,7 @@
  * Demonstrates uniform scaling with optional duration and
  * non-uniform scaling via scaleToXY.
  */
-import { Scene, Circle, Rectangle, Color, easeInOutCubic } from '../src';
+import { Scene, Text, Circle, Rectangle, Color, easeInOutCubic } from '../src';
 
 
 export class ScaleToScene extends Scene {
@@ -13,6 +13,9 @@ export class ScaleToScene extends Scene {
 
     const circle = new Circle(1).pos(-3, 0).fill(Color.RED, 0.5);
     const rect = new Rectangle(2, 1).pos(3, 0).fill(Color.BLUE, 0.5);
+    const tx = new Text("Hello World", 'assets/fonts/Inter.ttf', { fontSize: 0.5 }).pos(0, 0).fill(Color.WHITE);
+
+    this.add(tx); //immediae visibility
 
     // Intro: fade in both shapes
     circle.fadeIn(0.6);
@@ -30,7 +33,7 @@ export class ScaleToScene extends Scene {
     this.play(circle);
 
     // Non-uniform scaling with scaleToXY (x, y, duration)
-    rect.scaleToXY(1.8, 0.6, 0.9).ease(easeInOutCubic);
+    rect.scaleToXY(1.5, 0.6, 0.9).ease(easeInOutCubic);
     this.play(rect);
 
     this.wait(0.5);
