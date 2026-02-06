@@ -1,7 +1,6 @@
 import { SceneLoader } from '../SceneLoader';
-import { Renderer } from '../../core/renderer/Renderer';
-import { Resolution, type RenderFormat, type RenderQuality } from '../../core/renderer/types';
-import type { Scene } from '../../core/scene/Scene';
+import { Renderer, Resolution } from '@redwilly/anima';
+import type { Scene, RenderFormat, RenderQuality } from '@redwilly/anima';
 
 /**
  * Options for the render command.

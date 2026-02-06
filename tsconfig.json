@@ -14,6 +14,11 @@
     "verbatimModuleSyntax": true,
     "noEmit": true,
 
+    // Self-referencing: CLI imports from '@redwilly/anima' resolve to src/index.ts
+    "paths": {
+      "@redwilly/anima": ["./src/index.ts"]
+    },
+
     // Best practices
     "strict": true,
     "skipLibCheck": true,

@@ -72,6 +72,7 @@ export type { ScheduledAnimation, TimelineConfig } from './core/timeline';
 
 
 export { Renderer, FrameRenderer, ProgressReporter, Resolution } from './core/renderer';
+export type { RenderConfig, RenderFormat, RenderQuality, RenderProgress, ProgressCallback } from './core/renderer';
 
 // Easing Functions - Essential for animation control
 export * from './core/animations/easing';

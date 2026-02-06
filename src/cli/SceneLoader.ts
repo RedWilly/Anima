@@ -1,4 +1,4 @@
-import { Scene } from '../core/scene/Scene';
+import { Scene } from '@redwilly/anima';
 import { pathToFileURL } from 'url';
 import { resolve } from 'path';
 

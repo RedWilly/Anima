@@ -1,7 +1,15 @@
 {
   "name": "@redwilly/anima",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Animation library for mathematical visualizations",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RedWilly/Anima.git"
+  },
+  "homepage": "https://github.com/RedWilly/Anima#readme",
+  "bugs": {
+    "url": "https://github.com/RedWilly/Anima/issues"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -20,7 +28,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "clean": "rimraf dist",
-    "build": "bun run clean && tsc -p tsconfig.build.json",
+    "build": "tsup",
     "prepublishOnly": "bun run build"
   },
   "keywords": [
@@ -38,7 +46,9 @@
     "@types/bun": "latest",
     "@types/fontkit": "^2.0.8",
     "fast-check": "^4.5.3",
-    "rimraf": "^6.0.1"
+    "glob": "^13.0.1",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.5.1"
   },
   "peerDependencies": {
     "typescript": "^5"
