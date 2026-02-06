@@ -1,22 +1,44 @@
 {
-  "name": "anima",
+  "name": "@redwilly/anima",
   "version": "0.1.0",
   "description": "Animation library for mathematical visualizations",
   "type": "module",
-  "main": "./src/index.ts",
-  "bin": {
-    "anima": "./src/cli/index.ts"
-  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./cli": "./src/cli/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
+  "bin": {
+    "anima": "./dist/cli/index.js"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist",
+    "build": "bun run clean && tsc -p tsconfig.build.json",
+    "prepublishOnly": "bun run build"
+  },
+  "keywords": [
+    "animation",
+    "math",
+    "visualization",
+    "canvas",
+    "manim"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/fontkit": "^2.0.8"
+    "@types/fontkit": "^2.0.8",
+    "fast-check": "^4.5.3",
+    "rimraf": "^6.0.1"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -24,7 +46,6 @@
   "dependencies": {
     "@napi-rs/canvas": "^0.1.88",
     "commander": "^14.0.2",
-    "fast-check": "^4.5.3",
     "fontkit": "^2.0.4"
   }
 }
