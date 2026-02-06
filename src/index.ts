@@ -61,7 +61,7 @@ export type {
     Keyframe 
 } from './core/animations';
 
-export { Color } from './core/math/color';
+export { Color, Vector2 } from './core/math';
 
 // Serialization - For saving/loading animations
 export { serialize, deserialize } from './core/serialization';
