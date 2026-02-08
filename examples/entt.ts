@@ -33,7 +33,7 @@ import {
 export class EntFlu extends Scene {
     constructor() {
         super({ width: 1920, height: 1080, frameRate: 60 });
-        const fontPath = 'assets/fonts/Inter.ttf';
+        const fontPath = 'assets/fonts/ComicSansMS3.ttf';
 
         // ========== Title Animation ==========
         const title = new Text("Anima", fontPath, { fontSize: 1.5 })
@@ -131,7 +131,7 @@ export class EntFlu extends Scene {
 export class EntPro extends Scene {
     constructor() {
         super({ width: 1920, height: 1080, frameRate: 60 });
-        const fontPath = 'assets/fonts/Inter.ttf';
+        const fontPath = 'assets/fonts/ComicSansMS3.ttf';
 
         // ========== Create Mobjects ==========
         const title = new Text("Pro API", fontPath, { fontSize: 1.2 })

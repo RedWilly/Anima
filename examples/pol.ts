@@ -5,7 +5,7 @@ export class Pol extends Scene {
         super({ width: 1920, height: 1080, frameRate: 60, backgroundColor: Color.TRANSPARENT });
 
         const rect = new Rectangle(3, 1).pos(0, 0).fill(Color.TRANSPARENT).stroke(Color.WHITE, 3); // or add .write here
-        const tx = new Text("Anima", 'assets/fonts/Inter.ttf').pos(0, 0).fill(Color.WHITE).stroke(Color.WHITE, 3);
+        const tx = new Text("Anima", 'assets/fonts/ComicSansMS3.ttf').pos(0, 0).fill(Color.WHITE).stroke(Color.WHITE, 3);
         this.add(tx)
         rect.write(2).delay(0.5)
         this.play(rect);
@@ -18,7 +18,7 @@ export class Pol1 extends Scene {
         super({ width: 1920, height: 1080, frameRate: 60, backgroundColor: Color.TRANSPARENT });
 
         const rect = new Rectangle(3, 1).pos(0, 0).fill(Color.TRANSPARENT).stroke(Color.WHITE);
-        const tx = new Text("Anima", 'assets/fonts/Inter.ttf').pos(0, 0).fill(Color.WHITE).stroke(Color.WHITE, 3);
+        const tx = new Text("Anima", 'assets/fonts/ComicSansMS3.ttf').pos(0, 0).fill(Color.WHITE).stroke(Color.WHITE, 3);
         const circle = new Circle(0.4).pos(-3, 0).fill(Color.RED);
 
         const group = new VGroup(rect, tx);

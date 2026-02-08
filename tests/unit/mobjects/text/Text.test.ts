@@ -5,7 +5,7 @@ import { Color } from '../../../../src/core/math/color/Color';
 import { VGroup } from '../../../../src/mobjects/VGroup';
 import { VMobject } from '../../../../src/mobjects/VMobject';
 
-const FONT_PATH = resolve(__dirname, '../../../../assets/fonts/Inter.ttf');
+const FONT_PATH = resolve(__dirname, '../../../../assets/fonts/ComicSansMS3.ttf');
 
 describe('Text', () => {
     test('Text is a VGroup', () => {

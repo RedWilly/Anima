@@ -7,7 +7,7 @@
 ```ts
 import { Text } from 'anima';
 
-const title = new Text('Hello World', 'assets/fonts/Inter.ttf', {
+const title = new Text('Hello World', 'assets/fonts/ComicSansMS3.ttf', {
   fontSize: 1.5,    // in world units (default: 1)
   color: Color.WHITE // glyph color (default: WHITE)
 });
@@ -19,7 +19,7 @@ const title = new Text('Hello World', 'assets/fonts/Inter.ttf', {
 2. `fontPath` — path to a `.ttf` font file (required)
 3. `options` — optional `Partial<TextStyle>`
 
-The bundled font is at `assets/fonts/Inter.ttf` (also available at `src/fonts/Inter.ttf`).
+The bundled font is at `assets/fonts/ComicSansMS3.ttf` (also available at `src/fonts/ComicSansMS3.ttf`).
 
 ## TextStyle
 
@@ -69,6 +69,6 @@ this.play(title.fadeOut(1));
 Text is automatically centered at the origin after construction. Use `.pos(x, y)` to reposition:
 
 ```ts
-const subtitle = new Text('Subtitle', 'assets/fonts/Inter.ttf', { fontSize: 0.8 })
+const subtitle = new Text('Subtitle', 'assets/fonts/ComicSansMS3.ttf', { fontSize: 0.8 })
   .pos(0, -2);  // below center
 ```

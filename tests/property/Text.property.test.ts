@@ -4,7 +4,7 @@ import { resolve } from 'path';
 import { Text, Glyph } from '../../src/mobjects/text';
 import { Color } from '../../src/core/math/color/Color';
 
-const FONT_PATH = resolve(__dirname, '../../assets/fonts/Inter.ttf');
+const FONT_PATH = resolve(__dirname, '../../assets/fonts/ComicSansMS3.ttf');
 
 /** Generates alphanumeric strings that will have glyphs in most fonts. */
 const textArb = fc.stringMatching(/^[A-Za-z0-9]{1,10}$/);

@@ -13,7 +13,7 @@ export class ScaleToScene extends Scene {
 
     const circle = new Circle(1).pos(-3, 0).fill(Color.RED, 0.5);
     const rect = new Rectangle(2, 1).pos(3, 0).fill(Color.BLUE, 0.5);
-    const tx = new Text("Hello World", 'assets/fonts/Inter.ttf', { fontSize: 0.5 }).pos(0, 0).fill(Color.WHITE);
+    const tx = new Text("Hello World", 'assets/fonts/ComicSansMS3.ttf', { fontSize: 0.5 }).pos(0, 0).fill(Color.WHITE);
 
     this.add(tx); //immediae visibility
 

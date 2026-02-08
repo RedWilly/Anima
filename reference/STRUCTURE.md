@@ -59,7 +59,7 @@ src/
 │       └── Timeline.ts               # Timeline for coordinating animations
 │
 ├── fonts/                            # Fonts
-│   └── Inter.ttf.ts                  # inter font
+│   └── ComicSansMS3.ttf                  # inter font
 │
 └── mobjects/                         # Mathematical objects
     ├── Mobject.ts                    # Base mathematical object
