@@ -63,10 +63,6 @@ export type {
 
 export { Color, Vector2 } from './core/math';
 
-// Serialization - For saving/loading animations
-export { serialize, deserialize } from './core/serialization';
-
-
 export { Timeline } from './core/timeline';
 export type { ScheduledAnimation, TimelineConfig } from './core/timeline';
 

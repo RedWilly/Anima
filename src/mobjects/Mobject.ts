@@ -49,6 +49,21 @@ class AnimationQueue {
     }
   }
 
+  setLastDelay(seconds: number): void {
+    if (seconds < 0) {
+      throw new Error('Delay must be non-negative');
+    }
+
+    const last = this.queue[this.queue.length - 1];
+    if (!last) return;
+
+    if (isPrebuilt(last)) {
+      last.animation.delay(seconds);
+    } else {
+      last.config.delaySeconds = seconds;
+    }
+  }
+
   isEmpty(): boolean {
     return this.queue.length === 0;
   }
@@ -363,6 +378,11 @@ export class Mobject {
 
   ease(easing: EasingFunction): this {
     this.getQueue().setLastEasing(easing);
+    return this;
+  }
+
+  delay(seconds: number): this {
+    this.getQueue().setLastDelay(seconds);
     return this;
   }
 

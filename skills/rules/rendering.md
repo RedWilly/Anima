@@ -138,15 +138,4 @@ anima list-scenes <file>
 
 Lists all exported Scene subclasses in a file.
 
-## Serialization
 
-Save and restore scene state as JSON:
-
-```ts
-import { serialize, deserialize } from 'anima';
-
-const json = serialize(scene);     // Scene → JSON string
-const restored = deserialize(json); // JSON string → Scene
-```
-
-Captures all Mobjects, their hierarchy, and the entire timeline. Useful for caching, debugging, or transferring scenes between processes.
