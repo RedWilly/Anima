@@ -1,4 +1,5 @@
 import * as fontkit from 'fontkit';
+import { Color } from '../../core/math/color/Color';
 import { VGroup } from '../VGroup';
 import { centerGroup } from '../VGroup/layout';
 import { Glyph } from './Glyph';
@@ -75,8 +76,9 @@ export class Text extends VGroup {
     private applyStyle(): void {
         for (const child of this.getChildren()) {
             if (child instanceof Glyph) {
-                child.stroke(this.style.color, 0);
-                child.fill(this.style.color, 1);
+                // Propagate Text's stroke/fill settings to each Glyph
+                child.stroke(this.getStrokeColor(), this.getStrokeWidth());
+                child.fill(this.getFillColor(), this.getFillOpacity());
             }
         }
     }
@@ -89,6 +91,20 @@ export class Text extends VGroup {
 
     getStyle(): TextStyle {
         return { ...this.style };
+    }
+
+    /** Override stroke to propagate to all Glyph children. */
+    override stroke(color: Color, width: number = 2): this {
+        super.stroke(color, width);
+        this.applyStyle();
+        return this;
+    }
+
+    /** Override fill to propagate to all Glyph children. */
+    override fill(color: Color, opacity?: number): this {
+        super.fill(color, opacity);
+        this.applyStyle();
+        return this;
     }
 
     getGlyph(index: number): Glyph | undefined {

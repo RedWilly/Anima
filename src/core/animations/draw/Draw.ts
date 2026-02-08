@@ -1,144 +1,165 @@
 import { IntroductoryAnimation } from '../categories';
 import { VMobject } from '../../../mobjects/VMobject';
 import { BezierPath } from '../../math/bezier/BezierPath';
+import { Color } from '../../math/color/Color';
 import { getPartialPath } from './partialPath';
 
-/**
- * Checks if a VMobject is a VGroup (has getChildren method).
- * Uses duck-typing to avoid circular dependency with VGroup import.
- */
+/** Duck-typing check for VGroup (has getChildren method). */
 function isVGroup(target: VMobject): target is VMobject & { getChildren(): VMobject[] } {
     return typeof (target as { getChildren?: unknown }).getChildren === 'function';
 }
 
-/**
- * Stores original state for a single VMobject (used for VGroup children).
- */
+/** Duck-typing check for Glyph (has character property). */
+function isGlyph(target: VMobject): target is VMobject & { character: string } {
+    return typeof (target as { character?: unknown }).character === 'string';
+}
+
+/** Returns true if VMobject is a VGroup containing only Glyphs (i.e., Text). */
+function isText(target: VMobject): boolean {
+    if (!isVGroup(target)) return false;
+    const children = target.getChildren();
+    return children.length > 0 && children.every(isGlyph);
+}
+
+/** Original state snapshot for a single VMobject. */
 interface ChildState {
     child: VMobject;
-    originalPaths: BezierPath[];
-    originalOpacity: number;
-    originalFillOpacity: number;
+    paths: BezierPath[];
+    opacity: number;
+    strokeColor: Color;
+    strokeWidth: number;
+    fillColor: Color;
+    fillOpacity: number;
 }
 
 /**
- * Animation that first draws the border progressively, then fills the shape.
- * The first 50% of the animation draws the stroke, the second 50% fades in the fill.
+ * Animation that first draws the stroke progressively, then fades in the fill.
+ * - First 50%: stroke draws progressively
+ * - Second 50%: fill fades in
  *
- * Supports VGroup (including Text): animates each child's paths progressively.
+ * - Single VMobject: stroke then fill
+ * - VGroup: all children animate together
+ * - Text (VGroup of Glyphs): Glyphs animate sequentially for handwriting effect
  *
  * This is an introductory animation - it auto-registers the target with the scene.
- *
- * @example
- * const rect = new Rectangle(2, 1);
- * scene.play(new Draw(rect));  // Border draws, then fill fades in
  */
 export class Draw<T extends VMobject = VMobject> extends IntroductoryAnimation<T> {
-    private readonly isVGroup: boolean;
-    /** For non-VGroup targets: original paths on the target itself. */
     private readonly originalPaths: BezierPath[];
-    private readonly originalFillOpacity: number;
     private readonly originalOpacity: number;
-    /** For VGroup targets: original state of each child. */
+    private readonly originalStrokeColor: Color;
+    private readonly originalStrokeWidth: number;
+    private readonly originalFillColor: Color;
+    private readonly originalFillOpacity: number;
     private readonly childStates: ChildState[];
+    /** Glyph states for Text children, keyed by the Text VMobject reference. */
+    private readonly glyphStates: Map<VMobject, ChildState[]> = new Map();
 
     constructor(target: T) {
         super(target);
-        this.isVGroup = isVGroup(target);
         this.originalOpacity = target.opacity;
+        this.originalStrokeColor = target.getStrokeColor();
+        this.originalStrokeWidth = target.getStrokeWidth();
+        this.originalFillColor = target.getFillColor();
         this.originalFillOpacity = target.getFillOpacity();
 
-        if (this.isVGroup && isVGroup(target)) {
-            // Store original state for each child
+        if (isVGroup(target)) {
             this.originalPaths = [];
-            this.childStates = [];
-            for (const child of target.getChildren()) {
-                this.childStates.push({
-                    child,
-                    originalPaths: child.paths.map((p: BezierPath) => p.clone()),
-                    originalOpacity: child.opacity,
-                    originalFillOpacity: child.getFillOpacity(),
-                });
-            }
+            this.childStates = target.getChildren().map(child => this.createState(child));
         } else {
-            // Store original paths on the target itself
             this.originalPaths = target.paths.map(p => p.clone());
             this.childStates = [];
         }
     }
 
-    /** Interpolates stroke drawing (0-0.5) and then fill fade (0.5-1). */
+    private createState(child: VMobject): ChildState {
+        const state: ChildState = {
+            child,
+            paths: child.paths.map(p => p.clone()),
+            opacity: child.opacity,
+            strokeColor: child.getStrokeColor(),
+            strokeWidth: child.getStrokeWidth(),
+            fillColor: child.getFillColor(),
+            fillOpacity: child.getFillOpacity(),
+        };
+
+        // If child is Text, store Glyph states for staggered animation
+        if (isText(child)) {
+            this.glyphStates.set(child, (child as VMobject & { getChildren(): VMobject[] }).getChildren().map((g: VMobject) => this.createState(g)));
+        }
+
+        return state;
+    }
+
     interpolate(progress: number): void {
-        if (this.isVGroup) {
+        if (this.childStates.length === 0) {
+            this.interpolateVMobject(this.target, this.originalPaths, this.originalOpacity, this.originalStrokeColor, this.originalStrokeWidth, this.originalFillColor, this.originalFillOpacity, progress);
+        } else {
             this.interpolateVGroup(progress);
-        } else {
-            this.interpolateVMobject(progress);
         }
     }
 
-    /** Interpolates a single VMobject (non-VGroup). */
-    private interpolateVMobject(progress: number): void {
-        const targetOpacity = this.originalOpacity === 0 ? 1 : this.originalOpacity;
-
-        if (progress <= 0) {
-            this.target.paths = [];
-            this.target.setOpacity(0);
-            this.target.fill(this.target.getFillColor(), 0);
-            return;
-        }
-
-        this.target.setOpacity(targetOpacity);
-
-        if (progress < 0.5) {
-            // First half: draw stroke progressively, no fill
-            const strokeProgress = progress * 2;
-            const partialPaths: BezierPath[] = [];
-            for (const originalPath of this.originalPaths) {
-                partialPaths.push(getPartialPath(originalPath, strokeProgress));
-            }
-            this.target.paths = partialPaths;
-            this.target.fill(this.target.getFillColor(), 0);
-        } else {
-            // Second half: full stroke, fade in fill
-            this.target.paths = this.originalPaths.map(p => p.clone());
-            const fillProgress = (progress - 0.5) * 2;
-            this.target.fill(this.target.getFillColor(), this.originalFillOpacity * fillProgress);
-        }
-    }
-
-    /** Interpolates a VGroup by animating each child's paths. */
     private interpolateVGroup(progress: number): void {
         const targetOpacity = this.originalOpacity === 0 ? 1 : this.originalOpacity;
         this.target.setOpacity(progress <= 0 ? 0 : targetOpacity);
 
         for (const state of this.childStates) {
-            const { child, originalPaths, originalOpacity, originalFillOpacity } = state;
-            const childOpacity = originalOpacity === 0 ? 1 : originalOpacity;
+            const glyphStates = this.glyphStates.get(state.child);
 
-            if (progress <= 0) {
-                child.paths = [];
-                child.setOpacity(0);
-                child.fill(child.getFillColor(), 0);
-                continue;
-            }
-
-            child.setOpacity(childOpacity);
-
-            if (progress < 0.5) {
-                // First half: draw stroke progressively, no fill
-                const strokeProgress = progress * 2;
-                const partialPaths: BezierPath[] = [];
-                for (const originalPath of originalPaths) {
-                    partialPaths.push(getPartialPath(originalPath, strokeProgress));
-                }
-                child.paths = partialPaths;
-                child.fill(child.getFillColor(), 0);
+            if (glyphStates) {
+                // Text: stagger Glyph animation
+                state.child.setOpacity(progress <= 0 ? 0 : state.opacity || 1);
+                this.interpolateGlyphs(glyphStates, progress);
             } else {
-                // Second half: full stroke, fade in fill
-                child.paths = originalPaths.map(p => p.clone());
-                const fillProgress = (progress - 0.5) * 2;
-                child.fill(child.getFillColor(), originalFillOpacity * fillProgress);
+                // Regular child: same progress as siblings
+                this.interpolateVMobject(state.child, state.paths, state.opacity, state.strokeColor, state.strokeWidth, state.fillColor, state.fillOpacity, progress);
             }
+        }
+    }
+
+    private interpolateGlyphs(glyphs: ChildState[], progress: number): void {
+        const lagRatio = 0.2;
+        const totalSpan = 1 + (glyphs.length - 1) * lagRatio;
+
+        glyphs.forEach((state, i) => {
+            const start = (i * lagRatio) / totalSpan;
+            const end = (i * lagRatio + 1) / totalSpan;
+            const p = Math.max(0, Math.min(1, (progress - start) / (end - start)));
+            this.interpolateVMobject(state.child, state.paths, state.opacity, state.strokeColor, state.strokeWidth, state.fillColor, state.fillOpacity, p);
+        });
+    }
+
+    /** Interpolates a single VMobject: stroke (0-0.5), then fill (0.5-1). */
+    private interpolateVMobject(
+        target: VMobject,
+        originalPaths: BezierPath[],
+        originalOpacity: number,
+        originalStrokeColor: Color,
+        originalStrokeWidth: number,
+        originalFillColor: Color,
+        originalFillOpacity: number,
+        progress: number
+    ): void {
+        if (progress <= 0) {
+            target.paths = [];
+            target.setOpacity(0);
+            return;
+        }
+
+        const opacity = originalOpacity === 0 ? 1 : originalOpacity;
+        target.setOpacity(opacity);
+
+        if (progress < 0.5) {
+            // First half: draw stroke progressively, no fill
+            const strokeProgress = progress * 2;
+            target.paths = originalPaths.map(p => getPartialPath(p, strokeProgress));
+            target.stroke(originalStrokeColor, originalStrokeWidth);
+            target.fill(originalFillColor, 0);
+        } else {
+            // Second half: full stroke, fade in fill
+            const fillProgress = (progress - 0.5) * 2;
+            target.paths = originalPaths.map(p => p.clone());
+            target.stroke(originalStrokeColor, originalStrokeWidth);
+            target.fill(originalFillColor, originalFillOpacity * fillProgress);
         }
     }
 }
