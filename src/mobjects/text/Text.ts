@@ -1,10 +1,13 @@
 import * as fontkit from 'fontkit';
+import { join, resolve } from 'path';
 import { Color } from '../../core/math/color/Color';
 import { VGroup } from '../VGroup';
 import { centerGroup } from '../VGroup/layout';
 import { Glyph } from './Glyph';
 import type { TextStyle } from './types';
 import { DEFAULT_TEXT_STYLE } from './types';
+
+const DEFAULT_FONT_PATH = resolve(join(__dirname, '..', '..', 'fonts', 'ComicSansMS3.ttf'));
 
 /**
  * A VGroup of vectorized glyphs created from a text string using fontkit.
@@ -17,12 +20,12 @@ export class Text extends VGroup {
 
     constructor(
         text: string,
-        fontPath: string,
+        fontPath?: string,
         options: Partial<TextStyle> = {}
     ) {
         super();
         this.text = text;
-        this.fontPath = fontPath;
+        this.fontPath = fontPath ?? DEFAULT_FONT_PATH;
         this.style = { ...DEFAULT_TEXT_STYLE, ...options };
 
         this.buildGlyphs();

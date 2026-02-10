@@ -7,19 +7,27 @@
 ```ts
 import { Text } from 'anima';
 
-const title = new Text('Hello World', 'assets/fonts/ComicSansMS3.ttf', {
-  fontSize: 1.5,    // in world units (default: 1)
-  color: Color.WHITE // glyph color (default: WHITE)
+// Uses the built-in default font (ComicSansMS3.ttf)
+const title = new Text('Hello World');
+
+// With style options (still using default font)
+const styled = new Text('Hello World', undefined, {
+  fontSize: 1.5,
+  color: Color.WHITE
+});
+
+// With a custom font
+const custom = new Text('Hello World', 'assets/fonts/MyFont.ttf', {
+  fontSize: 1.5,
+  color: Color.WHITE
 });
 ```
 
 **Arguments:**
 
 1. `text` — the string to render
-2. `fontPath` — path to a `.ttf` font file (required)
+2. `fontPath` — optional path to a `.ttf` font file (defaults to the built-in `ComicSansMS3.ttf`)
 3. `options` — optional `Partial<TextStyle>`
-
-The bundled font is at `assets/fonts/ComicSansMS3.ttf` (also available at `src/fonts/ComicSansMS3.ttf`).
 
 ## TextStyle
 
@@ -69,6 +77,6 @@ this.play(title.fadeOut(1));
 Text is automatically centered at the origin after construction. Use `.pos(x, y)` to reposition:
 
 ```ts
-const subtitle = new Text('Subtitle', 'assets/fonts/ComicSansMS3.ttf', { fontSize: 0.8 })
+const subtitle = new Text('Subtitle', { fontSize: 0.8 })
   .pos(0, -2);  // below center
 ```
