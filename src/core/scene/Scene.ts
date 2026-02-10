@@ -228,7 +228,7 @@ export class Scene {
 
         switch (anim.lifecycle) {
             case 'introductory':
-                // Auto-register if not already in scene
+                // Auto-register if not already in scene (only root objects)
                 if (!this.mobjects.has(target)) {
                     this.mobjects.add(target);
                 }
@@ -240,12 +240,39 @@ export class Scene {
                 if (target instanceof CameraFrame) {
                     break;
                 }
-                // Validate object is in scene
-                if (!this.mobjects.has(target)) {
+                // Validate object is in scene (directly or via parent chain)
+                if (!this.isInScene(target)) {
                     throw new AnimationTargetNotInSceneError(anim, target);
                 }
                 break;
         }
+    }
+
+    /**
+     * Checks if a Mobject is in the scene.
+     * An object is "in scene" if:
+     * - It's directly registered in this.mobjects, OR
+     * - Any ancestor in its parent chain is registered
+     *
+     * This respects the scene graph hierarchy - children of registered
+     * VGroups are implicitly in scene via their parent.
+     */
+    isInScene(mobject: Mobject): boolean {
+        // Check direct registration
+        if (this.mobjects.has(mobject)) {
+            return true;
+        }
+        
+        // Check if any ancestor is registered (traverse parent chain)
+        let current = mobject.parent;
+        while (current !== null) {
+            if (this.mobjects.has(current)) {
+                return true;
+            }
+            current = current.parent;
+        }
+        
+        return false;
     }
 
     /**

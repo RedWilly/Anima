@@ -109,6 +109,128 @@ this.play(new Rotate(group, Math.PI).duration(2));
 this.play(group.moveTo(0, 2, 1));
 ```
 
+## Animating Individual Children
+
+When a VGroup is introduced via an introductory animation (Draw, FadeIn, etc.), **all children are automatically registered with the scene**. This allows you to animate children independently after the group animation.
+
+### Way 1: Keep Reference (Recommended)
+
+Store each child in a variable before adding to the group:
+
+```ts
+const circle = new Circle(0.4).fill(Color.RED);
+const rect = new Rectangle(2, 1).fill(Color.BLUE);
+const text = new Text("Hi", 'font.ttf').fill(Color.WHITE);
+
+const group = new VGroup(circle, rect, text).draw(2);
+this.play(group);           // Draws all shapes together
+
+// Animate each child independently:
+circle.moveTo(0, 2, 1);     // Move only the circle
+this.play(circle);
+
+rect.rotate(Math.PI, 1);    // Rotate only the rectangle
+this.play(rect);
+
+text.fadeOut(0.5);          // Fade out only the text
+this.play(text);
+```
+
+### Way 2: Access by Index
+
+Use `get(index)` when you don't have references:
+
+```ts
+const group = new VGroup(
+  new Circle(0.4).fill(Color.RED),    // index 0
+  new Rectangle(2, 1).fill(Color.BLUE), // index 1
+  new Text("Hi", 'font.ttf')           // index 2
+).draw(2);
+
+this.play(group);
+
+group.get(0)!.moveTo(0, 2, 1);   // Animate circle (index 0)
+this.play(group.get(0)!);
+
+group.get(2)!.fadeOut(1);        // Fade out text (index 2)
+this.play(group.get(2)!);
+```
+
+### Way 3: Remove and Animate
+
+Remove a child from the group and animate it separately:
+
+```ts
+const circle = new Circle(0.4).fill(Color.RED);
+const group = new VGroup(circle, rect).draw(2);
+this.play(group);
+
+group.remove(circle);          // Remove from group
+circle.moveTo(0, 2, 1);        // Still works - circle is registered with scene
+this.play(circle);
+```
+
+### Way 4: Iterate Over Children
+
+Animate all children with a loop:
+
+```ts
+const group = new VGroup(
+  new Circle(0.3).fill(Color.RED),
+  new Circle(0.3).fill(Color.GREEN),
+  new Circle(0.3).fill(Color.BLUE)
+).draw(2);
+
+this.play(group);
+
+// Move each child to a different position
+const positions = [[-2, 0], [0, 0], [2, 0]];
+group.getChildren().forEach((child, i) => {
+  child.moveTo(positions[i]![0], positions[i]![1], 1);
+});
+this.play(...group.getChildren());  // Play all in parallel
+```
+
+### Way 5: Nested VGroups
+
+VGroups can contain other VGroups. All nested children are registered:
+
+```ts
+const innerGroup = new VGroup(
+  new Circle(0.3).fill(Color.RED),
+  new Circle(0.3).fill(Color.BLUE)
+);
+
+const outerGroup = new VGroup(
+  innerGroup,
+  new Rectangle(2, 1).fill(Color.GREEN)
+).draw(2);
+
+this.play(outerGroup);
+
+// Access nested children:
+innerGroup.get(0)!.moveTo(0, 2, 1);  // Animate circle inside inner group
+this.play(innerGroup.get(0)!);
+```
+
+### Way 6: Mixed Pro API and Fluent API
+
+Combine both styles:
+
+```ts
+const circle = new Circle(0.4).fill(Color.RED);
+const group = new VGroup(circle, rect).draw(2);
+this.play(group);
+
+// Fluent API
+circle.moveTo(0, 2, 1);
+this.play(circle);
+
+// Pro API
+this.play(new Rotate(circle, Math.PI).duration(1));
+this.play(new FadeOut(circle).duration(0.5));
+```
+
 ## Common Pattern: Build, Arrange, Animate
 
 ```ts

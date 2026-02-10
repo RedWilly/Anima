@@ -2,7 +2,7 @@ import { Scene, Rectangle, Color, FadeIn, Text, VGroup, Circle, Parallel, Rotate
 
 export class Pol extends Scene {
     constructor() {
-        super({ width: 1920, height: 1080, frameRate: 60, backgroundColor: Color.TRANSPARENT });
+        super({ width: 1920, height: 1080, frameRate: 30, backgroundColor: Color.TRANSPARENT });
 
         const rect = new Rectangle(3, 1).pos(0, 0).fill(Color.TRANSPARENT).stroke(Color.WHITE, 3); // or add .write here
         const tx = new Text("Anima", 'assets/fonts/ComicSansMS3.ttf').pos(0, 0).fill(Color.WHITE).stroke(Color.WHITE, 3);
@@ -48,8 +48,18 @@ export class Poll extends Scene {
 
         const group = new VGroup(rect, tx, circle).draw(2);
         this.play(group);
-        
-        // group.circle.moveTo(0, 1, 1);
-        // this.play(group);
+        // moving the circle in the group to a new position
+        //need more info on how group works see skills/rules/vgroup.md
+        circle.moveTo(0, 1, 1);
+        this.play(circle);
+
+        group.moveTo(0, -0.5);
+        this.play(group);
+
+        // moving the circle along the group edge
+        // need to use the group position and circle position to calculate the offset
+        // circle.moveAlong(group.position, group.rotation, 1);
+        // this.play(circle);
+
     }
 }
