@@ -4,6 +4,8 @@ import { Camera, CameraFrame } from '../camera';
 import { Mobject } from '../../mobjects/Mobject';
 import type { Animation } from '../animations/Animation';
 import type { SceneConfig, ResolvedSceneConfig } from './types';
+import type { Segment } from '../cache/Segment';
+import { hashNumber, hashCompose } from '../cache/Hashable';
 import { AnimationTargetNotInSceneError } from '../errors';
 
 /**
@@ -16,6 +18,7 @@ export class Scene {
     private readonly mobjects: Set<Mobject> = new Set();
     private readonly timeline: Timeline;
     private readonly _camera: Camera;
+    private readonly segmentList: Segment[] = [];
     private playheadTime = 0;
 
     constructor(config: SceneConfig = {}) {
@@ -156,7 +159,19 @@ export class Scene {
                 maxDuration = totalTime;
             }
         }
-        this.playheadTime += maxDuration;
+
+        const endTime = this.playheadTime + maxDuration;
+
+        // Emit segment for this play() call
+        this.segmentList.push({
+            index: this.segmentList.length,
+            startTime: this.playheadTime,
+            endTime,
+            animations,
+            hash: this.computeSegmentHash(animations, this.playheadTime, endTime),
+        });
+
+        this.playheadTime = endTime;
 
         return this;
     }
@@ -169,7 +184,19 @@ export class Scene {
         if (seconds < 0) {
             throw new Error('Wait duration must be non-negative');
         }
-        this.playheadTime += seconds;
+
+        const endTime = this.playheadTime + seconds;
+
+        // Emit a static segment (no animations, scene held)
+        this.segmentList.push({
+            index: this.segmentList.length,
+            startTime: this.playheadTime,
+            endTime,
+            animations: [],
+            hash: this.computeSegmentHash([], this.playheadTime, endTime),
+        });
+
+        this.playheadTime = endTime;
         return this;
     }
 
@@ -203,6 +230,14 @@ export class Scene {
      */
     getCamera(): Camera {
         return this._camera;
+    }
+
+    /**
+     * Get the list of segments emitted by play() and wait() calls.
+     * Used by the Renderer for cache-aware segmented rendering.
+     */
+    getSegments(): readonly Segment[] {
+        return this.segmentList;
     }
 
     // ========== Private Helpers ==========
@@ -262,7 +297,7 @@ export class Scene {
         if (this.mobjects.has(mobject)) {
             return true;
         }
-        
+
         // Check if any ancestor is registered (traverse parent chain)
         let current = mobject.parent;
         while (current !== null) {
@@ -271,7 +306,7 @@ export class Scene {
             }
             current = current.parent;
         }
-        
+
         return false;
     }
 
@@ -285,6 +320,28 @@ export class Scene {
             return anim.getChildren();
         }
         return [];
+    }
+
+    /**
+     * Computes a holistic CRC32 hash for a segment.
+     * Includes camera state, all current mobjects, animations, and timing.
+     */
+    private computeSegmentHash(
+        animations: readonly Animation[],
+        startTime: number,
+        endTime: number,
+    ): number {
+        const cameraHash = this._camera.computeHash();
+        const mobjectHashes = [...this.mobjects].map(m => m.computeHash());
+        const animHashes = animations.map(a => a.computeHash());
+
+        return hashCompose(
+            cameraHash,
+            ...mobjectHashes,
+            ...animHashes,
+            hashNumber(startTime),
+            hashNumber(endTime),
+        );
     }
 }
 

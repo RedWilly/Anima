@@ -1,4 +1,5 @@
 import { Matrix3x3 } from '../core/math/matrix/Matrix3x3';
+import { hashFloat32Array, hashNumber, hashCompose } from '../core/cache/Hashable';
 import { Vector2 } from '../core/math/Vector2/Vector2';
 import { Animation } from '../core/animations/Animation';
 import type { EasingFunction } from '../core/animations/easing';
@@ -411,7 +412,7 @@ export class Mobject {
     if (items.length === 0) {
       return this;
     }
-    
+
     // Convert any mobjects to animations by extracting and removing their last queued animation
     const animations = items.map(item => {
       if (item instanceof Animation) {
@@ -425,8 +426,19 @@ export class Mobject {
         return anim;
       }
     });
-    
+
     this.getQueue().enqueueAnimation(new Parallel(animations));
     return this;
+  }
+
+  /**
+   * Computes a CRC32 hash of this mobject's full state.
+   * Used by the segment cache to detect changes.
+   */
+  computeHash(): number {
+    return hashCompose(
+      hashFloat32Array(this.localMatrix.values),
+      hashNumber(this.opacityValue),
+    );
   }
 }

@@ -1,4 +1,5 @@
 import { Mobject } from './Mobject';
+import { hashNumber, hashString, hashCompose } from '../core/cache/Hashable';
 import type { Animation } from '../core/animations/Animation';
 import { BezierPath } from '../core/math/bezier/BezierPath';
 import type { PathCommand } from '../core/math/bezier/types';
@@ -229,5 +230,36 @@ export class VMobject extends Mobject {
         }
         this.getQueue().enqueueAnimation(animation);
         return this;
+    }
+
+    /**
+     * Extends parent hash with VMobject-specific state:
+     * stroke/fill colors, widths, opacity, and path geometry.
+     */
+    override computeHash(): number {
+        const parentHash = super.computeHash();
+        const pathHash = hashString(
+            this.pathList.map(p =>
+                p.getCommands().map(c =>
+                    `${c.type}:${c.end.x},${c.end.y}` +
+                    (c.control1 ? `:${c.control1.x},${c.control1.y}` : '') +
+                    (c.control2 ? `:${c.control2.x},${c.control2.y}` : '')
+                ).join('|')
+            ).join('||'),
+        );
+        return hashCompose(
+            parentHash,
+            hashNumber(this.strokeColor.r),
+            hashNumber(this.strokeColor.g),
+            hashNumber(this.strokeColor.b),
+            hashNumber(this.strokeColor.a),
+            hashNumber(this.strokeWidth),
+            hashNumber(this.fillColor.r),
+            hashNumber(this.fillColor.g),
+            hashNumber(this.fillColor.b),
+            hashNumber(this.fillColor.a),
+            hashNumber(this.fillOpacity),
+            pathHash,
+        );
     }
 }

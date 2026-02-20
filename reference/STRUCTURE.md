@@ -49,12 +49,12 @@ src/
 │   │   ├── Scene.ts                  # Scene class
 │   │   └── types.ts                  # Scene types
 │   │
-│   ├── serialization/                # Serialization/deserialization
-│   │   ├── animation.ts              # Animation serialization
-│   │   ├── mobject.ts                # Mobject serialization
-│   │   ├── scene.ts                  # Scene serialization
-│   │   └── registry.ts               # Type registry for deserialization
-│   │
+│   ├── cache/                        # Segment caching system
+│   │   ├── Hashable.ts               # CRC32 utilities & Hashable protocol
+│   │   ├── Segment.ts                # Segment data model
+│   │   ├── SegmentCache.ts           # Disk cache manager
+│   │   └── index.ts                  # Barrel export
+│
 │   └── timeline/                     # Timeline management
 │       └── Timeline.ts               # Timeline for coordinating animations
 │
@@ -65,7 +65,6 @@ src/
     ├── Mobject.ts                    # Base mathematical object
     ├── VMobject.ts                   # Vector mathematical object
     ├── geometry/                     # Geometric shapes
-    │   ├── Point.ts                  # Point
     │   ├── Line.ts                   # Line
     │   ├── Circle.ts                 # Circle
     │   ├── Arc.ts                    # Arc
@@ -75,8 +74,7 @@ src/
     │
     ├── text/                         # Text objects
     │   ├── Text.ts                   # Text rendering
-    │   ├── Glyph.ts                  # Individual glyphs
-    │   └── types.ts                  # Text configuration types
+    │   └──Glyph.ts                  # Individual glyphs
     │
     ├── graph/                        # Graph structures
     │   ├── Graph.ts                  # Graph container

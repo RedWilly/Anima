@@ -1,6 +1,7 @@
 import { SceneLoader } from '../SceneLoader';
 import { Renderer, Resolution } from '@redwilly/anima';
 import type { Scene, RenderFormat, RenderQuality } from '@redwilly/anima';
+import { join, dirname } from 'path';
 
 /**
  * Options for the render command.
@@ -27,6 +28,8 @@ export async function render(file: string, options: RenderOptions): Promise<void
     }
 
     let scene: Scene;
+    let sceneName: string;
+
     if (options.scene) {
         const found = scenes.get(options.scene);
         if (!found) {
@@ -38,9 +41,12 @@ export async function render(file: string, options: RenderOptions): Promise<void
             process.exit(1);
         }
         scene = found;
+        sceneName = options.scene;
     } else {
         if (scenes.size === 1) {
-            scene = scenes.values().next().value!;
+            const entry = scenes.entries().next().value!;
+            sceneName = entry[0];
+            scene = entry[1];
         } else {
             console.error('Error: Multiple scenes found in file. Please specify one with --scene.');
             for (const name of scenes.keys()) {
@@ -55,8 +61,15 @@ export async function render(file: string, options: RenderOptions): Promise<void
         process.exit(1);
     }
 
+    const format = options.format ?? 'mp4';
+
+    // Resolve output path:
+    // - If -o is specified, use it directly
+    // - Otherwise, default to media/{SceneName}.{format}
+    const outputPath = options.output ?? join('media', `${sceneName}.${format}`);
+    const cacheDir = join(dirname(outputPath), '.anima-cache');
+
     const renderer = new Renderer();
-    const outputPath = options.output ?? `output.${options.format ?? 'mp4'}`;
 
     // Resolve resolution preset
     let width = scene.getWidth();
@@ -72,14 +85,15 @@ export async function render(file: string, options: RenderOptions): Promise<void
         }
     }
 
-    console.log(`Rendering scene to '${outputPath}'...`);
+    console.log(`Rendering scene '${sceneName}' to '${outputPath}'...`);
 
     await renderer.render(scene, outputPath, {
         width,
         height,
         frameRate: options.fps ? parseInt(options.fps, 10) : undefined,
-        format: options.format as RenderFormat,
+        format: format as RenderFormat,
         quality: options.quality as RenderQuality,
+        cacheDir,
         onProgress: (progress) => {
             const percent = progress.percentage.toFixed(1);
             const eta = (progress.estimatedRemainingMs / 1000).toFixed(1);
@@ -92,3 +106,4 @@ export async function render(file: string, options: RenderOptions): Promise<void
 
     console.log('Rendering complete.');
 }
+

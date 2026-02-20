@@ -22,6 +22,8 @@ interface RenderConfig {
   format?: RenderFormat;  // output format (default: 'sprite')
   quality?: RenderQuality;
   onProgress?: (progress) => void;
+  cache?: boolean;        // segment caching (default: true for video formats)
+  cacheDir?: string;      // cache directory (default: '.anima-cache' next to output)
 }
 ```
 
@@ -88,6 +90,40 @@ interface RenderProgress {
 }
 ```
 
+## Segment Caching
+
+For video formats (mp4/webp/gif), the renderer uses **segment-level caching**. Each `play()`/`wait()` call produces a Segment with a CRC32 hash of the camera, all mobjects, and animations. On re-render, only segments whose hash changed are re-rendered.
+
+### How It Works
+
+1. Each `scene.play()`/`scene.wait()` emits a `Segment` with a holistic hash
+2. `Renderer.render()` checks `SegmentCache.has(hash)` per segment
+3. **Cache hit** → skip, reuse `.anima-cache/segment_XXXXXXXX.mp4`
+4. **Cache miss** → render that segment's frames to a partial `.mp4`
+5. FFmpeg concat demuxer stitches partials with `-c copy` (zero re-encoding)
+6. Orphaned cache entries are pruned
+
+### Cache Directory
+
+The `.anima-cache/` directory lives alongside the output file:
+
+```
+media/
+├── .anima-cache/
+│   ├── segment_abcd1234.mp4
+│   └── segment_ef567890.mp4
+└── MyScene.mp4
+```
+
+### Disabling Cache
+
+```ts
+await renderer.render(scene, 'output.mp4', {
+  format: 'mp4',
+  cache: false,  // monolithic render, no caching
+});
+```
+
 ## CLI
 
 The CLI uses `bun` and the `commander` package.
@@ -97,10 +133,15 @@ The CLI uses `bun` and the `commander` package.
 ```bash
 anima render <file> [options]
 
-# Examples
+# Examples — output defaults to media/{SceneName}.{format}
 anima render examples/basic.ts --scene MyScene --format mp4
+# → media/MyScene.mp4
+
 anima render examples/pol.ts -s Pol1 -o test-output/Pol1.mp4
+# → test-output/Pol1.mp4
+
 anima render examples/GraphShowcase.ts -s SocialNetworkScene -f webp -q preview
+# → media/SocialNetworkScene.webp
 ```
 
 Options:
@@ -112,13 +153,14 @@ Options:
 | `-r, --resolution <preset>` | Resolution: 480, 720, 1080, 4K | scene default |
 | `--fps <number>` | Frames per second | scene default |
 | `-q, --quality <level>` | production or preview | `production` |
-| `-o, --output <path>` | Output file path | auto-generated |
+| `-o, --output <path>` | Output file path | `media/{SceneName}.{format}` |
 
 ### Preview (Quick Low-Quality Render)
 
 ```bash
 anima preview <file> -s MyScene
 anima preview examples/basic.ts -s MyScene -f mp4
+# → media/MyScene.mp4 (at half resolution)
 ```
 
 Renders at half resolution for faster iteration.

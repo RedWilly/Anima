@@ -1,6 +1,7 @@
 import { Vector2 } from '../math/Vector2/Vector2';
 import { Matrix3x3 } from '../math/matrix/Matrix3x3';
 import { CameraFrame } from './CameraFrame';
+import { hashNumber, hashFloat32Array, hashCompose } from '../cache/Hashable';
 import { MANIM_FRAME_HEIGHT, type CameraConfig, type ResolvedCameraConfig } from './types';
 
 /**
@@ -205,5 +206,16 @@ export class Camera {
         this.frame.setScale(1, 1);
         this.frame.setRotation(0);
         return this;
+    }
+
+    /**
+     * Hashes camera config and the CameraFrame's full transform state.
+     */
+    computeHash(): number {
+        return hashCompose(
+            hashNumber(this.config.pixelWidth),
+            hashNumber(this.config.pixelHeight),
+            hashFloat32Array(this.frame.matrix.values),
+        );
     }
 }

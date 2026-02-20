@@ -45,6 +45,10 @@ export interface RenderConfig {
     quality?: RenderQuality;
     /** Progress callback for render updates. */
     onProgress?: ProgressCallback;
+    /** Enable segment caching for incremental rendering. Default: true for video formats. */
+    cache?: boolean;
+    /** Custom cache directory path. Default: '.anima-cache' relative to output. */
+    cacheDir?: string;
 }
 
 /**
@@ -57,6 +61,8 @@ export interface ResolvedRenderConfig {
     format: RenderFormat;
     quality: RenderQuality;
     onProgress?: ProgressCallback;
+    cache: boolean;
+    cacheDir?: string;
 }
 
 /**

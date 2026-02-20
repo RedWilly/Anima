@@ -1,6 +1,7 @@
 import { Mobject } from '../../mobjects/Mobject';
 import type { EasingFunction } from './easing';
 import { defaultEasing } from './easing';
+import { hashNumber, hashString, hashCompose } from '../cache/Hashable';
 import type { AnimationConfig, AnimationLifecycle } from './types';
 
 /**
@@ -96,5 +97,20 @@ export abstract class Animation<T extends Mobject = Mobject> {
         const clampedProgress = Math.max(0, Math.min(1, progress));
         const easedProgress = this.easingFn(clampedProgress);
         this.interpolate(easedProgress);
+    }
+
+    /**
+     * Hashes the animation type, config, and target state.
+     * Subclass-specific behavior is captured through the target's hash,
+     * since animations mutate the target.
+     */
+    computeHash(): number {
+        return hashCompose(
+            hashString(this.constructor.name),
+            hashNumber(this.durationSeconds),
+            hashNumber(this.delaySeconds),
+            hashString(this.easingFn.name || 'anonymous'),
+            this.target.computeHash(),
+        );
     }
 }

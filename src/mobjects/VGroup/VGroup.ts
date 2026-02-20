@@ -1,5 +1,6 @@
 import { VMobject } from '../VMobject';
 import { Color } from '../../core/math/color/Color';
+import { hashCompose } from '../../core/cache/Hashable';
 import {
     centerGroup,
     toCorner,
@@ -164,5 +165,14 @@ export class VGroup extends VMobject {
     alignTo(target: VMobject, edge: Edge): this {
         alignToTarget(this, target, edge);
         return this;
+    }
+
+    /**
+     * Recursively hashes this VGroup and all children.
+     * Any child state change invalidates segments containing this group.
+     */
+    override computeHash(): number {
+        const childHashes = this.children.map(c => c.computeHash());
+        return hashCompose(super.computeHash(), ...childHashes);
     }
 }
