@@ -1,6 +1,6 @@
 {
   "name": "@redwilly/anima",
-  "version": "0.1.23",
+  "version": "0.1.24",
   "description": "Animation library for mathematical visualizations",
   "repository": {
     "type": "git",
