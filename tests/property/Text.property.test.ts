@@ -9,9 +9,6 @@ const FONT_PATH = resolve(__dirname, '../../assets/fonts/ComicSansMS3.ttf');
 /** Generates alphanumeric strings that will have glyphs in most fonts. */
 const textArb = fc.stringMatching(/^[A-Za-z0-9]{1,10}$/);
 
-/** Generates fontSize values in reasonable range. */
-const fontSizeArb = fc.double({ min: 8, max: 144, noNaN: true });
-
 describe('Text Property Tests', () => {
     describe('Glyph Creation Properties', () => {
         test('text length equals glyph count for ASCII characters', () => {
@@ -60,7 +57,6 @@ describe('Text Property Tests', () => {
                         const prev = text.getGlyph(i - 1);
                         const curr = text.getGlyph(i);
                         if (!prev || !curr) return false;
-                        // Each glyph should be at or to the right of the previous one
                         if (curr.position.x < prev.position.x - 0.01) return false;
                     }
                     return true;
@@ -70,7 +66,7 @@ describe('Text Property Tests', () => {
 
         test('every glyph has non-empty paths', () => {
             fc.assert(fc.property(
-                fc.stringMatching(/^[A-Z]{1,5}$/), // Use uppercase letters which have clear paths
+                fc.stringMatching(/^[A-Z]{1,5}$/),
                 (str) => {
                     const text = new Text(str, FONT_PATH);
                     for (let i = 0; i < str.length; i++) {
@@ -84,7 +80,7 @@ describe('Text Property Tests', () => {
     });
 
     describe('Text Styling Properties', () => {
-        test('default style color applies to all glyphs', () => {
+        test('default is stroke only, no fill', () => {
             fc.assert(fc.property(
                 textArb,
                 (str) => {
@@ -92,19 +88,21 @@ describe('Text Property Tests', () => {
                     for (let i = 0; i < str.length; i++) {
                         const glyph = text.getGlyph(i);
                         if (!glyph) return false;
-                        if (glyph.getFillColor().toHex() !== Color.WHITE.toHex()) return false;
+                        if (glyph.getStrokeColor().toHex() !== Color.WHITE.toHex()) return false;
+                        if (glyph.getFillOpacity() !== 0) return false;
                     }
                     return true;
                 }
             ));
         });
 
-        test('custom color applies to all glyphs', () => {
+        test('.fill() applies color to all glyphs', () => {
             fc.assert(fc.property(
                 textArb,
                 fc.constantFrom(Color.RED, Color.GREEN, Color.BLUE),
                 (str, color) => {
-                    const text = new Text(str, FONT_PATH, { color });
+                    const text = new Text(str, FONT_PATH);
+                    text.fill(color);
                     for (let i = 0; i < str.length; i++) {
                         const glyph = text.getGlyph(i);
                         if (!glyph) return false;
@@ -115,47 +113,19 @@ describe('Text Property Tests', () => {
             ));
         });
 
-        test('setStyle updates all glyphs color', () => {
+        test('.fill() updates all glyphs', () => {
             fc.assert(fc.property(
                 textArb,
                 fc.constantFrom(Color.RED, Color.GREEN, Color.BLUE),
                 (str, newColor) => {
                     const text = new Text(str, FONT_PATH);
-                    text.setStyle({ color: newColor });
+                    text.fill(newColor);
                     for (let i = 0; i < str.length; i++) {
                         const glyph = text.getGlyph(i);
                         if (!glyph) return false;
                         if (glyph.getFillColor().toHex() !== newColor.toHex()) return false;
                     }
                     return true;
-                }
-            ));
-        });
-
-        test('getStyle returns style with correct fontSize', () => {
-            fc.assert(fc.property(
-                textArb,
-                fontSizeArb,
-                (str, fontSize) => {
-                    const text = new Text(str, FONT_PATH, { fontSize });
-                    const style = text.getStyle();
-                    return Math.abs(style.fontSize - fontSize) < 0.001;
-                }
-            ));
-        });
-
-        test('setStyle is idempotent for same values', () => {
-            fc.assert(fc.property(
-                textArb,
-                fc.constantFrom(Color.RED, Color.GREEN),
-                (str, color) => {
-                    const text = new Text(str, FONT_PATH);
-                    text.setStyle({ color });
-                    const style1 = text.getStyle();
-                    text.setStyle({ color });
-                    const style2 = text.getStyle();
-                    return style1.color.toHex() === style2.color.toHex() &&
-                        style1.fontSize === style2.fontSize;
                 }
             ));
         });
@@ -219,8 +189,8 @@ describe('Text Property Tests', () => {
         test('empty string operations do not throw', () => {
             const text = new Text('', FONT_PATH);
             expect(() => text.getGlyph(0)).not.toThrow();
-            expect(() => text.setStyle({ color: Color.RED })).not.toThrow();
-            expect(() => text.getStyle()).not.toThrow();
+            expect(() => text.fill(Color.RED)).not.toThrow();
+            expect(() => text.stroke(Color.RED)).not.toThrow();
             expect(() => text.getBoundingBox()).not.toThrow();
         });
     });

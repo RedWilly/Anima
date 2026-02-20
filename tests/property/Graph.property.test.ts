@@ -113,6 +113,7 @@ describe('Graph Property Tests', () => {
                 nodeIdArb,
                 nodeIdArb,
                 (id1, id2) => {
+                    if (id1 === id2) return true; // Skip — same id means source exists
                     const graph = new Graph();
                     graph.addNode(id2); // Only add target
                     const edge = graph.addEdge(id1, id2);

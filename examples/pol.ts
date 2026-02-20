@@ -1,4 +1,4 @@
-import { Scene, Rectangle, Color, FadeIn, Text, VGroup, Circle, Parallel, Rotate, MoveTo } from '../src/';
+import { Scene, Rectangle, Color, FadeIn, Text, VGroup, Circle, Parallel, Rotate, MoveTo, Line, Arrow } from '../src/';
 
 export class Pol extends Scene {
     constructor() {
@@ -29,10 +29,10 @@ export class Pol1 extends Scene {
 
         this.play(circle);
         new FadeIn(rect).duration(0.5),
-        new Parallel([
-            new Rotate(rect, Math.PI / 2).duration(1),
-            new MoveTo(rect, -1, 0).duration(1)
-        ])
+            new Parallel([
+                new Rotate(rect, Math.PI / 2).duration(1),
+                new MoveTo(rect, -1, 0).duration(1)
+            ])
         this.play()
 
     }
@@ -60,6 +60,14 @@ export class Poll extends Scene {
         // need to use the group position and circle position to calculate the offset
         // circle.moveAlong(group.position, group.rotation, 1);
         // this.play(circle);
+
+        //at the top of the page
+        const line = new Arrow(-3, 0, 3, 0).pos(0, 2.8).fill(Color.WHITE).stroke(Color.WHITE, 3);
+        this.play(line.draw(1));
+
+        const tx2 = new Text("stroke").pos(0, 0).stroke(Color.WHITE, 1).pos(0, 2);
+        this.play(tx2.write(1));
+
 
     }
 }

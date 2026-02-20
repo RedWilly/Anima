@@ -11,26 +11,24 @@ export type { CameraConfig, ResolvedCameraConfig } from './core/camera';
 
 
 // Geometric Primitives
-export { 
-    Circle, 
-    Rectangle, 
-    Line, 
-    Arrow, 
-    Arc, 
-    Polygon, 
-    Point 
+export {
+    Circle,
+    Rectangle,
+    Line,
+    Arrow,
+    Arc,
+    Polygon
 } from './mobjects/geometry';
 
 // Text and Graph - Advanced visualization
 export { Text, Glyph } from './mobjects/text';
-export type { TextStyle } from './mobjects/text';
 export { Graph, GraphNode, GraphEdge } from './mobjects/graph';
-export type { 
-    GraphNodeId, 
-    NodeConfig, 
-    EdgeConfig, 
+export type {
+    GraphNodeId,
+    NodeConfig,
+    EdgeConfig,
     LayoutType,
-    LayoutConfig 
+    LayoutConfig
 } from './mobjects/graph';
 
 // FluentAPI - Chainable animations (built into mobjects above)
@@ -56,9 +54,9 @@ export {
     Shake
 } from './core/animations';
 
-export type { 
+export type {
     AnimationConfig,
-    Keyframe 
+    Keyframe
 } from './core/animations';
 
 export { Color, Vector2 } from './core/math';

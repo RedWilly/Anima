@@ -3,8 +3,11 @@ import { BezierPath } from '../../core/math/bezier/BezierPath';
 import { Vector2 } from '../../core/math/Vector2/Vector2';
 
 export class Polygon extends VMobject {
-    constructor(readonly vertices: Vector2[]) {
+    readonly vertices: Vector2[];
+
+    constructor(...points: Array<[number, number]>) {
         super();
+        this.vertices = points.map(([x, y]) => new Vector2(x, y));
         this.generatePath();
     }
 

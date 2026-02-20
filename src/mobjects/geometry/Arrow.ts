@@ -37,8 +37,5 @@ export class Arrow extends Line {
         tipPath.closePath();
 
         this.addPath(tipPath);
-
-        // Ensure the tip is filled
-        this.fillOpacity = 1;
     }
 }

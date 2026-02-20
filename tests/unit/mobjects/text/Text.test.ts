@@ -67,43 +67,34 @@ describe('Text', () => {
 });
 
 describe('Text Styling', () => {
-    test('applies default style to glyphs', () => {
+    test('default is stroke only, no fill (same as geometry)', () => {
         const text = new Text('A', FONT_PATH);
         const glyph = text.getGlyph(0);
 
-        // Default style should fill with white
-        expect(glyph?.getFillColor().toHex()).toBe(Color.WHITE.toHex());
-        expect(glyph?.getFillOpacity()).toBe(1);
+        expect(glyph?.getStrokeColor().toHex()).toBe(Color.WHITE.toHex());
+        expect(glyph?.getStrokeWidth()).toBe(2);
+        expect(glyph?.getFillOpacity()).toBe(0);
     });
 
-    test('custom color style is applied', () => {
-        const text = new Text('A', FONT_PATH, { color: Color.RED });
-        const glyph = text.getGlyph(0);
-
-        expect(glyph?.getFillColor().toHex()).toBe(Color.RED.toHex());
-    });
-
-    test('setStyle updates all glyphs', () => {
+    test('.fill() propagates to all glyphs', () => {
         const text = new Text('AB', FONT_PATH);
-        text.setStyle({ color: Color.BLUE });
+        text.fill(Color.BLUE);
 
-        const glyph0 = text.getGlyph(0);
-        const glyph1 = text.getGlyph(1);
-
-        expect(glyph0?.getFillColor().toHex()).toBe(Color.BLUE.toHex());
-        expect(glyph1?.getFillColor().toHex()).toBe(Color.BLUE.toHex());
+        expect(text.getGlyph(0)?.getFillColor().toHex()).toBe(Color.BLUE.toHex());
+        expect(text.getGlyph(1)?.getFillColor().toHex()).toBe(Color.BLUE.toHex());
     });
 
-    test('getStyle returns current style', () => {
-        const text = new Text('A', FONT_PATH, { fontSize: 72 });
-        const style = text.getStyle();
+    test('.stroke() propagates to all glyphs', () => {
+        const text = new Text('AB', FONT_PATH);
+        text.stroke(Color.RED, 5);
 
-        expect(style.fontSize).toBe(72);
+        expect(text.getGlyph(0)?.getStrokeColor().toHex()).toBe(Color.RED.toHex());
+        expect(text.getGlyph(0)?.getStrokeWidth()).toBe(5);
     });
 });
 
 describe('Text Per-Glyph Animation Support', () => {
-    test('individual glyph can be accessed and modified', () => {
+    test('individual glyph can be styled independently', () => {
         const text = new Text('Hi', FONT_PATH);
         const glyph = text.getGlyph(0);
 
@@ -111,8 +102,8 @@ describe('Text Per-Glyph Animation Support', () => {
         glyph!.fill(Color.GREEN, 1);
 
         expect(glyph!.getFillColor().toHex()).toBe(Color.GREEN.toHex());
-        // Second glyph should be unaffected
-        expect(text.getGlyph(1)?.getFillColor().toHex()).toBe(Color.WHITE.toHex());
+        // Second glyph should be unaffected (still default: no fill)
+        expect(text.getGlyph(1)?.getFillOpacity()).toBe(0);
     });
 
     test('glyphs have character property', () => {

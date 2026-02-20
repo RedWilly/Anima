@@ -9,9 +9,9 @@ describe('VMobject', () => {
         const vmobject = new VMobject();
         expect(vmobject).toBeInstanceOf(VMobject);
         expect(vmobject.paths).toEqual([]);
-        // Default: strokeWidth=0 means no stroke renders
+        // Default: white stroke, width 2
         expect(vmobject.getStrokeColor()).toEqual(Color.WHITE);
-        expect(vmobject.getStrokeWidth()).toBe(0);
+        expect(vmobject.getStrokeWidth()).toBe(2);
         // Default: fillOpacity=0 means no fill renders
         expect(vmobject.getFillColor()).toEqual(Color.TRANSPARENT);
         expect(vmobject.getFillOpacity()).toBe(0);
