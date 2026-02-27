@@ -3,7 +3,7 @@ import * as fc from 'fast-check';
 import { Timeline } from '../../../../src/core/timeline';
 import { Animation } from '../../../../src/core/animations/Animation';
 import { linear } from '../../../../src/core/animations/easing';
-import { Mobject } from '../../../../src/mobjects/Mobject';
+import { Mobject } from '../../../../src/core/mobjects/Mobject';
 import type { AnimationLifecycle } from '../../../../src/core/animations/types';
 
 /**

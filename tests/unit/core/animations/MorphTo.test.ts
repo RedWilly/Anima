@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'bun:test';
 import { MorphTo } from '../../../../src/core/animations';
-import { Circle } from '../../../../src/mobjects/geometry/Circle';
-import { Rectangle } from '../../../../src/mobjects/geometry/Rectangle';
-import { VMobject } from '../../../../src/mobjects/VMobject';
+import { Circle } from '../../../../src/core/mobjects/geometry/Circle';
+import { Rectangle } from '../../../../src/core/mobjects/geometry/Rectangle';
+import { VMobject } from '../../../../src/core/mobjects/VMobject';
 import { Vector2 } from '../../../../src/core/math/Vector2/Vector2';
 import { BezierPath } from '../../../../src/core/math/bezier/BezierPath';
 

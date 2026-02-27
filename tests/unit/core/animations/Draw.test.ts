@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'bun:test';
 import { Draw } from '../../../../src/core/animations';
-import { Circle } from '../../../../src/mobjects/geometry/Circle';
-import { Rectangle } from '../../../../src/mobjects/geometry/Rectangle';
-import { VMobject } from '../../../../src/mobjects/VMobject';
+import { Circle } from '../../../../src/core/mobjects/geometry/Circle';
+import { Rectangle } from '../../../../src/core/mobjects/geometry/Rectangle';
+import { VMobject } from '../../../../src/core/mobjects/VMobject';
 import { Color } from '../../../../src/core/math/color/Color';
 
 describe('Draw Animation', () => {
@@ -114,20 +114,20 @@ describe('Draw Animation', () => {
 
     describe('Stroke/Fill Combinations', () => {
         it('should handle stroke only (no fill)', () => {
-           const circle = new Circle(50);
-           circle.stroke(Color.RED, 3);
-           circle.fill(circle.getFillColor(), 0);
-           const anim = new Draw(circle);
+            const circle = new Circle(50);
+            circle.stroke(Color.RED, 3);
+            circle.fill(circle.getFillColor(), 0);
+            const anim = new Draw(circle);
 
-           anim.interpolate(0.25);
-           expect(circle.paths.length).toBeGreaterThan(0);
-           expect(circle.getFillOpacity()).toBe(0);
+            anim.interpolate(0.25);
+            expect(circle.paths.length).toBeGreaterThan(0);
+            expect(circle.getFillOpacity()).toBe(0);
 
-           anim.interpolate(0.75);
-           expect(circle.getFillOpacity()).toBe(0);
+            anim.interpolate(0.75);
+            expect(circle.getFillOpacity()).toBe(0);
 
-           anim.interpolate(1);
-           expect(circle.getFillOpacity()).toBe(0);
+            anim.interpolate(1);
+            expect(circle.getFillOpacity()).toBe(0);
         });
 
         it('should handle fill only (no stroke in visual sense)', () => {

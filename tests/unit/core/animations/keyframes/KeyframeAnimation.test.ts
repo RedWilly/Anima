@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { KeyframeAnimation, KeyframeTrack } from '../../../../../src/core/animations/keyframes';
-import { Mobject } from '../../../../../src/mobjects/Mobject';
+import { Mobject } from '../../../../../src/core/mobjects/Mobject';
 import { smooth } from '../../../../../src/core/animations/easing';
 
 describe('KeyframeAnimation', () => {

@@ -1,5 +1,5 @@
 import { TransformativeAnimation } from '../categories';
-import { VMobject } from '../../../mobjects/VMobject';
+import { VMobject } from '../../mobjects/VMobject';
 import { BezierPath } from '../../math/bezier/BezierPath';
 
 /**

@@ -1,7 +1,7 @@
 import { VGroup } from './VGroup';
 import { VMobject } from '../VMobject';
-import { Matrix3x3 } from '../../core/math/matrix/Matrix3x3';
-import { Camera } from '../../core/camera';
+import { Matrix3x3 } from '../../math/matrix/Matrix3x3';
+import { Camera } from '../../camera';
 
 export type CornerPosition = 'TOP_LEFT' | 'TOP_RIGHT' | 'BOTTOM_LEFT' | 'BOTTOM_RIGHT';
 export type Direction = 'RIGHT' | 'LEFT' | 'UP' | 'DOWN';

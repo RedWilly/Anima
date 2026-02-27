@@ -1,5 +1,5 @@
 import { ExitAnimation } from '../categories';
-import { VMobject } from '../../../mobjects/VMobject';
+import { VMobject } from '../../mobjects/VMobject';
 import { BezierPath } from '../../math/bezier/BezierPath';
 import { getPartialPath } from './partialPath';
 

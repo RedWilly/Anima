@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { Circle } from '../../../src/mobjects/geometry/Circle';
+import { Circle } from '../../../src/core/mobjects/geometry/Circle';
 import { Sequence } from '../../../src/core/animations/composition';
 import { linear } from '../../../src/core/animations/easing';
 

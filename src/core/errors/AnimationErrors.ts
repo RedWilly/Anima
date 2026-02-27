@@ -1,5 +1,5 @@
 import type { Animation } from '../animations/Animation';
-import type { Mobject } from '../../mobjects/Mobject';
+import type { Mobject } from '../mobjects/Mobject';
 
 /**
  * Error thrown when an animation is applied to an object that is not in the scene.

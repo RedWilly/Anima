@@ -1,7 +1,7 @@
 import { Animation } from '../Animation';
 import type { AnimationLifecycle } from '../types';
 import type { CameraFrame } from '../../camera/CameraFrame';
-import type { Mobject } from '../../../mobjects/Mobject';
+import type { Mobject } from '../../mobjects/Mobject';
 import { Vector2 } from '../../math/Vector2/Vector2';
 
 /**

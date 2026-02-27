@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'bun:test';
 import { Write } from '../../../../src/core/animations';
-import { Circle } from '../../../../src/mobjects/geometry/Circle';
-import { Rectangle } from '../../../../src/mobjects/geometry/Rectangle';
-import { VMobject } from '../../../../src/mobjects/VMobject';
+import { Circle } from '../../../../src/core/mobjects/geometry/Circle';
+import { Rectangle } from '../../../../src/core/mobjects/geometry/Rectangle';
+import { VMobject } from '../../../../src/core/mobjects/VMobject';
 import { Color } from '../../../../src/core/math/color/Color';
 import { Vector2 } from '../../../../src/core/math/Vector2/Vector2';
 import { BezierPath } from '../../../../src/core/math/bezier/BezierPath';
@@ -113,16 +113,16 @@ describe('Write Animation', () => {
 
     describe('Stroke/Fill Combinations', () => {
         it('should handle stroke only (no fill) - typical use case', () => {
-           const circle = new Circle(50);
-           circle.stroke(Color.RED, 3);
-           // circle.fill(circle.getFillColor(), 0); /not needed
-           const anim = new Write(circle);
+            const circle = new Circle(50);
+            circle.stroke(Color.RED, 3);
+            // circle.fill(circle.getFillColor(), 0); /not needed
+            const anim = new Write(circle);
 
-           anim.interpolate(1);
+            anim.interpolate(1);
 
-           expect(circle.paths.length).toBeGreaterThan(0);
-           expect(circle.getStrokeWidth()).toBe(3);
-           expect(circle.getFillOpacity()).toBe(0);
+            expect(circle.paths.length).toBeGreaterThan(0);
+            expect(circle.getStrokeWidth()).toBe(3);
+            expect(circle.getFillOpacity()).toBe(0);
         });
 
         it('should preserve fill during animation', () => {

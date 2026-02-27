@@ -1,4 +1,4 @@
-import { Mobject } from '../../mobjects/Mobject';
+import { Mobject } from '../mobjects/Mobject';
 import { Parallel } from '../animations/composition';
 import type { Animation } from '../animations/Animation';
 import { MANIM_FRAME_HEIGHT } from './types';
@@ -328,13 +328,13 @@ export class CameraFrame extends Mobject {
     }
 
     const bounds = this.calculateBounds(targetArray);
-    
+
     const requiredWidth = bounds.width + margin * 2;
     const requiredHeight = bounds.height + margin * 2;
-    
+
     const scaleX = requiredWidth / this.baseWidth;
     const scaleY = requiredHeight / this.baseHeight;
-    
+
     let targetScale = Math.max(scaleX, scaleY);
     if (targetScale < 1) {
       targetScale = 1;

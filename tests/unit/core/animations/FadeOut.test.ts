@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'bun:test';
 import { FadeOut } from '../../../../src/core/animations';
-import { Mobject } from '../../../../src/mobjects/Mobject';
+import { Mobject } from '../../../../src/core/mobjects/Mobject';
 
 describe('FadeOut Animation', () => {
     describe('PRD Requirements', () => {

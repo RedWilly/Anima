@@ -1,5 +1,5 @@
 import { Scene } from '../src/core/scene/Scene';
-import { Rectangle } from '../src/mobjects/geometry/Rectangle';
+import { Rectangle } from '../src/core/mobjects/geometry/Rectangle';
 import { MoveTo } from '../src/core/animations/transform/MoveTo';
 import { Rotate } from '../src/core/animations/transform/Rotate';
 import { Scale } from '../src/core/animations/transform/Scale';
@@ -28,18 +28,18 @@ export class ComplexSequenceScene extends Scene {
         const complexSequence = new Sequence([
             // Move the rectangle down with ease
             new MoveTo(mainRectangle, 0, -3).duration(2).ease(easeInOutCubic),
-            
+
             // Rotate and scale simultaneously
             new Parallel([
                 new Rotate(mainRectangle, Math.PI).duration(0.8),
                 new Scale(mainRectangle, 0.7).duration(0.8)
             ]),
-            
+
             // Move the rectangle back up with ease
             new MoveTo(mainRectangle, 0, 0).duration(0.5).ease(easeInOutCubic),
-            
+
             // Scale back to original size with a bounce effect
-            new Scale(mainRectangle, 1 ).duration(0.3).ease(easeOutBack)
+            new Scale(mainRectangle, 1).duration(0.3).ease(easeOutBack)
         ]);
 
         // Play the complex sequence
@@ -51,7 +51,7 @@ export class ComplexSequenceScene extends Scene {
 if (import.meta.main) {
     async function run(): Promise<void> {
         const scene = new ComplexSequenceScene();
-        
+
         console.log('Animation sequence created!');
         console.log('Use `bun run render examples/ComplexSequenceScene.ts` to render it');
     }

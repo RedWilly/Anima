@@ -1,10 +1,10 @@
 import { describe, test, expect } from 'bun:test';
 import * as fc from 'fast-check';
 import { FadeIn, FadeOut, MoveTo, Rotate, Scale, MorphTo } from '../../../src/core/animations';
-import { Mobject } from '../../../src/mobjects/Mobject';
-import { VMobject } from '../../../src/mobjects/VMobject';
-import { Circle } from '../../../src/mobjects/geometry/Circle';
-import { Rectangle } from '../../../src/mobjects/geometry/Rectangle';
+import { Mobject } from '../../../src/core/mobjects/Mobject';
+import { VMobject } from '../../../src/core/mobjects/VMobject';
+import { Circle } from '../../../src/core/mobjects/geometry/Circle';
+import { Rectangle } from '../../../src/core/mobjects/geometry/Rectangle';
 import { Vector2 } from '../../../src/core/math/Vector2/Vector2';
 import { BezierPath } from '../../../src/core/math/bezier/BezierPath';
 

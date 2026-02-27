@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'bun:test';
 import { Scene } from '../../src/core/scene/Scene';
-import { Circle } from '../../src/mobjects/geometry/Circle';
-import { Rectangle } from '../../src/mobjects/geometry/Rectangle';
+import { Circle } from '../../src/core/mobjects/geometry/Circle';
+import { Rectangle } from '../../src/core/mobjects/geometry/Rectangle';
 import { MoveTo } from '../../src/core/animations/transform/MoveTo';
 import { Scale } from '../../src/core/animations/transform/Scale';
 import { Parallel } from '../../src/core/animations/composition/Parallel';
@@ -66,7 +66,7 @@ describe('Camera Integration Tests', () => {
 
             const initialMatrix = camera.getViewMatrix();
             const initialValues = [...initialMatrix.values];
-            
+
             const zoomAnim = frame.zoomIn(2).duration(1).toAnimation();
             zoomAnim.update(1);
 
@@ -124,7 +124,7 @@ describe('Camera Integration Tests', () => {
 
             const initialMatrix = camera.getViewMatrix();
             const initialValues = [...initialMatrix.values];
-            
+
             const moveAnim = frame.moveTo(5, 5).duration(1).toAnimation();
             moveAnim.update(1);
 

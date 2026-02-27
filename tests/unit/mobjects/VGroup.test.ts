@@ -1,9 +1,9 @@
 import { describe, test, expect } from 'bun:test';
-import { VGroup } from '../../../src/mobjects/VGroup';
-import { Circle } from '../../../src/mobjects/geometry/Circle';
-import { Rectangle } from '../../../src/mobjects/geometry/Rectangle';
+import { VGroup } from '../../../src/core/mobjects/VGroup';
+import { Circle } from '../../../src/core/mobjects/geometry/Circle';
+import { Rectangle } from '../../../src/core/mobjects/geometry/Rectangle';
 import { Camera } from '../../../src/core/camera';
-import type { Mobject } from '../../../src/mobjects/Mobject';
+import type { Mobject } from '../../../src/core/mobjects/Mobject';
 
 // Helper to get world position from a Mobject
 function getWorldPosition(mob: Mobject): { x: number; y: number } {

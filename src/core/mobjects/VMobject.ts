@@ -1,11 +1,11 @@
 import { Mobject } from './Mobject';
-import { hashNumber, hashString, hashCompose } from '../core/cache/Hashable';
-import type { Animation } from '../core/animations/Animation';
-import { BezierPath } from '../core/math/bezier/BezierPath';
-import type { PathCommand } from '../core/math/bezier/types';
-import { Color } from '../core/math/color/Color';
-import { Vector2 } from '../core/math/Vector2/Vector2';
-import { Write, Unwrite, Draw } from '../core/animations/draw';
+import { hashNumber, hashString, hashCompose } from '../cache/Hashable';
+import type { Animation } from '../animations/Animation';
+import { BezierPath } from '../math/bezier/BezierPath';
+import type { PathCommand } from '../math/bezier/types';
+import { Color } from '../math/color/Color';
+import { Vector2 } from '../math/Vector2/Vector2';
+import { Write, Unwrite, Draw } from '../animations/draw';
 
 /**
  * A Mobject that is defined by one or more BezierPaths.

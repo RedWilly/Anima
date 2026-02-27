@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'bun:test';
 import { Follow } from '../../../../src/core/animations/camera/Follow';
 import { CameraFrame } from '../../../../src/core/camera/CameraFrame';
-import { Mobject } from '../../../../src/mobjects/Mobject';
+import { Mobject } from '../../../../src/core/mobjects/Mobject';
 import { Vector2 } from '../../../../src/core/math/Vector2/Vector2';
 
 describe('Follow Animation', () => {

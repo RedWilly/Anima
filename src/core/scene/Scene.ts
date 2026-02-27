@@ -1,7 +1,7 @@
 import { Color } from '../math/color/Color';
 import { Timeline } from '../timeline';
 import { Camera, CameraFrame } from '../camera';
-import { Mobject } from '../../mobjects/Mobject';
+import { Mobject } from '../mobjects/Mobject';
 import type { Animation } from '../animations/Animation';
 import type { SceneConfig, ResolvedSceneConfig } from './types';
 import type { Segment } from '../cache/Segment';

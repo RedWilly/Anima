@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'bun:test';
 import { Scene } from '../../src/core/scene/Scene';
-import { Circle } from '../../src/mobjects/geometry/Circle';
-import { Rectangle } from '../../src/mobjects/geometry/Rectangle';
+import { Circle } from '../../src/core/mobjects/geometry/Circle';
+import { Rectangle } from '../../src/core/mobjects/geometry/Rectangle';
 import { FadeIn } from '../../src/core/animations/fade/FadeIn';
 import { MoveTo } from '../../src/core/animations/transform/MoveTo';
 import { FadeOut } from '../../src/core/animations/fade/FadeOut';

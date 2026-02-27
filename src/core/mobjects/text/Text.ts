@@ -1,6 +1,6 @@
 import * as fontkit from 'fontkit';
 import { join, resolve } from 'path';
-import { Color } from '../../core/math/color/Color';
+import { Color } from '../../math/color/Color';
 import { VGroup } from '../VGroup';
 import { centerGroup } from '../VGroup/layout';
 import { Glyph } from './Glyph';

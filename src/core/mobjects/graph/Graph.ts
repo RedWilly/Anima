@@ -1,5 +1,5 @@
 import { VGroup } from '../VGroup';
-import { Vector2 } from '../../core/math/Vector2/Vector2';
+import { Vector2 } from '../../math/Vector2/Vector2';
 import { GraphNode } from './GraphNode';
 import { GraphEdge } from './GraphEdge';
 import { circularLayout, treeLayout, forceDirectedLayout } from './layouts';

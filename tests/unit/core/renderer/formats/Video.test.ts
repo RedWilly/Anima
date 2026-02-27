@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach, afterEach } from 'bun:test';
 import { Renderer } from '../../../../../src/core/renderer/Renderer';
 import { Scene } from '../../../../../src/core/scene';
-import { Circle } from '../../../../../src/mobjects/geometry';
+import { Circle } from '../../../../../src/core/mobjects/geometry';
 import { FadeIn } from '../../../../../src/core/animations';
 import { rm, readdir, exists } from 'fs/promises';
 import { join } from 'path';

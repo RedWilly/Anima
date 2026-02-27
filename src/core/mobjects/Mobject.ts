@@ -1,12 +1,12 @@
-import { Matrix3x3 } from '../core/math/matrix/Matrix3x3';
-import { hashFloat32Array, hashNumber, hashCompose } from '../core/cache/Hashable';
-import { Vector2 } from '../core/math/Vector2/Vector2';
-import { Animation } from '../core/animations/Animation';
-import type { EasingFunction } from '../core/animations/easing';
-import { FadeIn, FadeOut } from '../core/animations/fade';
-import { MoveTo, Rotate, Scale } from '../core/animations/transform';
-import { Parallel, Sequence } from '../core/animations/composition';
-import { type QueueEntry, isPrebuilt } from '../core/animations/types';
+import { Matrix3x3 } from '../math/matrix/Matrix3x3';
+import { hashFloat32Array, hashNumber, hashCompose } from '../cache/Hashable';
+import { Vector2 } from '../math/Vector2/Vector2';
+import { Animation } from '../animations/Animation';
+import type { EasingFunction } from '../animations/easing';
+import { FadeIn, FadeOut } from '../animations/fade';
+import { MoveTo, Rotate, Scale } from '../animations/transform';
+import { Parallel, Sequence } from '../animations/composition';
+import { type QueueEntry, isPrebuilt } from '../animations/types';
 
 /**
  * Manages a queue of animations for fluent chaining.

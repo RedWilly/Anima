@@ -1,4 +1,4 @@
-import { Mobject } from '../../mobjects/Mobject';
+import { Mobject } from '../mobjects/Mobject';
 import type { EasingFunction } from './easing';
 import { defaultEasing } from './easing';
 import { hashNumber, hashString, hashCompose } from '../cache/Hashable';

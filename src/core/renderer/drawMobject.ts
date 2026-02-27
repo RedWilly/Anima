@@ -1,7 +1,7 @@
 import type { SKRSContext2D } from '@napi-rs/canvas';
-import { VMobject } from '../../mobjects/VMobject';
-import { VGroup } from '../../mobjects/VGroup';
-import type { Mobject } from '../../mobjects/Mobject';
+import { VMobject } from '../mobjects/VMobject';
+import { VGroup } from '../mobjects/VGroup';
+import type { Mobject } from '../mobjects/Mobject';
 import { Matrix3x3 } from '../math/matrix/Matrix3x3';
 import type { PathCommand } from '../math/bezier/types';
 

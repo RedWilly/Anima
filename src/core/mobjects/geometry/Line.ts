@@ -1,6 +1,6 @@
 import { VMobject } from '../VMobject';
-import { BezierPath } from '../../core/math/bezier/BezierPath';
-import { Vector2 } from '../../core/math/Vector2/Vector2';
+import { BezierPath } from '../../math/bezier/BezierPath';
+import { Vector2 } from '../../math/Vector2/Vector2';
 
 export class Line extends VMobject {
     readonly start: Vector2;

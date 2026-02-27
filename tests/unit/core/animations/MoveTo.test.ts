@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'bun:test';
 import { MoveTo } from '../../../../src/core/animations';
-import { Mobject } from '../../../../src/mobjects/Mobject';
+import { Mobject } from '../../../../src/core/mobjects/Mobject';
 import { Vector2 } from '../../../../src/core/math/Vector2/Vector2';
 
 describe('MoveTo Animation', () => {

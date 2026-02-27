@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'bun:test';
-import { Graph } from '../../../../src/mobjects/graph/Graph';
+import { Graph } from '../../../../src/core/mobjects/graph/Graph';
 import { Vector2 } from '../../../../src/core/math/Vector2/Vector2';
 import { Color } from '../../../../src/core/math/color/Color';
 

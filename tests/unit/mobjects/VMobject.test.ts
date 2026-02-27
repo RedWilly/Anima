@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'bun:test';
-import { VMobject } from '../../../src/mobjects/VMobject';
+import { VMobject } from '../../../src/core/mobjects/VMobject';
 import { BezierPath } from '../../../src/core/math/bezier/BezierPath';
 import { Color } from '../../../src/core/math/color/Color';
 import { Vector2 } from '../../../src/core/math/Vector2/Vector2';

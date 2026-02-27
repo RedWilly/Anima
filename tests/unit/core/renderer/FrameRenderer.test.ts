@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'bun:test';
 import { FrameRenderer } from '../../../../src/core/renderer/FrameRenderer';
 import { Scene } from '../../../../src/core/scene';
-import { Circle } from '../../../../src/mobjects/geometry';
+import { Circle } from '../../../../src/core/mobjects/geometry';
 import { FadeIn } from '../../../../src/core/animations';
 
 describe('FrameRenderer', () => {

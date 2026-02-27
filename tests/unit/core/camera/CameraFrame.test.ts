@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'bun:test';
 import { CameraFrame } from '../../../../src/core/camera/CameraFrame';
-import { Circle } from '../../../../src/mobjects/geometry/Circle';
+import { Circle } from '../../../../src/core/mobjects/geometry/Circle';
 
 describe('CameraFrame', () => {
     describe('Constructor and Dimensions', () => {

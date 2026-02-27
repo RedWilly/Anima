@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'bun:test';
-import { Rectangle } from '../../../../src/mobjects/geometry/Rectangle';
-import { Polygon } from '../../../../src/mobjects/geometry/Polygon';
+import { Rectangle } from '../../../../src/core/mobjects/geometry/Rectangle';
+import { Polygon } from '../../../../src/core/mobjects/geometry/Polygon';
 
 describe('Polygon', () => {
     test('connects vertices', () => {

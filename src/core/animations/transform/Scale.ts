@@ -1,5 +1,5 @@
 import { TransformativeAnimation } from '../categories';
-import { Mobject } from '../../../mobjects/Mobject';
+import { Mobject } from '../../mobjects/Mobject';
 import { Vector2 } from '../../math/Vector2/Vector2';
 
 /**

@@ -4,7 +4,7 @@ import { Scene } from '../../../../src/core/scene';
 import { Animation } from '../../../../src/core/animations/Animation';
 import type { AnimationLifecycle } from '../../../../src/core/animations/types';
 import { linear } from '../../../../src/core/animations/easing';
-import { Mobject } from '../../../../src/mobjects/Mobject';
+import { Mobject } from '../../../../src/core/mobjects/Mobject';
 import { Color } from '../../../../src/core/math/color/Color';
 
 /**

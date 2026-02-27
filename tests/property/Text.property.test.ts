@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'bun:test';
 import * as fc from 'fast-check';
 import { resolve } from 'path';
-import { Text, Glyph } from '../../src/mobjects/text';
+import { Text, Glyph } from '../../src/core/mobjects/text';
 import { Color } from '../../src/core/math/color/Color';
 
 const FONT_PATH = resolve(__dirname, '../../assets/fonts/ComicSansMS3.ttf');

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'bun:test';
 import { Scale } from '../../../../src/core/animations';
-import { Mobject } from '../../../../src/mobjects/Mobject';
+import { Mobject } from '../../../../src/core/mobjects/Mobject';
 
 describe('Scale Animation', () => {
     describe('PRD Requirements', () => {

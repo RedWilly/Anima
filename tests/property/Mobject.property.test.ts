@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'bun:test';
 import * as fc from 'fast-check';
-import { Mobject } from '../../src/mobjects/Mobject';
+import { Mobject } from '../../src/core/mobjects/Mobject';
 import { Matrix3x3 } from '../../src/core/math/matrix/Matrix3x3';
 
 /** Arbitrary for position coordinates - limited range for Float32 precision */

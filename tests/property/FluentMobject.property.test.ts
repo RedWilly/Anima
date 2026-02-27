@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import fc from 'fast-check';
-import { Circle } from '../../src/mobjects/geometry/Circle';
-import { Rectangle } from '../../src/mobjects/geometry/Rectangle';
+import { Circle } from '../../src/core/mobjects/geometry/Circle';
+import { Rectangle } from '../../src/core/mobjects/geometry/Rectangle';
 import { Sequence } from '../../src/core/animations/composition';
 
 // Use fc.double for duration values since they don't require 32-bit precision

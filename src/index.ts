@@ -3,7 +3,7 @@ export { Scene } from './core/scene';
 export type { SceneConfig } from './core/scene';
 
 // Mobjects - Visual objects that can be animated
-export { Mobject, VMobject, VGroup } from './mobjects';
+export { Mobject, VMobject, VGroup } from './core/mobjects';
 
 // Camera
 export { Camera, CameraFrame } from './core/camera';
@@ -18,18 +18,18 @@ export {
     Arrow,
     Arc,
     Polygon
-} from './mobjects/geometry';
+} from './core/mobjects/geometry';
 
 // Text and Graph - Advanced visualization
-export { Text, Glyph } from './mobjects/text';
-export { Graph, GraphNode, GraphEdge } from './mobjects/graph';
+export { Text, Glyph } from './core/mobjects/text';
+export { Graph, GraphNode, GraphEdge } from './core/mobjects/graph';
 export type {
     GraphNodeId,
     NodeConfig,
     EdgeConfig,
     LayoutType,
     LayoutConfig
-} from './mobjects/graph';
+} from './core/mobjects/graph';
 
 // FluentAPI - Chainable animations (built into mobjects above)
 // No exports needed - methods are available on mobject instances

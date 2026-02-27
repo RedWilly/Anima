@@ -1,5 +1,5 @@
 import { IntroductoryAnimation } from '../categories';
-import type { Mobject } from '../../../mobjects/Mobject';
+import type { Mobject } from '../../mobjects/Mobject';
 
 /**
  * Animation that fades a Mobject in by increasing its opacity from 0 to 1.

@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'bun:test';
 import * as fc from 'fast-check';
-import { Graph } from '../../src/mobjects/graph/Graph';
+import { Graph } from '../../src/core/mobjects/graph/Graph';
 import { Vector2 } from '../../src/core/math/Vector2/Vector2';
 
 /** Generates a valid node ID string. */

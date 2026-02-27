@@ -8,8 +8,8 @@
  * - CameraFitDemo: fitTo with multiple objects
  */
 import { Scene } from '../src/core/scene/Scene';
-import { Circle } from '../src/mobjects/geometry/Circle';
-import { Rectangle } from '../src/mobjects/geometry/Rectangle';
+import { Circle } from '../src/core/mobjects/geometry/Circle';
+import { Rectangle } from '../src/core/mobjects/geometry/Rectangle';
 import { FadeIn, Shake } from '../src/core/animations';
 import { easeInOutQuad } from '../src/core/animations/easing';
 import { Color } from '../src/core/math/color/Color';
@@ -102,7 +102,7 @@ export class CameraEffectsDemo extends Scene {
         super({ width: 1920, height: 1080, frameRate: 60 });
 
         // Create a circle at center
-        const square  = new Rectangle(2).pos(0, 0).fill(Color.RED);
+        const square = new Rectangle(2).pos(0, 0).fill(Color.RED);
 
         // Fade in the circle
         this.play(new FadeIn(square).duration(0.5));

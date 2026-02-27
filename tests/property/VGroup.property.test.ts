@@ -1,8 +1,8 @@
 import { describe, test, expect } from 'bun:test';
 import * as fc from 'fast-check';
-import { VGroup } from '../../src/mobjects/VGroup';
-import { Rectangle } from '../../src/mobjects/geometry/Rectangle';
-import { Circle } from '../../src/mobjects/geometry/Circle';
+import { VGroup } from '../../src/core/mobjects/VGroup';
+import { Rectangle } from '../../src/core/mobjects/geometry/Rectangle';
+import { Circle } from '../../src/core/mobjects/geometry/Circle';
 
 
 

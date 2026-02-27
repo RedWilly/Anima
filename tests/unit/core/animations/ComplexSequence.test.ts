@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'bun:test';
-import { Rectangle } from '../../../../src/mobjects/geometry/Rectangle';
+import { Rectangle } from '../../../../src/core/mobjects/geometry/Rectangle';
 import { MoveTo } from '../../../../src/core/animations/transform/MoveTo';
 import { Rotate } from '../../../../src/core/animations/transform/Rotate';
 import { Scale } from '../../../../src/core/animations/transform/Scale';
@@ -54,15 +54,15 @@ describe('ComplexSequence Animation Debug', () => {
         it('MoveTo captures startPosition on ensureInitialized()', () => {
             rect.pos(5, 5); // Set non-zero position
             const moveTo = new MoveTo(rect, 10, 10);
-            
+
             // Before initialization - startPosition should not be set yet
             moveTo.ensureInitialized();
-            
+
             // Now interpolate should work
             moveTo.interpolate(0);
             expect(rect.position.x).toBeCloseTo(5, 5);
             expect(rect.position.y).toBeCloseTo(5, 5);
-            
+
             moveTo.interpolate(1);
             expect(rect.position.x).toBeCloseTo(10, 5);
             expect(rect.position.y).toBeCloseTo(10, 5);
@@ -71,7 +71,7 @@ describe('ComplexSequence Animation Debug', () => {
         it('MoveTo captures startPosition lazily on first interpolate()', () => {
             rect.pos(3, 3);
             const moveTo = new MoveTo(rect, 6, 6);
-            
+
             // First interpolate should capture start state
             moveTo.interpolate(0.5);
             expect(rect.position.x).toBeCloseTo(4.5, 5); // lerp(3, 6, 0.5) = 4.5
@@ -81,7 +81,7 @@ describe('ComplexSequence Animation Debug', () => {
         it('Rotate captures startRotation lazily', () => {
             rect.setRotation(Math.PI / 4); // Start at 45 degrees
             const rotate = new Rotate(rect, Math.PI / 4); // Rotate by 45 more
-            
+
             rotate.interpolate(1);
             expect(rect.rotation).toBeCloseTo(Math.PI / 2, 5); // Should be 90 degrees
         });
@@ -89,7 +89,7 @@ describe('ComplexSequence Animation Debug', () => {
         it('Scale captures startScale lazily', () => {
             rect.setScale(2, 2); // Start at 2x
             const scale = new Scale(rect, 4); // Scale to 4x
-            
+
             scale.interpolate(1);
             expect(rect.scale.x).toBeCloseTo(4, 5);
             expect(rect.scale.y).toBeCloseTo(4, 5);
@@ -248,7 +248,7 @@ describe('ComplexSequence Animation Debug', () => {
             // At this point, rect should be at (0, -3), rotated π, scaled 0.7
             const progress = 2.8 / 3.6;
             complexSequence.update(progress);
-            
+
             // Verify state before move2 starts
             expect(rect.position.y).toBeCloseTo(-3, 5);
         });
@@ -331,13 +331,13 @@ describe('ComplexSequence Animation Debug', () => {
         it('Parallel initializes all children before any interpolation', () => {
             rect.setRotation(0);
             rect.setScale(1, 1);
-            
+
             const rotate = new Rotate(rect, Math.PI);
             const scale = new Scale(rect, 0.7);
             const parallel = new Parallel([rotate, scale]);
 
             parallel.update(0.5);
-            
+
             expect(rect.rotation).toBeCloseTo(Math.PI / 2, 5);
             expect(rect.scale.x).toBeCloseTo(0.85, 5);
         });
