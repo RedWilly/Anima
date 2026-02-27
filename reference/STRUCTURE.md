@@ -1,99 +1,197 @@
 # Source Code Structure
 
-```
-src/
-├── index.ts                          # Main export
-├── cli/                              # Command-line interface
-│   ├── index.ts                      # CLI entry point
-│   ├── SceneLoader.ts                # Scene loading utilities
-│   └── commands/                     # CLI commands
-│       ├── export-frame.ts           # Export single frame
-│       ├── list-scenes.ts            # List available scenes
-│       ├── preview.ts                # Preview animations
-│       └── render.ts                 # Render animations to output
-│
-├── core/                             # Core animation engine
-│   ├── animations/                   # Animation system
-│   │   ├── Animation.ts              # Base animation class
-│   │   ├── types.ts                  # Animation types
-│   │   ├── categories/               # Animation categories
-│   │   ├── composition/              # Compose multiple animations (Sequence, Parallel)
-│   │   ├── draw/                     # Drawing animations (Write, Unwrite, Draw)
-│   │   ├── easing/                   # Easing functions
-│   │   ├── fade/                     # Fade animations (FadeIn, FadeOut)
-│   │   ├── keyframes/                # Keyframe-based animations
-│   │   ├── morph/                    # Morphing animations (MorphTo)
-│   │   └── transform/                # Transformation animations (Move, Rotate, Scale)
-│   │
-│   ├── camera/                       # Camera system
-│   │   ├── Camera.ts                 # Camera implementation
-│   │   └── types.ts                  # Camera types
-│   │
-│   ├── errors/                       # Error types
-│   │   └── AnimationErrors.ts        # Custom animation errors
-│   │
-│   ├── math/                         # Mathematical utilities
-│   │   ├── Vector2/                  # 2D vectors
-│   │   ├── Matrix/                   # 3x3 matrix operations
-│   │   ├── color/                    # Color definitions and conversions
-│   │   └── bezier/                   # Bezier curve algorithms
-│   │
-│   ├── renderer/                     # Rendering engine
-│   │   ├── Renderer.ts               # Main renderer
-│   │   ├── FrameRenderer.ts          # Per-frame rendering
-│   │   ├── drawMobject.ts            # Draw mobject to canvas
-│   │   ├── ProgressReporter.ts       # Rendering progress reporting
-│   │   └── formats/                  # Output formats (PNG, sprite, video)
-│   │
-│   ├── scene/                        # Scene management
-│   │   ├── Scene.ts                  # Scene class
-│   │   └── types.ts                  # Scene types
-│   │
-│   ├── cache/                        # Segment caching system
-│   │   ├── Hashable.ts               # CRC32 utilities & Hashable protocol
-│   │   ├── Segment.ts                # Segment data model
-│   │   ├── SegmentCache.ts           # Disk cache manager
-│   │   └── index.ts                  # Barrel export
-│
-│   └── timeline/                     # Timeline management
-│       └── Timeline.ts               # Timeline for coordinating animations
-│
-├── fonts/                            # Fonts
-│   └── ComicSansMS3.ttf                  # inter font
-│
-└── mobjects/                         # Mathematical objects
-    ├── Mobject.ts                    # Base mathematical object
-    ├── VMobject.ts                   # Vector mathematical object
-    ├── geometry/                     # Geometric shapes
-    │   ├── Line.ts                   # Line
-    │   ├── Circle.ts                 # Circle
-    │   ├── Arc.ts                    # Arc
-    │   ├── Rectangle.ts              # Rectangle
-    │   ├── Polygon.ts                # Polygon
-    │   └── Arrow.ts                  # Arrow
-    │
-    ├── text/                         # Text objects
-    │   ├── Text.ts                   # Text rendering
-    │   └──Glyph.ts                  # Individual glyphs
-    │
-    ├── graph/                        # Graph structures
-    │   ├── Graph.ts                  # Graph container
-    │   ├── GraphNode.ts              # Graph node
-    │   ├── GraphEdge.ts              # Graph edge
-    │   └── layouts/                  # Graph layout algorithms
-    │       ├── tree.ts               # Tree layout
-    │       ├── circular.ts           # Circular layout
-    │       └── forceDirected.ts      # Force-directed layout
-    │
-    └── VGroup/                       # Vector object grouping
-        ├── VGroup.ts                 # Group container
-        └── layout.ts                 # Layout algorithms for groups
-```
+This file is a physical map of the repository layout.
+It includes directories and files.
 
-## Key Concepts
+## src tree
 
-- **Mobjects**: Mathematical objects (shapes, text, graphs) that can be animated
-- **Animations**: Define how mobjects change over time
-- **Scene**: Container for mobjects and the canvas they're rendered to
-- **Renderer**: Converts scenes to output (PNG, video, sprite sheets)
-- **Fluent API**: Builder pattern for constructing animations programmatically
+```text
+Folder PATH listing for volume Windows-SSD
+Volume serial number is 6CD6-EDA4
+C:\USERS\CHARLES\DESKTOP\ANIMA\SRC
+|   index.ts
+|   
++---app
+|   \---cli
+|       |   index.ts
+|       |   scene-loader.ts
+|       |   
+|       \---commands
+|               export-frame.ts
+|               list-scenes.ts
+|               preview.ts
+|               render.ts
+|               
++---browser
++---core
+|   +---animations
+|   |   |   Animation.ts
+|   |   |   fluent.ts
+|   |   |   index.ts
+|   |   |   introspection.ts
+|   |   |   mobjectApi.ts
+|   |   |   types.ts
+|   |   |   
+|   |   +---camera
+|   |   |       Follow.ts
+|   |   |       index.ts
+|   |   |       Shake.ts
+|   |   |       
+|   |   +---categories
+|   |   |       ExitAnimation.ts
+|   |   |       index.ts
+|   |   |       IntroductoryAnimation.ts
+|   |   |       TransformativeAnimation.ts
+|   |   |       
+|   |   +---composition
+|   |   |       index.ts
+|   |   |       Parallel.ts
+|   |   |       Sequence.ts
+|   |   |       
+|   |   +---draw
+|   |   |       Draw.ts
+|   |   |       index.ts
+|   |   |       partialPath.ts
+|   |   |       Unwrite.ts
+|   |   |       Write.ts
+|   |   |       
+|   |   +---easing
+|   |   |       bounce.ts
+|   |   |       index.ts
+|   |   |       manim.ts
+|   |   |       registry.ts
+|   |   |       standard.ts
+|   |   |       types.ts
+|   |   |       
+|   |   +---fade
+|   |   |       FadeIn.ts
+|   |   |       FadeOut.ts
+|   |   |       index.ts
+|   |   |       
+|   |   +---keyframes
+|   |   |       index.ts
+|   |   |       KeyframeAnimation.ts
+|   |   |       KeyframeTrack.ts
+|   |   |       types.ts
+|   |   |       
+|   |   +---morph
+|   |   |       index.ts
+|   |   |       MorphTo.ts
+|   |   |       
+|   |   \---transform
+|   |           index.ts
+|   |           MoveTo.ts
+|   |           Rotate.ts
+|   |           Scale.ts
+|   |           
+|   +---cache
+|   |       Hashable.ts
+|   |       index.ts
+|   |       Segment.ts
+|   |       SegmentCache.ts
+|   |       
+|   +---camera
+|   |       Camera.ts
+|   |       CameraFrame.ts
+|   |       index.ts
+|   |       types.ts
+|   |       
+|   +---errors
+|   |       AnimationErrors.ts
+|   |       index.ts
+|   |       
+|   +---font
+|   |       ComicSansMS3.ttf
+|   |       
+|   +---math
+|   |   |   index.ts
+|   |   |   
+|   |   +---bezier
+|   |   |       BezierPath.ts
+|   |   |       evaluators.ts
+|   |   |       index.ts
+|   |   |       length.ts
+|   |   |       morphing.ts
+|   |   |       sampling.ts
+|   |   |       split.ts
+|   |   |       types.ts
+|   |   |       
+|   |   +---color
+|   |   |       Color.ts
+|   |   |       conversions.ts
+|   |   |       index.ts
+|   |   |       
+|   |   +---matrix
+|   |   |       factories.ts
+|   |   |       index.ts
+|   |   |       Matrix3x3.ts
+|   |   |       
+|   |   \---Vector2
+|   |           index.ts
+|   |           Vector2.ts
+|   |           
+|   +---mobjects
+|   |   |   index.ts
+|   |   |   Mobject.ts
+|   |   |   VMobject.ts
+|   |   |   
+|   |   +---geometry
+|   |   |       Arc.ts
+|   |   |       Arrow.ts
+|   |   |       Circle.ts
+|   |   |       index.ts
+|   |   |       Line.ts
+|   |   |       Polygon.ts
+|   |   |       Rectangle.ts
+|   |   |       
+|   |   +---graph
+|   |   |   |   Graph.ts
+|   |   |   |   GraphEdge.ts
+|   |   |   |   GraphNode.ts
+|   |   |   |   index.ts
+|   |   |   |   types.ts
+|   |   |   |   
+|   |   |   \---layouts
+|   |   |           circular.ts
+|   |   |           forceDirected.ts
+|   |   |           index.ts
+|   |   |           tree.ts
+|   |   |           
+|   |   +---text
+|   |   |       Glyph.ts
+|   |   |       index.ts
+|   |   |       Text.ts
+|   |   |       
+|   |   \---VGroup
+|   |           index.ts
+|   |           layout.ts
+|   |           VGroup.ts
+|   |           
+|   +---renderer
+|   |   |   drawMobject.ts
+|   |   |   FrameRenderer.ts
+|   |   |   index.ts
+|   |   |   ProgressReporter.ts
+|   |   |   Renderer.ts
+|   |   |   types.ts
+|   |   |   
+|   |   \---formats
+|   |           concat.ts
+|   |           index.ts
+|   |           png.ts
+|   |           sprite.ts
+|   |           video.ts
+|   |           
+|   +---scene
+|   |       index.ts
+|   |       Scene.ts
+|   |       types.ts
+|   |       
+|   \---timeline
+|           index.ts
+|           Timeline.ts
+|           types.ts
+|           
++---fonts
+\---server
+```

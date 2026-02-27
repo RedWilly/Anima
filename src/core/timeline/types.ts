@@ -1,5 +1,4 @@
-import type { Animation } from '../animations/Animation';
-import type { EasingFunction } from '../animations/easing';
+import type { Animation, EasingFunction } from '../animations';
 
 /**
  * Represents an animation scheduled at a specific time on the Timeline.

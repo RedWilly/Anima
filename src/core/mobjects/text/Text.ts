@@ -1,11 +1,11 @@
 import * as fontkit from 'fontkit';
 import { join, resolve } from 'path';
-import { Color } from '../../math/color/Color';
+import { Color } from '../../math';
 import { VGroup } from '../VGroup';
 import { centerGroup } from '../VGroup/layout';
 import { Glyph } from './Glyph';
 
-const DEFAULT_FONT_PATH = resolve(join(__dirname, '..', '..', 'fonts', 'ComicSansMS3.ttf'));
+const DEFAULT_FONT_PATH = resolve(join(__dirname, '..', '..', 'font', 'ComicSansMS3.ttf'));
 
 /**
  * A VGroup of vectorized glyphs created from a text string using fontkit.

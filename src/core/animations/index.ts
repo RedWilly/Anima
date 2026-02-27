@@ -23,6 +23,27 @@ export type { Keyframe } from './keyframes';
 // Camera animations
 export { Follow, Shake } from './camera';
 
+// Fluent construction helpers
+export {
+    createFadeIn,
+    createFadeOut,
+    createMoveTo,
+    createRotate,
+    createScale,
+    createParallel,
+    createSequence,
+    createWrite,
+    createUnwrite,
+    createDraw,
+} from './fluent';
+
+// Introspection and scheduling helpers
+export {
+    getAnimationChildren,
+    getAnimationTotalTime,
+    getLongestAnimationTotalTime,
+} from './introspection';
+
 // Animation types
 export type { 
     AnimationConfig,
@@ -33,3 +54,4 @@ export type {
     QueueEntry,
 } from './types';
 export { DEFAULT_DURATION, isPrebuilt } from './types';
+export type { EasingFunction } from './easing';

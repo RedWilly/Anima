@@ -1,11 +1,12 @@
 import { Mobject } from './Mobject';
-import { hashNumber, hashString, hashCompose } from '../cache/Hashable';
-import type { Animation } from '../animations/Animation';
-import { BezierPath } from '../math/bezier/BezierPath';
-import type { PathCommand } from '../math/bezier/types';
-import { Color } from '../math/color/Color';
-import { Vector2 } from '../math/Vector2/Vector2';
-import { Write, Unwrite, Draw } from '../animations/draw';
+import { hashNumber, hashString, hashCompose } from '../cache';
+import { BezierPath, type PathCommand, Color, Vector2 } from '../math';
+import {
+    type Animation,
+    createDraw,
+    createUnwrite,
+    createWrite,
+} from '../animations/mobjectApi';
 
 /**
  * A Mobject that is defined by one or more BezierPaths.
@@ -196,10 +197,7 @@ export class VMobject extends Mobject {
      * @returns this for chaining.
      */
     write(durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
-        const animation = new Write(this);
-        if (durationSeconds !== undefined) {
-            animation.duration(durationSeconds);
-        }
+        const animation = createWrite(this, durationSeconds);
         this.getQueue().enqueueAnimation(animation);
         return this;
     }
@@ -210,10 +208,7 @@ export class VMobject extends Mobject {
      * @returns this for chaining.
      */
     unwrite(durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
-        const animation = new Unwrite(this);
-        if (durationSeconds !== undefined) {
-            animation.duration(durationSeconds);
-        }
+        const animation = createUnwrite(this, durationSeconds);
         this.getQueue().enqueueAnimation(animation);
         return this;
     }
@@ -224,10 +219,7 @@ export class VMobject extends Mobject {
      * @returns this for chaining.
      */
     draw(durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
-        const animation = new Draw(this);
-        if (durationSeconds !== undefined) {
-            animation.duration(durationSeconds);
-        }
+        const animation = createDraw(this, durationSeconds);
         this.getQueue().enqueueAnimation(animation);
         return this;
     }

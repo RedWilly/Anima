@@ -1,7 +1,6 @@
 import { IntroductoryAnimation } from '../categories';
-import { VMobject } from '../../mobjects/VMobject';
-import { BezierPath } from '../../math/bezier/BezierPath';
-import { Color } from '../../math/color/Color';
+import type { VMobject } from '../../mobjects';
+import { BezierPath, Color } from '../../math';
 import { getPartialPath } from './partialPath';
 
 /** Duck-typing check for VGroup (has getChildren method). */

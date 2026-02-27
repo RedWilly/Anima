@@ -1,8 +1,8 @@
 import { Animation } from '../Animation';
 import type { AnimationLifecycle } from '../types';
-import type { CameraFrame } from '../../camera/CameraFrame';
-import type { Mobject } from '../../mobjects/Mobject';
-import { Vector2 } from '../../math/Vector2/Vector2';
+import type { CameraFrame } from '../../camera';
+import type { Mobject } from '../../mobjects';
+import { Vector2 } from '../../math';
 
 /**
  * Configuration options for the Follow animation.

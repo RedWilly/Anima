@@ -1,6 +1,6 @@
 import { VMobject } from '../VMobject';
-import { Color } from '../../math/color/Color';
-import { hashCompose } from '../../cache/Hashable';
+import { hashCompose } from '../../cache';
+import { Color } from '../../math';
 import {
     centerGroup,
     toCorner,

@@ -1,9 +1,12 @@
-import { BezierPath } from '../../math/bezier/BezierPath';
-import { Vector2 } from '../../math/Vector2/Vector2';
-import type { PathCommand } from '../../math/bezier/types';
-import { getQuadraticLength, getCubicLength } from '../../math/bezier/length';
-import { evaluateQuadratic } from '../../math/bezier/evaluators';
-import { splitCubicAt } from '../../math/bezier/split';
+import {
+    BezierPath,
+    Vector2,
+    type PathCommand,
+    getQuadraticLength,
+    getCubicLength,
+    evaluateQuadratic,
+    splitCubicAt,
+} from '../../math';
 
 /**
  * Returns a partial BezierPath from the start up to a given normalized t (0–1).

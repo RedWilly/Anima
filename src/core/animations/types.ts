@@ -1,6 +1,6 @@
 import type { EasingFunction } from './easing';
 import type { Animation } from './Animation';
-import type { Mobject } from '../mobjects/Mobject';
+import type { Mobject } from '../mobjects';
 
 /**
  * Configuration options for animations.

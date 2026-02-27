@@ -1,4 +1,4 @@
-import { SceneLoader } from '../SceneLoader';
+import { SceneLoader } from '../scene-loader';
 import { Renderer, Resolution } from '@redwilly/anima';
 import type { Scene, RenderFormat, RenderQuality } from '@redwilly/anima';
 import { join, dirname } from 'path';

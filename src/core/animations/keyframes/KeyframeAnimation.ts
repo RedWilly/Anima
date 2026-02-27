@@ -1,6 +1,6 @@
 import { Animation } from '../Animation';
 import type { AnimationLifecycle } from '../types';
-import type { Mobject } from '../../mobjects/Mobject';
+import type { Mobject } from '../../mobjects';
 import { KeyframeTrack } from './KeyframeTrack';
 import type { KeyframeValue } from './types';
 

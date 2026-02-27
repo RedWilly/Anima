@@ -1,4 +1,4 @@
-import type { Animation } from '../animations/Animation';
+import type { Animation } from '../animations';
 
 /**
  * A Segment represents one independent rendering unit,

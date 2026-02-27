@@ -1,7 +1,7 @@
-import { Mobject } from '../mobjects/Mobject';
+import type { Mobject } from '../mobjects';
 import type { EasingFunction } from './easing';
 import { defaultEasing } from './easing';
-import { hashNumber, hashString, hashCompose } from '../cache/Hashable';
+import { hashNumber, hashString, hashCompose } from '../cache';
 import type { AnimationConfig, AnimationLifecycle } from './types';
 
 /**

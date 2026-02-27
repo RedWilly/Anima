@@ -1,6 +1,6 @@
 import { VGroup } from './VGroup';
 import { VMobject } from '../VMobject';
-import { Matrix3x3 } from '../../math/matrix/Matrix3x3';
+import { Matrix3x3 } from '../../math';
 import { Camera } from '../../camera';
 
 export type CornerPosition = 'TOP_LEFT' | 'TOP_RIGHT' | 'BOTTOM_LEFT' | 'BOTTOM_RIGHT';

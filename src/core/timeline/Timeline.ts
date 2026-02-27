@@ -1,4 +1,4 @@
-import type { Animation } from '../animations/Animation';
+import { type Animation, getAnimationTotalTime } from '../animations';
 import type {
     ScheduledAnimation,
     TimelineConfig,
@@ -45,7 +45,7 @@ export class Timeline {
         let currentStart = startTime;
         for (const anim of animations) {
             this.schedule(anim, currentStart);
-            currentStart += anim.getDuration() + anim.getDelay();
+            currentStart += getAnimationTotalTime(anim);
         }
         return this;
     }

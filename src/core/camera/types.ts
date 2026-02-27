@@ -1,4 +1,3 @@
-import type { Vector2 } from '../math/Vector2/Vector2';
 export const MANIM_FRAME_HEIGHT = 8.0;
 
 /**

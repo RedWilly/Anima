@@ -1,9 +1,6 @@
 import type { SKRSContext2D } from '@napi-rs/canvas';
-import { VMobject } from '../mobjects/VMobject';
-import { VGroup } from '../mobjects/VGroup';
-import type { Mobject } from '../mobjects/Mobject';
-import { Matrix3x3 } from '../math/matrix/Matrix3x3';
-import type { PathCommand } from '../math/bezier/types';
+import { Mobject, VGroup, VMobject } from '../mobjects';
+import { Matrix3x3, type PathCommand } from '../math';
 
 /**
  * Draws a Mobject to a canvas context.

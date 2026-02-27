@@ -1,11 +1,15 @@
-import { Color } from '../math/color/Color';
+import { Color } from '../math';
 import { Timeline } from '../timeline';
 import { Camera, CameraFrame } from '../camera';
-import { Mobject } from '../mobjects/Mobject';
-import type { Animation } from '../animations/Animation';
+import { Mobject } from '../mobjects';
+import {
+    type Animation,
+    getAnimationChildren,
+    getLongestAnimationTotalTime,
+} from '../animations';
 import type { SceneConfig, ResolvedSceneConfig } from './types';
-import type { Segment } from '../cache/Segment';
-import { hashNumber, hashCompose } from '../cache/Hashable';
+import type { Segment } from '../cache';
+import { hashNumber, hashCompose } from '../cache';
 import { AnimationTargetNotInSceneError } from '../errors';
 
 /**
@@ -152,13 +156,7 @@ export class Scene {
         this.timeline.scheduleParallel(animations, this.playheadTime);
 
         // Advance playhead to end of longest animation
-        let maxDuration = 0;
-        for (const anim of animations) {
-            const totalTime = anim.getDuration() + anim.getDelay();
-            if (totalTime > maxDuration) {
-                maxDuration = totalTime;
-            }
-        }
+        const maxDuration = getLongestAnimationTotalTime(animations);
 
         const endTime = this.playheadTime + maxDuration;
 
@@ -248,7 +246,7 @@ export class Scene {
      */
     private validateAndRegisterAnimation(anim: Animation): void {
         // Check if this is a composition animation with children
-        const children = this.getAnimationChildren(anim);
+        const children = getAnimationChildren(anim);
 
         if (children.length > 0) {
             // For composition animations, process each child
@@ -308,18 +306,6 @@ export class Scene {
         }
 
         return false;
-    }
-
-    /**
-     * Gets children of composition animations (Sequence, Parallel).
-     * Returns empty array for non-composition animations.
-     */
-    private getAnimationChildren(anim: Animation): readonly Animation[] {
-        // Check for getChildren method (Sequence, Parallel have this)
-        if ('getChildren' in anim && typeof anim.getChildren === 'function') {
-            return anim.getChildren();
-        }
-        return [];
     }
 
     /**

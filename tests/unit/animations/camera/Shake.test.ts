@@ -116,18 +116,19 @@ describe('Shake Animation', () => {
         it('should reduce intensity over time with decay', () => {
             const frame = new CameraFrame();
             frame.pos(0, 0);
-            const shake = new Shake(frame, { intensity: 1.0, decay: 1 });
+            const shake = new Shake(frame, { intensity: 1.0, decay: 1, frequency: 10 });
+            shake.duration(1);
 
-            shake.interpolate(0.1);
-            const earlyDisplacement = Math.sqrt(
-                frame.position.x ** 2 + frame.position.y ** 2
-            );
+            const sampleDisplacement = (progress: number): number => {
+                frame.pos(0, 0);
+                shake.interpolate(progress);
+                return Math.sqrt(frame.position.x ** 2 + frame.position.y ** 2);
+            };
 
-            frame.pos(0, 0);
-            shake.interpolate(0.9);
-            const lateDisplacement = Math.sqrt(
-                frame.position.x ** 2 + frame.position.y ** 2
-            );
+            const earlySamples = [0.1, 0.2, 0.3].map(sampleDisplacement);
+            const lateSamples = [0.7, 0.8, 0.9].map(sampleDisplacement);
+            const earlyDisplacement = earlySamples.reduce((sum, value) => sum + value, 0) / earlySamples.length;
+            const lateDisplacement = lateSamples.reduce((sum, value) => sum + value, 0) / lateSamples.length;
 
             expect(earlyDisplacement).toBeGreaterThan(lateDisplacement);
         });

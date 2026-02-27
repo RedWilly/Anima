@@ -1,6 +1,6 @@
-import { Mobject } from '../mobjects/Mobject';
-import { Parallel } from '../animations/composition';
 import type { Animation } from '../animations/Animation';
+import { createParallel } from '../animations/fluent';
+import { Mobject } from '../mobjects/Mobject';
 import { MANIM_FRAME_HEIGHT } from './types';
 
 interface BoundsResult {
@@ -280,7 +280,7 @@ export class CameraFrame extends Mobject {
    * // Zoom out while keeping an object's position fixed
    * this.play(frame.zoomToPoint(2, circle.position).duration(1));
    */
-  zoomToPoint(factor: number, point: { x: number; y: number }): Parallel {
+  zoomToPoint(factor: number, point: { x: number; y: number }): Animation {
     if (factor <= 0) {
       throw new Error('zoom factor must be positive');
     }
@@ -296,7 +296,7 @@ export class CameraFrame extends Mobject {
     const moveAnim = this.moveTo(newX, newY).toAnimation();
     const scaleAnim = this.scaleTo(newScale).toAnimation();
 
-    return new Parallel([moveAnim, scaleAnim]);
+    return createParallel([moveAnim, scaleAnim]);
   }
 
   /**
@@ -343,7 +343,7 @@ export class CameraFrame extends Mobject {
     const moveAnim = this.moveTo(bounds.centerX, bounds.centerY).toAnimation();
     const scaleAnim = this.scaleTo(targetScale).toAnimation();
 
-    const parallelAnim = new Parallel([moveAnim, scaleAnim]);
+    const parallelAnim = createParallel([moveAnim, scaleAnim]);
     this.getQueue().enqueueAnimation(parallelAnim);
 
     return this;

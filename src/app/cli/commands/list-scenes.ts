@@ -1,4 +1,4 @@
-import { SceneLoader } from '../SceneLoader';
+import { SceneLoader } from '../scene-loader';
 import { resolve } from 'path';
 
 /**

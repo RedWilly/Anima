@@ -1,5 +1,5 @@
 import { TransformativeAnimation } from '../categories';
-import type { Mobject } from '../../mobjects/Mobject';
+import type { Mobject } from '../../mobjects';
 
 /**
  * Animation that rotates a Mobject by a specified angle.

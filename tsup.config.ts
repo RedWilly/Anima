@@ -26,7 +26,7 @@ export default defineConfig([
 
   // ── CLI bundle ──────────────────────────────────────────────────
   {
-    entry: { 'cli/index': 'src/cli/index.ts' },
+    entry: { 'cli/index': 'src/app/cli/index.ts' },
     format: 'esm',
     outDir: 'dist',
     // Don't clean — library output already written above

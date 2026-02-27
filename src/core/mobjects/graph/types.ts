@@ -1,4 +1,4 @@
-import { Color } from '../../math/color/Color';
+import { Color } from '../../math';
 
 /** Unique identifier for graph nodes. */
 export type GraphNodeId = string;

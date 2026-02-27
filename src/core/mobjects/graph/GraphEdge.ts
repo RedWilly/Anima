@@ -1,7 +1,5 @@
 import { VMobject } from '../VMobject';
-import { BezierPath } from '../../math/bezier/BezierPath';
-import { Vector2 } from '../../math/Vector2/Vector2';
-import { Color } from '../../math/color/Color';
+import { BezierPath, Color, Vector2 } from '../../math';
 import type { GraphNodeId, EdgeConfig } from './types';
 import type { GraphNode } from './GraphNode';
 

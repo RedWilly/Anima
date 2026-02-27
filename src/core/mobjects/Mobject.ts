@@ -1,12 +1,18 @@
-import { Matrix3x3 } from '../math/matrix/Matrix3x3';
-import { hashFloat32Array, hashNumber, hashCompose } from '../cache/Hashable';
-import { Vector2 } from '../math/Vector2/Vector2';
-import { Animation } from '../animations/Animation';
-import type { EasingFunction } from '../animations/easing';
-import { FadeIn, FadeOut } from '../animations/fade';
-import { MoveTo, Rotate, Scale } from '../animations/transform';
-import { Parallel, Sequence } from '../animations/composition';
-import { type QueueEntry, isPrebuilt } from '../animations/types';
+import { hashFloat32Array, hashNumber, hashCompose } from '../cache';
+import { Matrix3x3, Vector2 } from '../math';
+import {
+  Animation,
+  type EasingFunction,
+  createFadeIn,
+  createFadeOut,
+  createMoveTo,
+  createRotate,
+  createScale,
+  createParallel,
+  createSequence,
+  type QueueEntry,
+  isPrebuilt,
+} from '../animations/mobjectApi';
 
 /**
  * Manages a queue of animations for fluent chaining.
@@ -120,7 +126,7 @@ class AnimationQueue {
       return animations[0];
     }
 
-    return new Sequence(animations);
+    return createSequence(animations);
   }
 
   getTotalDuration(): number {
@@ -305,59 +311,45 @@ export class Mobject {
       throw new Error('restore() called but no state was saved. Call saveState() first.');
     }
 
-    const moveAnim = new MoveTo(this, state.position.x, state.position.y);
-    const scaleAnim = new Scale(this, state.scale.x, state.scale.y);
-    const rotateAnim = new Rotate(this, state.rotation - this.rotation);
-
-    if (durationSeconds !== undefined) {
-      moveAnim.duration(durationSeconds);
-      scaleAnim.duration(durationSeconds);
-      rotateAnim.duration(durationSeconds);
-    }
-
-    const parallelAnim = new Parallel([moveAnim, scaleAnim, rotateAnim]);
+    const moveAnim = createMoveTo(this, state.position.x, state.position.y, durationSeconds);
+    const scaleAnim = createScale(this, state.scale.x, state.scale.y, durationSeconds);
+    const rotateAnim = createRotate(this, state.rotation - this.rotation, durationSeconds);
+    const parallelAnim = createParallel([moveAnim, scaleAnim, rotateAnim]);
     this.getQueue().enqueueAnimation(parallelAnim);
     return this;
   }
 
   // ========== Fluent Animation API ==========
 
-  private createAnimation<T extends Animation<Mobject>>(animation: T, durationSeconds?: number): T {
-    if (durationSeconds !== undefined) {
-      animation.duration(durationSeconds);
-    }
-    return animation;
-  }
-
   // ========== Unified Fluent Animation API ==========
   // These methods work for both sequential chaining AND parallel usage
 
   fadeIn(durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
-    const animation = this.createAnimation(new FadeIn(this), durationSeconds);
+    const animation = createFadeIn(this, durationSeconds);
     this.getQueue().enqueueAnimation(animation);
     return this;
   }
 
   fadeOut(durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
-    const animation = this.createAnimation(new FadeOut(this), durationSeconds);
+    const animation = createFadeOut(this, durationSeconds);
     this.getQueue().enqueueAnimation(animation);
     return this;
   }
 
   moveTo(x: number, y: number, durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
-    const animation = this.createAnimation(new MoveTo(this, x, y), durationSeconds);
+    const animation = createMoveTo(this, x, y, durationSeconds);
     this.getQueue().enqueueAnimation(animation);
     return this;
   }
 
   rotate(angle: number, durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
-    const animation = this.createAnimation(new Rotate(this, angle), durationSeconds);
+    const animation = createRotate(this, angle, durationSeconds);
     this.getQueue().enqueueAnimation(animation);
     return this;
   }
 
   scaleTo(factor: number, durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
-    const animation = this.createAnimation(new Scale(this, factor), durationSeconds);
+    const animation = createScale(this, factor, factor, durationSeconds);
     this.getQueue().enqueueAnimation(animation);
     return this;
   }
@@ -367,7 +359,7 @@ export class Mobject {
     factorY: number,
     durationSeconds?: number
   ): this & { toAnimation(): Animation<Mobject> } {
-    const animation = this.createAnimation(new Scale(this, factorX, factorY), durationSeconds);
+    const animation = createScale(this, factorX, factorY, durationSeconds);
     this.getQueue().enqueueAnimation(animation);
     return this;
   }
@@ -427,7 +419,7 @@ export class Mobject {
       }
     });
 
-    this.getQueue().enqueueAnimation(new Parallel(animations));
+    this.getQueue().enqueueAnimation(createParallel(animations));
     return this;
   }
 

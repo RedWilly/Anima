@@ -1,4 +1,4 @@
-import { Vector2 } from '../../../math/Vector2/Vector2';
+import { Vector2 } from '../../../math';
 import type { GraphNode } from '../GraphNode';
 import type { LayoutConfig } from '../types';
 

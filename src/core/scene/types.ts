@@ -1,4 +1,4 @@
-import type { Color } from '../math/color/Color';
+import type { Color } from '../math';
 
 /**
  * Configuration options for Scene.

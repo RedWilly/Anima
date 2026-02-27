@@ -1,6 +1,6 @@
 import { TransformativeAnimation } from '../categories';
-import { CameraFrame } from '../../camera/CameraFrame';
-import { Vector2 } from '../../math/Vector2/Vector2';
+import { CameraFrame } from '../../camera';
+import { Vector2 } from '../../math';
 
 /**
  * Configuration options for the Shake animation.

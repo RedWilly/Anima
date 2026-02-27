@@ -1,6 +1,5 @@
 import { Line } from './Line';
-import { Vector2 } from '../../math/Vector2/Vector2';
-import { BezierPath } from '../../math/bezier/BezierPath';
+import { BezierPath, Vector2 } from '../../math';
 
 export class Arrow extends Line {
     constructor(

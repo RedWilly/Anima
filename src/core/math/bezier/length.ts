@@ -1,4 +1,4 @@
-import { Vector2 } from '../Vector2/Vector2';
+import { Vector2 } from '../Vector2';
 import { evaluateQuadratic, evaluateCubic } from './evaluators';
 
 /** Calculates approximate length of a quadratic Bezier curve via subdivision (10 steps). */

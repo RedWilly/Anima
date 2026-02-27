@@ -1,8 +1,8 @@
 import { createCanvas, type Canvas } from '@napi-rs/canvas';
 import type { Scene } from '../scene';
-import { Matrix3x3 } from '../math/matrix/Matrix3x3';
+import { Matrix3x3 } from '../math';
 import { drawMobject } from './drawMobject';
-import { MANIM_FRAME_HEIGHT } from '../camera/types';
+import { MANIM_FRAME_HEIGHT } from '../camera';
 
 /**
  * Renders individual frames from a Scene.

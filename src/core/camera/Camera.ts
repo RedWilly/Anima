@@ -1,7 +1,6 @@
-import { Vector2 } from '../math/Vector2/Vector2';
-import { Matrix3x3 } from '../math/matrix/Matrix3x3';
+import { Matrix3x3, Vector2 } from '../math';
 import { CameraFrame } from './CameraFrame';
-import { hashNumber, hashFloat32Array, hashCompose } from '../cache/Hashable';
+import { hashNumber, hashFloat32Array, hashCompose } from '../cache';
 import { MANIM_FRAME_HEIGHT, type CameraConfig, type ResolvedCameraConfig } from './types';
 
 /**

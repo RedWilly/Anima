@@ -1,5 +1,5 @@
 import { ExitAnimation } from '../categories';
-import type { Mobject } from '../../mobjects/Mobject';
+import type { Mobject } from '../../mobjects';
 
 /**
  * Animation that fades a Mobject out by decreasing its opacity to 0.

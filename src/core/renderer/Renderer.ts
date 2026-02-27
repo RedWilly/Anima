@@ -3,8 +3,7 @@ import type { RenderConfig, ResolvedRenderConfig } from './types';
 import { FrameRenderer } from './FrameRenderer';
 import { ProgressReporter } from './ProgressReporter';
 import { writePng, renderSpriteSequence, renderVideo, concatSegments } from './formats';
-import { SegmentCache } from '../cache/SegmentCache';
-import type { Segment } from '../cache/Segment';
+import { SegmentCache, type Segment } from '../cache';
 import { mkdir } from 'fs/promises';
 import { dirname, join } from 'path';
 

@@ -1,6 +1,6 @@
 import { TransformativeAnimation } from '../categories';
-import { Mobject } from '../../mobjects/Mobject';
-import { Vector2 } from '../../math/Vector2/Vector2';
+import type { Mobject } from '../../mobjects';
+import { Vector2 } from '../../math';
 
 /**
  * Animation that scales a Mobject to a target scale factor.
