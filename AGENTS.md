@@ -19,7 +19,7 @@ Animation library for mathematical visualizations using Bun, TypeScript, and Can
 
 2. **Deep modules over shallow modules.** Prefer fewer modules with simple interfaces and rich implementation over many small, scattered files. Each module should hide complexity behind a clean public API. This is progressive disclosure of complexity - the interface explains *what*, the internals handle *how*.
 
-3. **Minimize the mental map.** The codebase's file structure must be easily navigable. Before adding a new file or module, ask: does this reduce or increase the number of things someone must hold in their head? Fewer top-level concepts with depth inside each is always better than a flat sea of files.
+3. **Minimize the mental map.** The codebase's file structure must be easily navigable. Before adding a new file or module, ask: does this reduce or increase the number of things someone must hold in their head? Fewer top-level concepts with depth inside each are always better than a flat sea of files.
 
 4. **Design interfaces first.** When building or changing a module, define the public interface before writing implementation. Think about how this module connects to others. Own the boundaries - let the implementation follow.
 
