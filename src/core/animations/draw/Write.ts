@@ -32,6 +32,10 @@ interface ChildState {
     fillOpacity: number;
 }
 
+interface ProgressState {
+    completionApplied: boolean;
+}
+
 /**
  * Animation that progressively draws VMobject paths from start to end.
  *
@@ -51,8 +55,7 @@ export class Write<T extends VMobject = VMobject> extends IntroductoryAnimation<
     private readonly childStates: ChildState[];
     /** Glyph states for Text children, keyed by the Text VMobject reference. */
     private readonly glyphStates: Map<VMobject, ChildState[]> = new Map();
-    private activePhaseReached = false;
-    private completionApplied = false;
+    private readonly progressStates = new WeakMap<VMobject, ProgressState>();
 
     constructor(target: T) {
         super(target);
@@ -87,6 +90,17 @@ export class Write<T extends VMobject = VMobject> extends IntroductoryAnimation<
             this.glyphStates.set(child, (child as VMobject & { getChildren(): VMobject[] }).getChildren().map((g: VMobject) => this.createState(g)));
         }
 
+        return state;
+    }
+
+    private getProgressState(target: VMobject): ProgressState {
+        const existing = this.progressStates.get(target);
+        if (existing) {
+            return existing;
+        }
+
+        const state: ProgressState = { completionApplied: false };
+        this.progressStates.set(target, state);
         return state;
     }
 
@@ -139,9 +153,10 @@ export class Write<T extends VMobject = VMobject> extends IntroductoryAnimation<
         originalFillOpacity: number,
         progress: number
     ): void {
+        const state = this.getProgressState(target);
+
         if (progress <= 0) {
-            this.activePhaseReached = false;
-            this.completionApplied = false;
+            state.completionApplied = false;
             target.paths = [];
             target.setOpacity(0);
             return;
@@ -151,18 +166,17 @@ export class Write<T extends VMobject = VMobject> extends IntroductoryAnimation<
         target.setOpacity(opacity);
 
         if (progress >= 1) {
-            // Apply final style once after active interpolation, then keep geometry only.
-            if (this.activePhaseReached && !this.completionApplied) {
+            // Apply final style once per target, then keep geometry only.
+            if (!state.completionApplied) {
                 target.stroke(originalStrokeColor, originalStrokeWidth);
                 target.fill(originalFillColor, originalFillOpacity);
-                this.completionApplied = true;
+                state.completionApplied = true;
             }
             target.paths = originalPaths.map(p => p.clone());
             return;
         }
 
-        this.activePhaseReached = true;
-        this.completionApplied = false;
+        state.completionApplied = false;
 
         target.stroke(originalStrokeColor, originalStrokeWidth);
         target.fill(originalFillColor, originalFillOpacity);
