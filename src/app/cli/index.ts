@@ -1,8 +1,5 @@
 import { Command } from 'commander';
-import { listScenes } from './commands/list-scenes';
-import { render } from './commands/render';
-import { preview } from './commands/preview';
-import { exportFrame } from './commands/export-frame';
+import { listScenes, render, preview, exportFrame } from './commands';
 
 const program = new Command();
 

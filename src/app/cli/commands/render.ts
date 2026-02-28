@@ -107,3 +107,13 @@ export async function render(file: string, options: RenderOptions): Promise<void
     console.log('Rendering complete.');
 }
 
+/**
+ * Shorthand for rendering with preview quality.
+ */
+export async function preview(file: string, options: RenderOptions): Promise<void> {
+    await render(file, {
+        ...options,
+        quality: 'preview',
+    });
+}
+
