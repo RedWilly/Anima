@@ -20,6 +20,10 @@ class TrackingAnimation extends Animation<Mobject> {
     interpolate(progress: number): void {
         this.calls.push(progress);
     }
+
+    protected getCacheFingerprintHash(): number {
+        return 0;
+    }
 }
 
 describe('Sequence Animation Container', () => {

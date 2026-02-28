@@ -1,6 +1,7 @@
 import { TransformativeAnimation } from '../LifecycleAnimations';
 import type { Mobject } from '../../mobjects';
 import { Vector2 } from '../../math';
+import { hashCompose, hashNumber } from '../../cache';
 
 /**
  * Animation that moves a Mobject from its current position to a destination.
@@ -41,5 +42,12 @@ export class MoveTo<T extends Mobject = Mobject> extends TransformativeAnimation
     /** Returns the target position of the move animation. */
     getDestination(): Vector2 {
         return this.endPosition;
+    }
+
+    protected override getCacheFingerprintHash(): number {
+        return hashCompose(
+            hashNumber(this.endPosition.x),
+            hashNumber(this.endPosition.y),
+        );
     }
 }

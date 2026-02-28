@@ -1,6 +1,7 @@
 import { Mobject } from '../../mobjects';
 import { Animation } from '../Animation';
 import type { AnimationLifecycle } from '../types';
+import { hashCompose, hashNumber } from '../../cache';
 
 /**
  * Executes animations in parallel, all starting at the same time.
@@ -94,5 +95,13 @@ export class Parallel extends Animation<Mobject> {
         const clampedProgress = Math.max(0, Math.min(1, progress));
         // Composition animations should not apply easing to their children
         this.interpolate(clampedProgress);
+    }
+
+    protected override getCacheFingerprintHash(): number {
+        const childHashes = this.children.map((child) => child.computeHash());
+        return hashCompose(
+            hashNumber(this.children.length),
+            ...childHashes,
+        );
     }
 }

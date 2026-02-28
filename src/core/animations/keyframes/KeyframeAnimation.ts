@@ -3,6 +3,7 @@ import type { AnimationLifecycle } from '../types';
 import type { Mobject } from '../../mobjects';
 import { KeyframeTrack } from './KeyframeTrack';
 import type { KeyframeValue } from './types';
+import { hashString } from '../../cache';
 
 /**
  * Property setter function type for applying values to a Mobject.
@@ -63,5 +64,22 @@ export class KeyframeAnimation<T extends Mobject = Mobject> extends Animation<T>
             const value = entry.track.getValueAt(progress);
             entry.setter(this.target, value);
         }
+    }
+
+    protected override getCacheFingerprintHash(): number {
+        const trackNames = Array.from(this.tracks.keys()).sort();
+        const serialized = trackNames.map((name) => {
+            const entry = this.tracks.get(name);
+            if (!entry) {
+                return `${name}:`;
+            }
+
+            const keyframes = entry.track.getKeyframes()
+                .map((kf) => `${kf.time}:${kf.value}:${kf.easing?.name ?? 'linear'}`)
+                .join(',');
+            return `${name}:${keyframes}`;
+        }).join('|');
+
+        return hashString(serialized);
     }
 }

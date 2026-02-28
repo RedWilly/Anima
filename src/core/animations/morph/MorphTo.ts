@@ -1,6 +1,7 @@
 import { TransformativeAnimation } from '../LifecycleAnimations';
 import type { VMobject } from '../../mobjects';
 import { BezierPath, Color } from '../../math';
+import { hashCompose, hashNumber, hashString } from '../../cache';
 
 /**
  * Animation that morphs a VMobject from its current shape to a target shape.
@@ -69,5 +70,31 @@ export class MorphTo<T extends VMobject = VMobject> extends TransformativeAnimat
         const path = new BezierPath();
         path.moveTo(this.target.position);
         return path;
+    }
+
+    protected override getCacheFingerprintHash(): number {
+        const targetPathHash = hashString(
+            this.targetPaths.map((path) =>
+                path.getCommands().map((command) =>
+                    `${command.type}:${command.end.x},${command.end.y}` +
+                    (command.control1 ? `:${command.control1.x},${command.control1.y}` : '') +
+                    (command.control2 ? `:${command.control2.x},${command.control2.y}` : '')
+                ).join('|')
+            ).join('||'),
+        );
+
+        return hashCompose(
+            targetPathHash,
+            hashNumber(this.targetStrokeColor.r),
+            hashNumber(this.targetStrokeColor.g),
+            hashNumber(this.targetStrokeColor.b),
+            hashNumber(this.targetStrokeColor.a),
+            hashNumber(this.targetStrokeWidth),
+            hashNumber(this.targetFillColor.r),
+            hashNumber(this.targetFillColor.g),
+            hashNumber(this.targetFillColor.b),
+            hashNumber(this.targetFillColor.a),
+            hashNumber(this.targetFillOpacity),
+        );
     }
 }

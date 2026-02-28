@@ -1,5 +1,6 @@
 import { ExitAnimation } from '../LifecycleAnimations';
 import type { Mobject } from '../../mobjects';
+import { hashNumber } from '../../cache';
 
 /**
  * Animation that fades a Mobject out by decreasing its opacity to 0.
@@ -23,5 +24,9 @@ export class FadeOut<T extends Mobject = Mobject> extends ExitAnimation<T> {
 
         const newOpacity = this.startOpacity * (1 - progress);
         this.target.setOpacity(newOpacity);
+    }
+
+    protected override getCacheFingerprintHash(): number {
+        return hashNumber(0);
     }
 }

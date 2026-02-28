@@ -3,6 +3,7 @@ import type { AnimationLifecycle } from '../types';
 import type { CameraFrame } from '../../camera';
 import type { Mobject } from '../../mobjects';
 import { Vector2 } from '../../math';
+import { hashCompose, hashNumber } from '../../cache';
 
 /**
  * Configuration options for the Follow animation.
@@ -92,5 +93,14 @@ export class Follow extends Animation<CameraFrame> {
         } else {
             this.target.pos(targetPos.x, targetPos.y);
         }
+    }
+
+    protected override getCacheFingerprintHash(): number {
+        return hashCompose(
+            this.followTarget.computeHash(),
+            hashNumber(this.offset.x),
+            hashNumber(this.offset.y),
+            hashNumber(this.damping),
+        );
     }
 }

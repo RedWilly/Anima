@@ -2,6 +2,7 @@ import { ExitAnimation } from '../LifecycleAnimations';
 import type { VMobject } from '../../mobjects';
 import { BezierPath } from '../../math';
 import { getPartialPath } from './partialPath';
+import { hashNumber } from '../../cache';
 
 /**
  * Checks if a VMobject is a VGroup (has getChildren method).
@@ -141,5 +142,9 @@ export class Unwrite<T extends VMobject = VMobject> extends ExitAnimation<T> {
             }
             child.paths = partialPaths;
         }
+    }
+
+    protected override getCacheFingerprintHash(): number {
+        return hashNumber(0);
     }
 }

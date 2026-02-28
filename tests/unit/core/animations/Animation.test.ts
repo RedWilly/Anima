@@ -15,6 +15,10 @@ class TestAnimation extends Animation<Mobject> {
     interpolate(progress: number): void {
         this.interpolateCalls.push(progress);
     }
+
+    protected getCacheFingerprintHash(): number {
+        return 0;
+    }
 }
 
 describe('Animation Base Class', () => {

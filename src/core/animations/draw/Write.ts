@@ -2,6 +2,7 @@ import { IntroductoryAnimation } from '../LifecycleAnimations';
 import type { VMobject } from '../../mobjects';
 import { BezierPath, Color } from '../../math';
 import { getPartialPath } from './partialPath';
+import { hashNumber } from '../../cache';
 
 /** Duck-typing check for VGroup (has getChildren method). */
 function isVGroup(target: VMobject): target is VMobject & { getChildren(): VMobject[] } {
@@ -166,5 +167,9 @@ export class Write<T extends VMobject = VMobject> extends IntroductoryAnimation<
         target.stroke(originalStrokeColor, originalStrokeWidth);
         target.fill(originalFillColor, originalFillOpacity);
         target.paths = originalPaths.map(p => getPartialPath(p, progress));
+    }
+
+    protected override getCacheFingerprintHash(): number {
+        return hashNumber(0);
     }
 }

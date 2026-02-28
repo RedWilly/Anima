@@ -1,5 +1,6 @@
 import { TransformativeAnimation } from '../LifecycleAnimations';
 import type { Mobject } from '../../mobjects';
+import { hashNumber } from '../../cache';
 
 /**
  * Animation that rotates a Mobject by a specified angle.
@@ -36,5 +37,9 @@ export class Rotate<T extends Mobject = Mobject> extends TransformativeAnimation
     /** Returns the total rotation angle in radians. */
     getAngle(): number {
         return this.angle;
+    }
+
+    protected override getCacheFingerprintHash(): number {
+        return hashNumber(this.angle);
     }
 }

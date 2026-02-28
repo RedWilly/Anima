@@ -30,6 +30,10 @@ class TrackingAnimation extends Animation<Mobject> {
         this.calls = [];
         this.lastProgress = -1;
     }
+
+    protected getCacheFingerprintHash(): number {
+        return 0;
+    }
 }
 
 describe('Timeline', () => {

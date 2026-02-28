@@ -6,7 +6,7 @@ It includes directories and files.
 ## src tree
 
 ```text
-C:ANIMA\SRC
+src
 |   index.ts
 |   
 +---app

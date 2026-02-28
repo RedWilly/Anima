@@ -100,17 +100,23 @@ export abstract class Animation<T extends Mobject = Mobject> {
     }
 
     /**
+     * Subclasses can override to include animation-specific cache inputs
+     * (for example destination vectors, angles, keyframes, etc.).
+     */
+    protected abstract getCacheFingerprintHash(): number;
+
+    /**
      * Hashes the animation type, config, and target state.
-     * Subclass-specific behavior is captured through the target's hash,
-     * since animations mutate the target.
+     * Subclasses can add parameter fingerprints via getCacheFingerprintHash().
      */
     computeHash(): number {
         return hashCompose(
             hashString(this.constructor.name),
             hashNumber(this.durationSeconds),
             hashNumber(this.delaySeconds),
-            hashString(this.easingFn.name || 'anonymous'),
+            hashString(this.easingFn.name),
             this.target.computeHash(),
+            this.getCacheFingerprintHash(),
         );
     }
 }

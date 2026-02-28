@@ -1,6 +1,7 @@
 import { TransformativeAnimation } from '../LifecycleAnimations';
 import { CameraFrame } from '../../camera';
 import { Vector2 } from '../../math';
+import { hashCompose, hashNumber } from '../../cache';
 
 /**
  * Configuration options for the Shake animation.
@@ -125,5 +126,15 @@ export class Shake extends TransformativeAnimation<CameraFrame> {
         return Math.sin(t * 2 + seed) * 0.5 +
                Math.sin(t * 3.7 + seed * 1.3) * 0.3 +
                Math.sin(t * 7.1 + seed * 0.7) * 0.2;
+    }
+
+    protected override getCacheFingerprintHash(): number {
+        return hashCompose(
+            hashNumber(this.intensity),
+            hashNumber(this.frequency),
+            hashNumber(this.decay),
+            hashNumber(this.seedX),
+            hashNumber(this.seedY),
+        );
     }
 }

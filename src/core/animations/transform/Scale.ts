@@ -1,6 +1,7 @@
 import { TransformativeAnimation } from '../LifecycleAnimations';
 import type { Mobject } from '../../mobjects';
 import { Vector2 } from '../../math';
+import { hashCompose, hashNumber } from '../../cache';
 
 /**
  * Animation that scales a Mobject to a target scale factor.
@@ -39,5 +40,12 @@ export class Scale<T extends Mobject = Mobject> extends TransformativeAnimation<
     /** Returns the scale factor. */
     getFactor(): number {
         return this.endScale.x;
+    }
+
+    protected override getCacheFingerprintHash(): number {
+        return hashCompose(
+            hashNumber(this.endScale.x),
+            hashNumber(this.endScale.y),
+        );
     }
 }

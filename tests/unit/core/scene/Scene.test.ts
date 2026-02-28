@@ -24,6 +24,10 @@ class TrackingAnimation extends Animation<Mobject> {
     interpolate(progress: number): void {
         this.lastProgress = progress;
     }
+
+    protected getCacheFingerprintHash(): number {
+        return 0;
+    }
 }
 
 describe('Scene', () => {

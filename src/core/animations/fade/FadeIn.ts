@@ -1,5 +1,6 @@
 import { IntroductoryAnimation } from '../LifecycleAnimations';
 import type { Mobject } from '../../mobjects';
+import { hashNumber } from '../../cache';
 
 /**
  * Animation that fades a Mobject in by increasing its opacity from 0 to 1.
@@ -22,5 +23,9 @@ export class FadeIn<T extends Mobject = Mobject> extends IntroductoryAnimation<T
     interpolate(progress: number): void {
         const newOpacity = this.startOpacity + (1 - this.startOpacity) * progress;
         this.target.setOpacity(newOpacity);
+    }
+
+    protected override getCacheFingerprintHash(): number {
+        return hashNumber(0);
     }
 }
