@@ -1,8 +1,14 @@
 import { Animation } from './Animation';
-import { Parallel, Sequence } from './composition';
-import { Draw, Unwrite, Write } from './draw';
-import { FadeIn, FadeOut } from './fade';
-import { MoveTo, Rotate, Scale } from './transform';
+import { Parallel } from './composition/Parallel';
+import { Sequence } from './composition/Sequence';
+import { Draw } from './draw/Draw';
+import { Unwrite } from './draw/Unwrite';
+import { Write } from './draw/Write';
+import { FadeIn } from './fade/FadeIn';
+import { FadeOut } from './fade/FadeOut';
+import { MoveTo } from './transform/MoveTo';
+import { Rotate } from './transform/Rotate';
+import { Scale } from './transform/Scale';
 import type { Mobject, VMobject } from '../mobjects';
 
 function withDuration<T extends Animation<Mobject>>(animation: T, durationSeconds?: number): T {

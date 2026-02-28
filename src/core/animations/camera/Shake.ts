@@ -1,4 +1,4 @@
-import { TransformativeAnimation } from '../categories';
+import { TransformativeAnimation } from '../LifecycleAnimations';
 import { CameraFrame } from '../../camera';
 import { Vector2 } from '../../math';
 

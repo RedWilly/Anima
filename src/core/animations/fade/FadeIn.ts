@@ -1,4 +1,4 @@
-import { IntroductoryAnimation } from '../categories';
+import { IntroductoryAnimation } from '../LifecycleAnimations';
 import type { Mobject } from '../../mobjects';
 
 /**

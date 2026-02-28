@@ -1,17 +1,16 @@
-import { Animation } from '../Animation';
-import type { AnimationLifecycle } from '../types';
-import type { Mobject } from '../../mobjects';
+import { Animation } from './Animation';
+import type { AnimationLifecycle } from './types';
+import type { Mobject } from '../mobjects';
+
+/**
+ * Abstract base class for animations that introduce an object to the scene.
+ */
+export abstract class IntroductoryAnimation<T extends Mobject = Mobject> extends Animation<T> {
+    readonly lifecycle: AnimationLifecycle = 'introductory';
+}
 
 /**
  * Abstract base class for animations that transform an existing scene object.
- * 
- * Transformative animations:
- * - Require the target to already be registered with the scene
- * - Throw an error if the target is not in the scene
- * - Operate on objects that are already visible or have been introduced
- * - Use lazy initialization to capture start state when animation becomes active
- * 
- * Examples: MoveTo, Rotate, Scale, MorphTo, Transform
  */
 export abstract class TransformativeAnimation<T extends Mobject = Mobject> extends Animation<T> {
     readonly lifecycle: AnimationLifecycle = 'transformative';
@@ -33,4 +32,11 @@ export abstract class TransformativeAnimation<T extends Mobject = Mobject> exten
     override reset(): void {
         this.initialized = false;
     }
+}
+
+/**
+ * Abstract base class for animations that exit/remove an object from the scene.
+ */
+export abstract class ExitAnimation<T extends Mobject = Mobject> extends Animation<T> {
+    readonly lifecycle: AnimationLifecycle = 'exit';
 }

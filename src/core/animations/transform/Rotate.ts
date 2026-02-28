@@ -1,4 +1,4 @@
-import { TransformativeAnimation } from '../categories';
+import { TransformativeAnimation } from '../LifecycleAnimations';
 import type { Mobject } from '../../mobjects';
 
 /**

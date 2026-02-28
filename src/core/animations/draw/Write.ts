@@ -1,4 +1,4 @@
-import { IntroductoryAnimation } from '../categories';
+import { IntroductoryAnimation } from '../LifecycleAnimations';
 import type { VMobject } from '../../mobjects';
 import { BezierPath, Color } from '../../math';
 import { getPartialPath } from './partialPath';

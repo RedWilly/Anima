@@ -1,4 +1,4 @@
-import { ExitAnimation } from '../categories';
+import { ExitAnimation } from '../LifecycleAnimations';
 import type { Mobject } from '../../mobjects';
 
 /**
