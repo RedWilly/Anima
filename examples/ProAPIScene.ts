@@ -9,7 +9,7 @@
 import { Scene } from '../src/core/scene/Scene';
 import { Circle } from '../src/core/mobjects/geometry/Circle';
 import { Rectangle } from '../src/core/mobjects/geometry/Rectangle';
-import { Arrow } from '../src/core/mobjects';
+import { Arrow } from '../src/core/mobjects/geometry/Arrow';
 import { FadeIn, FadeOut, MoveTo, Rotate, Scale } from '../src/core/animations';
 import { easeInOutQuad } from '../src/core/animations/easing';
 

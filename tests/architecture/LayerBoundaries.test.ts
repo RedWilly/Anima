@@ -25,9 +25,7 @@ const CROSS_MODULE_EXCEPTIONS: Record<string, string[]> = {
   'src/core/animations/composition/Parallel.ts': ['../../mobjects/Mobject'],
   'src/core/animations/composition/Sequence.ts': ['../../mobjects/Mobject'],
   'src/core/camera/CameraFrame.ts': [
-    '../animations/Animation',
-    '../animations/fluent',
-    '../mobjects/Mobject',
+    '../animations/mobjectApi',
   ],
 };
 

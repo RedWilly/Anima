@@ -1,6 +1,6 @@
-export * from './Arc';
-export * from './Circle';
-export * from './Line';
-export * from './Polygon';
-export * from './Rectangle';
-export * from './Arrow';
+export { Arc } from './Arc';
+export { Arrow } from './Arrow';
+export { Circle } from './Circle';
+export { Line } from './Line';
+export { Polygon } from './Polygon';
+export { Rectangle } from './Rectangle';

@@ -1,6 +1,5 @@
-import type { Animation } from '../animations/Animation';
-import { createParallel } from '../animations/fluent';
-import { Mobject } from '../mobjects/Mobject';
+import { type Animation, createParallel } from '../animations/mobjectApi';
+import { Mobject } from '../mobjects';
 import { MANIM_FRAME_HEIGHT } from './types';
 
 interface BoundsResult {

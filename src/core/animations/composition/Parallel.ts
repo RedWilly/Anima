@@ -1,4 +1,4 @@
-import { Mobject } from '../../mobjects/Mobject';
+import { Mobject } from '../../mobjects';
 import { Animation } from '../Animation';
 import type { AnimationLifecycle } from '../types';
 

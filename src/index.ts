@@ -65,12 +65,10 @@ export { Timeline } from './core/timeline';
 export type { ScheduledAnimation, TimelineConfig } from './core/timeline';
 
 
-export { Renderer, FrameRenderer, ProgressReporter, Resolution } from './core/renderer';
+export { Renderer, Resolution } from './core/renderer';
 export type { RenderConfig, RenderFormat, RenderQuality, RenderProgress, ProgressCallback } from './core/renderer';
-
-export { SegmentCache } from './core/cache';
-export type { Segment, Hashable } from './core/cache';
 
 // Easing Functions - Essential for animation control
 export * from './core/animations/easing';
+export type { EasingFunction } from './core/animations/easing';
 

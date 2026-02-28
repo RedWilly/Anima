@@ -2,7 +2,7 @@ import * as fontkit from 'fontkit';
 import { join, resolve } from 'path';
 import { Color } from '../../math';
 import { VGroup } from '../VGroup';
-import { centerGroup } from '../VGroup/layout';
+import { centerGroup } from '../VGroup';
 import { Glyph } from './Glyph';
 
 const DEFAULT_FONT_PATH = resolve(join(__dirname, '..', '..', 'font', 'ComicSansMS3.ttf'));

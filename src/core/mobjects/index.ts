@@ -1,7 +1,4 @@
-export * from './Mobject';
-export * from './VMobject';
-export * from './VGroup';
-export * from './geometry';
-export * from './text';
-export * from './graph';
+export { Mobject } from './Mobject';
+export { VMobject } from './VMobject';
+export { VGroup } from './VGroup';
 
