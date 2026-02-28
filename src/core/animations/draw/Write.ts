@@ -50,6 +50,8 @@ export class Write<T extends VMobject = VMobject> extends IntroductoryAnimation<
     private readonly childStates: ChildState[];
     /** Glyph states for Text children, keyed by the Text VMobject reference. */
     private readonly glyphStates: Map<VMobject, ChildState[]> = new Map();
+    private activePhaseReached = false;
+    private completionApplied = false;
 
     constructor(target: T) {
         super(target);
@@ -137,6 +139,8 @@ export class Write<T extends VMobject = VMobject> extends IntroductoryAnimation<
         progress: number
     ): void {
         if (progress <= 0) {
+            this.activePhaseReached = false;
+            this.completionApplied = false;
             target.paths = [];
             target.setOpacity(0);
             return;
@@ -144,11 +148,23 @@ export class Write<T extends VMobject = VMobject> extends IntroductoryAnimation<
 
         const opacity = originalOpacity === 0 ? 1 : originalOpacity;
         target.setOpacity(opacity);
+
+        if (progress >= 1) {
+            // Apply final style once after active interpolation, then keep geometry only.
+            if (this.activePhaseReached && !this.completionApplied) {
+                target.stroke(originalStrokeColor, originalStrokeWidth);
+                target.fill(originalFillColor, originalFillOpacity);
+                this.completionApplied = true;
+            }
+            target.paths = originalPaths.map(p => p.clone());
+            return;
+        }
+
+        this.activePhaseReached = true;
+        this.completionApplied = false;
+
         target.stroke(originalStrokeColor, originalStrokeWidth);
         target.fill(originalFillColor, originalFillOpacity);
-
-        target.paths = progress >= 1
-            ? originalPaths.map(p => p.clone())
-            : originalPaths.map(p => getPartialPath(p, progress));
+        target.paths = originalPaths.map(p => getPartialPath(p, progress));
     }
 }

@@ -68,6 +68,9 @@ export class Poll extends Scene {
         const tx2 = new Text("stroke").pos(0, 0).stroke(Color.WHITE, 1).pos(0, 2);
         this.play(tx2.write(1));
 
+        line.morphTo(new Circle(0.4).fill(Color.YELLOW).stroke(Color.BLACK, 3), 1);
+        this.play(line);
+
 
     }
 }

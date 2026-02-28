@@ -52,6 +52,8 @@ export class Draw<T extends VMobject = VMobject> extends IntroductoryAnimation<T
     private readonly childStates: ChildState[];
     /** Glyph states for Text children, keyed by the Text VMobject reference. */
     private readonly glyphStates: Map<VMobject, ChildState[]> = new Map();
+    private activePhaseReached = false;
+    private completionApplied = false;
 
     constructor(target: T) {
         super(target);
@@ -139,6 +141,8 @@ export class Draw<T extends VMobject = VMobject> extends IntroductoryAnimation<T
         progress: number
     ): void {
         if (progress <= 0) {
+            this.activePhaseReached = false;
+            this.completionApplied = false;
             target.paths = [];
             target.setOpacity(0);
             return;
@@ -146,6 +150,20 @@ export class Draw<T extends VMobject = VMobject> extends IntroductoryAnimation<T
 
         const opacity = originalOpacity === 0 ? 1 : originalOpacity;
         target.setOpacity(opacity);
+
+        if (progress >= 1) {
+            // Apply final style once after active interpolation, then keep geometry only.
+            if (this.activePhaseReached && !this.completionApplied) {
+                target.stroke(originalStrokeColor, originalStrokeWidth);
+                target.fill(originalFillColor, originalFillOpacity);
+                this.completionApplied = true;
+            }
+            target.paths = originalPaths.map(p => p.clone());
+            return;
+        }
+
+        this.activePhaseReached = true;
+        this.completionApplied = false;
 
         if (progress < 0.5) {
             // First half: draw stroke progressively, no fill

@@ -3,6 +3,7 @@ import { MorphTo } from '../../../../src/core/animations';
 import { Circle } from '../../../../src/core/mobjects/geometry/Circle';
 import { Rectangle } from '../../../../src/core/mobjects/geometry/Rectangle';
 import { VMobject } from '../../../../src/core/mobjects/VMobject';
+import { Color } from '../../../../src/core/math/color/Color';
 import { Vector2 } from '../../../../src/core/math/Vector2/Vector2';
 import { BezierPath } from '../../../../src/core/math/bezier/BezierPath';
 
@@ -117,6 +118,23 @@ describe('MorphTo Animation', () => {
             const anim = new MorphTo(circle, rectangle).duration(2).delay(0.5);
             expect(anim.getDuration()).toBe(2);
             expect(anim.getDelay()).toBe(0.5);
+        });
+
+        it('should interpolate style from source to target', () => {
+            const source = new Circle(50).fill(Color.RED).stroke(Color.WHITE, 2);
+            const target = new Rectangle(100, 100).fill(Color.YELLOW).stroke(Color.BLACK, 4);
+            const anim = new MorphTo(source, target);
+
+            anim.interpolate(1);
+
+            expect(source.getFillColor().r).toBeCloseTo(Color.YELLOW.r, 5);
+            expect(source.getFillColor().g).toBeCloseTo(Color.YELLOW.g, 5);
+            expect(source.getFillColor().b).toBeCloseTo(Color.YELLOW.b, 5);
+            expect(source.getFillOpacity()).toBeCloseTo(Color.YELLOW.a, 5);
+            expect(source.getStrokeColor().r).toBeCloseTo(Color.BLACK.r, 5);
+            expect(source.getStrokeColor().g).toBeCloseTo(Color.BLACK.g, 5);
+            expect(source.getStrokeColor().b).toBeCloseTo(Color.BLACK.b, 5);
+            expect(source.getStrokeWidth()).toBeCloseTo(4, 5);
         });
     });
 });
