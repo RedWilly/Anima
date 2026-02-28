@@ -114,23 +114,37 @@ describe('Shake Animation', () => {
 
     describe('Decay Parameter', () => {
         it('should reduce intensity over time with decay', () => {
-            const frame = new CameraFrame();
-            frame.pos(0, 0);
-            const shake = new Shake(frame, { intensity: 1.0, decay: 1, frequency: 10 });
-            shake.duration(1);
-
-            const sampleDisplacement = (progress: number): number => {
-                frame.pos(0, 0);
-                shake.interpolate(progress);
-                return Math.sqrt(frame.position.x ** 2 + frame.position.y ** 2);
+            const deterministicRandomValues = [0.1, 0.7];
+            let randomIndex = 0;
+            const originalRandom = Math.random;
+            Math.random = () => {
+                const value = deterministicRandomValues[randomIndex % deterministicRandomValues.length];
+                randomIndex += 1;
+                return value ?? 0;
             };
 
-            const earlySamples = [0.1, 0.2, 0.3].map(sampleDisplacement);
-            const lateSamples = [0.7, 0.8, 0.9].map(sampleDisplacement);
-            const earlyDisplacement = earlySamples.reduce((sum, value) => sum + value, 0) / earlySamples.length;
-            const lateDisplacement = lateSamples.reduce((sum, value) => sum + value, 0) / lateSamples.length;
+            try {
+                const frame = new CameraFrame();
+                frame.pos(0, 0);
+                // frequency=0 keeps the shake direction constant, so decay is strictly monotonic.
+                const shake = new Shake(frame, { intensity: 1.0, decay: 1, frequency: 0 });
+                shake.duration(1);
+                expect(randomIndex).toBeGreaterThanOrEqual(2);
 
-            expect(earlyDisplacement).toBeGreaterThan(lateDisplacement);
+                const samples = [0.1, 0.4, 0.8];
+                const magnitudes: number[] = [];
+
+                for (const progress of samples) {
+                    frame.pos(0, 0);
+                    shake.interpolate(progress);
+                    magnitudes.push(Math.sqrt(frame.position.x ** 2 + frame.position.y ** 2));
+                }
+
+                expect(magnitudes[0]).toBeGreaterThan(magnitudes[1]!);
+                expect(magnitudes[1]).toBeGreaterThan(magnitudes[2]!);
+            } finally {
+                Math.random = originalRandom;
+            }
         });
 
         it('should maintain intensity with high decay value (no decay)', () => {

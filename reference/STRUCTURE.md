@@ -6,9 +6,7 @@ It includes directories and files.
 ## src tree
 
 ```text
-Folder PATH listing for volume Windows-SSD
-Volume serial number is 6CD6-EDA4
-C:\USERS\CHARLES\DESKTOP\ANIMA\SRC
+C:ANIMA\SRC
 |   index.ts
 |   
 +---app

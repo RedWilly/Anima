@@ -1,33 +1,16 @@
 import { describe, expect, test } from 'bun:test';
 import { existsSync, readFileSync } from 'node:fs';
-import { globSync } from 'glob';
 import { dirname, join, relative, resolve, sep } from 'node:path';
+import {
+  ALLOWED_ANIMATION_IMPORTS,
+  collectArchitectureFiles,
+  CROSS_MODULE_EXCEPTIONS,
+  FACADE_BOUNDARY_MODULES,
+} from './boundaryConfig';
 
-const mobjectFiles = globSync('src/core/mobjects/**/*.ts', { posix: true });
-const mathFiles = globSync('src/core/math/**/*.ts', { posix: true });
-const facadeBoundaryModules = ['scene', 'timeline', 'renderer', 'cache', 'animations', 'errors', 'camera'];
-const facadeBoundaryFiles = [
-  ...globSync('src/core/scene/**/*.ts', { posix: true }),
-  ...globSync('src/core/timeline/**/*.ts', { posix: true }),
-  ...globSync('src/core/renderer/**/*.ts', { posix: true }),
-  ...globSync('src/core/cache/**/*.ts', { posix: true }),
-  ...globSync('src/core/animations/**/*.ts', { posix: true }),
-  ...globSync('src/core/errors/**/*.ts', { posix: true }),
-  ...globSync('src/core/camera/**/*.ts', { posix: true }),
-];
+const { mobjectFiles, mathFiles, facadeBoundaryFiles } = collectArchitectureFiles();
 const importRegex = /from\s+['"]([^'"]+)['"]/g;
 const coreRoot = resolve('src/core');
-
-const ALLOWED_ANIMATION_IMPORTS: RegExp[] = [
-  /^(\.\.\/)+animations\/mobjectApi$/,
-];
-const CROSS_MODULE_EXCEPTIONS: Record<string, string[]> = {
-  'src/core/animations/composition/Parallel.ts': ['../../mobjects/Mobject'],
-  'src/core/animations/composition/Sequence.ts': ['../../mobjects/Mobject'],
-  'src/core/camera/CameraFrame.ts': [
-    '../animations/mobjectApi',
-  ],
-};
 
 function isAnimationImport(specifier: string): boolean {
   return specifier.includes('/animations') || specifier.endsWith('/animations');
@@ -71,6 +54,12 @@ function isFacadeImportTarget(absTargetPath: string, targetModule: string): bool
 }
 
 describe('Architecture boundaries', () => {
+  test('architecture globs should match at least one file', () => {
+    expect(mobjectFiles.length).toBeGreaterThan(0);
+    expect(mathFiles.length).toBeGreaterThan(0);
+    expect(facadeBoundaryFiles.length).toBeGreaterThan(0);
+  });
+
   test('math internals import Vector2 through submodule facade', () => {
     const violations: string[] = [];
 
@@ -160,7 +149,7 @@ describe('Architecture boundaries', () => {
     for (const file of facadeBoundaryFiles) {
       const absSource = resolve(file);
       const sourceModule = getModuleName(absSource);
-      if (!facadeBoundaryModules.includes(sourceModule)) {
+      if (!FACADE_BOUNDARY_MODULES.includes(sourceModule as (typeof FACADE_BOUNDARY_MODULES)[number])) {
         continue;
       }
 
