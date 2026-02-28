@@ -5,6 +5,7 @@ export {
   createFadeIn,
   createFadeOut,
   createMoveTo,
+  createMorphTo,
   createRotate,
   createScale,
   createParallel,

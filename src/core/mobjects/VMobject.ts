@@ -4,6 +4,7 @@ import { BezierPath, type PathCommand, Color, Vector2 } from '../math';
 import {
     type Animation,
     createDraw,
+    createMorphTo,
     createUnwrite,
     createWrite,
 } from '../animations/mobjectApi';
@@ -220,6 +221,18 @@ export class VMobject extends Mobject {
      */
     draw(durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
         const animation = createDraw(this, durationSeconds);
+        this.getQueue().enqueueAnimation(animation);
+        return this;
+    }
+
+    /**
+     * Morphs this VMobject's shape into another VMobject's shape.
+     * @param target - The VMobject whose shape will be used as the morph target.
+     * @param durationSeconds - Animation duration in seconds.
+     * @returns this for chaining.
+     */
+    morphTo(target: VMobject, durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
+        const animation = createMorphTo(this, target, durationSeconds);
         this.getQueue().enqueueAnimation(animation);
         return this;
     }

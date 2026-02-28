@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'bun:test';
+import { MorphTo } from '../../../src/core/animations';
 import { Circle } from '../../../src/core/mobjects/geometry/Circle';
 import { Rectangle } from '../../../src/core/mobjects/geometry/Rectangle';
 import { Sequence } from '../../../src/core/animations/composition';
@@ -20,6 +21,13 @@ describe('VMobject Fluent API', () => {
         test('draw() returns same instance', () => {
             const c = new Circle();
             const result = c.draw();
+            expect(result).toBe(c);
+        });
+
+        test('morphTo() returns same instance', () => {
+            const c = new Circle();
+            const r = new Rectangle();
+            const result = c.morphTo(r);
             expect(result).toBe(c);
         });
 
@@ -47,6 +55,13 @@ describe('VMobject Fluent API', () => {
             const c = new Circle();
             c.draw(3);
             expect(c.getQueuedDuration()).toBe(3);
+        });
+
+        test('morphTo(target, 6) sets duration to 6 seconds', () => {
+            const c = new Circle();
+            const r = new Rectangle();
+            c.morphTo(r, 6);
+            expect(c.getQueuedDuration()).toBe(6);
         });
 
         // test('create(0.5) sets duration to 0.5 seconds', () => {
@@ -98,6 +113,15 @@ describe('VMobject Fluent API', () => {
             const c = new Circle();
             c.write(2);
             const anim = c.toAnimation();
+            expect(anim.getDuration()).toBe(2);
+        });
+
+        test('morphTo() produces MorphTo animation', () => {
+            const c = new Circle();
+            const r = new Rectangle();
+            c.morphTo(r, 2);
+            const anim = c.toAnimation();
+            expect(anim).toBeInstanceOf(MorphTo);
             expect(anim.getDuration()).toBe(2);
         });
 

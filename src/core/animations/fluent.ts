@@ -6,6 +6,7 @@ import { Unwrite } from './draw/Unwrite';
 import { Write } from './draw/Write';
 import { FadeIn } from './fade/FadeIn';
 import { FadeOut } from './fade/FadeOut';
+import { MorphTo } from './morph/MorphTo';
 import { MoveTo } from './transform/MoveTo';
 import { Rotate } from './transform/Rotate';
 import { Scale } from './transform/Scale';
@@ -46,6 +47,14 @@ export function createScale(
   durationSeconds?: number
 ): Scale<Mobject> {
   return withDuration(new Scale(target, factorX, factorY), durationSeconds);
+}
+
+export function createMorphTo(
+  source: VMobject,
+  target: VMobject,
+  durationSeconds?: number
+): MorphTo<VMobject> {
+  return withDuration(new MorphTo(source, target), durationSeconds);
 }
 
 export function createParallel(animations: Animation<Mobject>[]): Parallel {
