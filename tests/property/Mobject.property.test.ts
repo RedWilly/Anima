@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'bun:test';
 import * as fc from 'fast-check';
 import { Mobject } from '../../src/core/mobjects/Mobject';
-import { Matrix3x3 } from '../../src/core/math/matrix/Matrix3x3';
+import { Matrix4x4 } from '../../src/core/math/matrix/Matrix4x4';
 
 /** Arbitrary for position coordinates - limited range for Float32 precision */
 const arbCoord = fc.double({ min: -100, max: 100, noNaN: true });
@@ -15,7 +15,7 @@ describe('Mobject Property Tests', () => {
             const obj = new Mobject();
             obj.pos(x, y);
             const posBefore = obj.position;
-            obj.applyMatrix(Matrix3x3.identity());
+            obj.applyMatrix(Matrix4x4.identity());
             const posAfter = obj.position;
             return Math.abs(posAfter.x - posBefore.x) < 1e-6 &&
                 Math.abs(posAfter.y - posBefore.y) < 1e-6;
@@ -76,7 +76,7 @@ describe('Mobject Property Tests', () => {
 
     test('applyMatrix returns this for chaining', () => {
         const obj = new Mobject();
-        const result = obj.applyMatrix(Matrix3x3.identity());
+        const result = obj.applyMatrix(Matrix4x4.identity());
         expect(result).toBe(obj);
     });
 
@@ -94,7 +94,7 @@ describe('Mobject Property Tests', () => {
     test('scale transformation extracts correctly', () => {
         fc.assert(fc.property(arbScale, arbScale, (sx, sy) => {
             const obj = new Mobject();
-            obj.applyMatrix(Matrix3x3.scale(sx, sy));
+            obj.applyMatrix(Matrix4x4.scale(sx, sy, 1));
             return Math.abs(obj.scale.x - sx) < 1e-6 &&
                 Math.abs(obj.scale.y - sy) < 1e-6;
         }));
@@ -103,7 +103,7 @@ describe('Mobject Property Tests', () => {
     test('translation via applyMatrix updates position', () => {
         fc.assert(fc.property(arbCoord, arbCoord, (tx, ty) => {
             const obj = new Mobject();
-            obj.applyMatrix(Matrix3x3.translation(tx, ty));
+            obj.applyMatrix(Matrix4x4.translation(tx, ty, 0));
             return Math.abs(obj.position.x - tx) < 1e-3 &&
                 Math.abs(obj.position.y - ty) < 1e-3;
         }));

@@ -1,6 +1,6 @@
 import type { SKRSContext2D } from '@napi-rs/canvas';
 import { Mobject, VMobject } from '../mobjects';
-import { Matrix3x3, type PathCommand } from '../math';
+import { Matrix4x4, type PathCommand } from '../math';
 
 /**
  * Draws a Mobject to a canvas context.
@@ -9,7 +9,7 @@ import { Matrix3x3, type PathCommand } from '../math';
 export function drawMobject(
     ctx: SKRSContext2D,
     mobject: Mobject,
-    worldToScreen: Matrix3x3
+    worldToScreen: Matrix4x4
 ): void {
     // Skip invisible mobjects
     if (mobject.opacity <= 0) return;
@@ -34,7 +34,7 @@ export function drawMobject(
 function drawVMobject(
     ctx: SKRSContext2D,
     vmobject: VMobject,
-    worldToScreen: Matrix3x3
+    worldToScreen: Matrix4x4
 ): void {
     const paths = vmobject.paths;
     if (paths.length === 0) return;
@@ -73,33 +73,33 @@ function drawVMobject(
 function applyPathCommands(
     ctx: SKRSContext2D,
     commands: PathCommand[],
-    transform: Matrix3x3
+    transform: Matrix4x4
 ): void {
     for (const cmd of commands) {
         switch (cmd.type) {
             case 'Move': {
-                const p = transform.transformPoint(cmd.end);
+                const p = transform.transformPoint2D(cmd.end);
                 ctx.moveTo(p.x, p.y);
                 break;
             }
             case 'Line': {
-                const p = transform.transformPoint(cmd.end);
+                const p = transform.transformPoint2D(cmd.end);
                 ctx.lineTo(p.x, p.y);
                 break;
             }
             case 'Quadratic': {
                 if (cmd.control1) {
-                    const cp = transform.transformPoint(cmd.control1);
-                    const ep = transform.transformPoint(cmd.end);
+                    const cp = transform.transformPoint2D(cmd.control1);
+                    const ep = transform.transformPoint2D(cmd.end);
                     ctx.quadraticCurveTo(cp.x, cp.y, ep.x, ep.y);
                 }
                 break;
             }
             case 'Cubic': {
                 if (cmd.control1 && cmd.control2) {
-                    const cp1 = transform.transformPoint(cmd.control1);
-                    const cp2 = transform.transformPoint(cmd.control2);
-                    const ep = transform.transformPoint(cmd.end);
+                    const cp1 = transform.transformPoint2D(cmd.control1);
+                    const cp2 = transform.transformPoint2D(cmd.control2);
+                    const ep = transform.transformPoint2D(cmd.end);
                     ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, ep.x, ep.y);
                 }
                 break;

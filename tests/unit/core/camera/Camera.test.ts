@@ -141,7 +141,7 @@ describe('Camera', () => {
             const matrix = camera.getViewMatrix();
             // Default camera: no pan, zoom 1, no rotation
             // Transforming origin should give origin
-            const origin = matrix.transformPoint(new Vector2(0, 0));
+            const origin = matrix.transformPoint2D(new Vector2(0, 0));
             expect(origin.x).toBeCloseTo(0, 5);
             expect(origin.y).toBeCloseTo(0, 5);
         });
@@ -151,7 +151,7 @@ describe('Camera', () => {
             camera.panTo(new Vector2(10, 5));
             const matrix = camera.getViewMatrix();
             // Point at (10, 5) should transform to origin
-            const point = matrix.transformPoint(new Vector2(10, 5));
+            const point = matrix.transformPoint2D(new Vector2(10, 5));
             expect(point.x).toBeCloseTo(0, 5);
             expect(point.y).toBeCloseTo(0, 5);
         });
@@ -161,7 +161,7 @@ describe('Camera', () => {
             camera.zoomTo(2);
             const matrix = camera.getViewMatrix();
             // Point at (1, 1) should transform to (2, 2) with 2x zoom
-            const point = matrix.transformPoint(new Vector2(1, 1));
+            const point = matrix.transformPoint2D(new Vector2(1, 1));
             expect(point.x).toBeCloseTo(2, 5);
             expect(point.y).toBeCloseTo(2, 5);
         });
@@ -249,7 +249,7 @@ describe('Camera', () => {
             camera.frame.setRotation(Math.PI / 4);
 
             const matrix = camera.getViewMatrix();
-            const point = matrix.transformPoint(new Vector2(5, 3));
+            const point = matrix.transformPoint2D(new Vector2(5, 3));
             expect(point.x).toBeCloseTo(0, 5);
             expect(point.y).toBeCloseTo(0, 5);
         });

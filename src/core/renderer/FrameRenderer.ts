@@ -1,6 +1,6 @@
 import { createCanvas, type Canvas } from '@napi-rs/canvas';
 import type { Scene } from '../scene';
-import { Matrix3x3 } from '../math';
+import { Matrix4x4 } from '../math';
 import { drawMobject } from './drawMobject';
 import { MANIM_FRAME_HEIGHT } from '../camera';
 
@@ -32,7 +32,7 @@ export class FrameRenderer {
      * - Y-axis points down
      * - Width x Height pixels
      */
-    private calculateWorldToScreenMatrix(): Matrix3x3 {
+    private calculateWorldToScreenMatrix(): Matrix4x4 {
         const camera = this.scene.getCamera();
         const viewMatrix = camera.getViewMatrix();
 
@@ -46,10 +46,11 @@ export class FrameRenderer {
         // 3. Flip Y-axis (Manim Y-up to screen Y-down)
         // 4. Translate origin to screen center
 
-        const scaleMatrix = Matrix3x3.scale(scale, -scale); // Flip Y
-        const translateToCenter = Matrix3x3.translation(
+        const scaleMatrix = Matrix4x4.scale(scale, -scale, 1); // Flip Y
+        const translateToCenter = Matrix4x4.translation(
             this.width / 2,
-            this.height / 2
+            this.height / 2,
+            0
         );
 
         // Combined: translate * scale * view

@@ -1,4 +1,4 @@
-import { Matrix3x3, Vector2 } from '../math';
+import { Matrix4x4, Vector2 } from '../math';
 import { CameraFrame } from './CameraFrame';
 import { hashNumber, hashFloat32Array, hashCompose } from '../cache';
 import { MANIM_FRAME_HEIGHT, type CameraConfig, type ResolvedCameraConfig } from './types';
@@ -119,7 +119,7 @@ export class Camera {
 
     // ========== View Matrix ==========
 
-    getViewMatrix(): Matrix3x3 {
+    getViewMatrix(): Matrix4x4 {
         const framePos = this.frame.position;
         const frameScale = this.frame.scale;
         const frameRotation = this.frame.rotation;
@@ -127,9 +127,9 @@ export class Camera {
         const zoomX = 1 / frameScale.x;
         const zoomY = 1 / frameScale.y;
 
-        const translate = Matrix3x3.translation(-framePos.x, -framePos.y);
-        const rotate = Matrix3x3.rotation(-frameRotation);
-        const scale = Matrix3x3.scale(zoomX, zoomY);
+        const translate = Matrix4x4.translation(-framePos.x, -framePos.y, 0);
+        const rotate = Matrix4x4.rotationZ(-frameRotation);
+        const scale = Matrix4x4.scale(zoomX, zoomY, 1);
 
         return scale.multiply(rotate).multiply(translate);
     }
@@ -151,7 +151,7 @@ export class Camera {
      */
     worldToScreen(pos: Vector2): Vector2 {
         const viewMatrix = this.getViewMatrix();
-        const transformed = viewMatrix.transformPoint(pos);
+        const transformed = viewMatrix.transformPoint2D(pos);
         const screenX = (transformed.x + 1) * 0.5 * this.config.pixelWidth;
         const screenY = (1 - transformed.y) * 0.5 * this.config.pixelHeight;
         return new Vector2(screenX, screenY);
@@ -173,7 +173,7 @@ export class Camera {
         const ndcY = 1 - (pos.y / this.config.pixelHeight) * 2;
         const viewMatrix = this.getViewMatrix();
         const inverseView = viewMatrix.inverse();
-        return inverseView.transformPoint(new Vector2(ndcX, ndcY));
+        return inverseView.transformPoint2D(new Vector2(ndcX, ndcY));
     }
 
     /**

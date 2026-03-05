@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import { Mobject } from '../../../src/core/mobjects/Mobject';
 import { Vector2 } from '../../../src/core/math/Vector2/Vector2';
-import { Matrix3x3 } from '../../../src/core/math/matrix/Matrix3x3';
+import { Matrix4x4 } from '../../../src/core/math/matrix/Matrix4x4';
 
 describe('Mobject', () => {
   test('default state', () => {
@@ -32,7 +32,7 @@ describe('Mobject', () => {
     const obj = new Mobject();
     obj.pos(10, 20);
 
-    const translation = Matrix3x3.translation(5, 5);
+    const translation = Matrix4x4.translation(5, 5, 0);
     obj.applyMatrix(translation);
 
     // Pre-multiply: T(5,5) * T(10,20) = T(15,25)
@@ -43,7 +43,7 @@ describe('Mobject', () => {
   test('matrix transformation - rotation', () => {
     const obj = new Mobject();
     // Rotate by 90 degrees
-    const rotation = Matrix3x3.rotation(Math.PI / 2);
+    const rotation = Matrix4x4.rotationZ(Math.PI / 2);
     obj.applyMatrix(rotation);
 
     expect(obj.rotation).toBeCloseTo(Math.PI / 2);
@@ -51,7 +51,7 @@ describe('Mobject', () => {
 
   test('matrix transformation - scale', () => {
     const obj = new Mobject();
-    const scale = Matrix3x3.scale(2, 3);
+    const scale = Matrix4x4.scale(2, 3, 1);
     obj.applyMatrix(scale);
 
     expect(obj.scale.x).toBe(2);
@@ -64,7 +64,7 @@ describe('Mobject', () => {
 
     // Rotate 90 degrees around origin (0,0)
     // Since we use pre-multiply, this rotates the position vector
-    const rotation = Matrix3x3.rotation(Math.PI / 2);
+    const rotation = Matrix4x4.rotationZ(Math.PI / 2);
     obj.applyMatrix(rotation);
 
     // (10, 0) rotated 90 deg is (0, 10)

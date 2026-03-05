@@ -147,8 +147,4 @@ export class VGroup extends VMobject {
     override computeHash(): number {
         return super.computeHash();
     }
-
-    protected override usesGeometryTransforms(): boolean {
-        return false;
-    }
 }

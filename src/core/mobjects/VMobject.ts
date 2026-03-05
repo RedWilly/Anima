@@ -1,6 +1,6 @@
 import { Mobject } from './Mobject';
 import { hashNumber, hashString, hashCompose } from '../cache';
-import { BezierPath, type PathCommand, Color, Matrix3x3, Vector2 } from '../math';
+import { BezierPath, type PathCommand, Color, Matrix4x4, Vector2, Vector3 } from '../math';
 import {
     type Animation,
     createDraw,
@@ -190,18 +190,18 @@ export class VMobject extends Mobject {
         return { minX, maxX, minY, maxY };
     }
 
-    protected override applyMatrixToOwnGeometry(m: Matrix3x3): void {
+    protected override applyMatrixToOwnGeometry(m: Matrix4x4): void {
         this.pathList = this.pathList.map((path) => {
             const transformedCommands = path.getCommands().map((cmd) => {
                 const next: PathCommand = {
                     ...cmd,
-                    end: m.transformPoint(cmd.end),
+                    end: m.transformPoint(Vector3.fromVector2(cmd.end, 0)).toVector2(),
                 };
                 if (cmd.control1) {
-                    next.control1 = m.transformPoint(cmd.control1);
+                    next.control1 = m.transformPoint(Vector3.fromVector2(cmd.control1, 0)).toVector2();
                 }
                 if (cmd.control2) {
-                    next.control2 = m.transformPoint(cmd.control2);
+                    next.control2 = m.transformPoint(Vector3.fromVector2(cmd.control2, 0)).toVector2();
                 }
                 return next;
             });
@@ -305,12 +305,12 @@ export class VMobject extends Mobject {
     }
 
     private syncPointCloudFromPaths(): void {
-        const points: Vector2[] = [];
+        const points: Vector3[] = [];
         for (const path of this.pathList) {
             for (const cmd of path.getCommands()) {
-                if (cmd.control1) points.push(cmd.control1);
-                if (cmd.control2) points.push(cmd.control2);
-                points.push(cmd.end);
+                if (cmd.control1) points.push(Vector3.fromVector2(cmd.control1, 0));
+                if (cmd.control2) points.push(Vector3.fromVector2(cmd.control2, 0));
+                points.push(Vector3.fromVector2(cmd.end, 0));
             }
         }
         this.setPointCloud(points);
