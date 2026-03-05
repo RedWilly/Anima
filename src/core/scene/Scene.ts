@@ -2,6 +2,7 @@ import { Color } from '../math';
 import { Timeline } from '../timeline';
 import { Camera, CameraFrame } from '../camera';
 import { Mobject } from '../mobjects';
+import { UpdaterEngine } from '../updaters';
 import {
     type Animation,
     getAnimationChildren,
@@ -22,6 +23,7 @@ export class Scene {
     private readonly mobjects: Set<Mobject> = new Set();
     private readonly timeline: Timeline;
     private readonly _camera: Camera;
+    private readonly updaterEngine: UpdaterEngine;
     private readonly segmentList: Segment[] = [];
     private playheadTime = 0;
 
@@ -37,6 +39,7 @@ export class Scene {
             pixelWidth: this.config.width,
             pixelHeight: this.config.height,
         });
+        this.updaterEngine = new UpdaterEngine();
     }
 
     // ========== Camera Shortcuts ==========
@@ -210,6 +213,39 @@ export class Scene {
      */
     getTotalDuration(): number {
         return this.timeline.getTotalDuration();
+    }
+
+    /**
+     * Evaluates scene state at an absolute time.
+     * Execution order is deterministic:
+     * 1) timeline animations
+     * 2) mobject updaters
+     */
+    evaluateFrame(time: number): void {
+        const clampedTime = Math.max(0, time);
+        this.timeline.seek(clampedTime);
+
+        const roots: Mobject[] = [...this.mobjects];
+        roots.push(this._camera.frame);
+        this.updaterEngine.run(this, roots, clampedTime);
+    }
+
+    /**
+     * Returns true if any scene mobject (or camera frame) has active updaters.
+     * Used by renderer to disable unsafe segment caching.
+     */
+    hasActiveUpdaters(): boolean {
+        if (this._camera.frame.hasActiveUpdaters(true)) {
+            return true;
+        }
+
+        for (const mobject of this.mobjects) {
+            if (mobject.hasActiveUpdaters(true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // ========== ProAPI Access ==========

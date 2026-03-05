@@ -64,9 +64,8 @@ export class FrameRenderer {
         const canvas = createCanvas(this.width, this.height);
         const ctx = canvas.getContext('2d');
 
-        // Seek timeline to the specified time
-        const timeline = this.scene.getTimeline();
-        timeline.seek(time);
+        // Evaluate scene state at the specified time (animations + updaters).
+        this.scene.evaluateFrame(time);
 
         // Draw background
         const bgColor = this.scene.getBackgroundColor();

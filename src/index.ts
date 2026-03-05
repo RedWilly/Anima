@@ -60,6 +60,12 @@ export type {
 } from './core/animations';
 
 export { Color, Vector } from './core/math';
+export type {
+    UpdaterContext,
+    UpdaterFunction,
+    UpdaterHandle,
+    UpdaterOptions,
+} from './core/updaters';
 
 export { Timeline } from './core/timeline';
 export type { ScheduledAnimation, TimelineConfig } from './core/timeline';

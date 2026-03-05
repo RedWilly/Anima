@@ -48,7 +48,10 @@ export class Renderer {
         const isVideoFormat = resolved.format === 'mp4'
             || resolved.format === 'webp'
             || resolved.format === 'gif';
-        const useCache = resolved.cache && isVideoFormat && segments.length > 0;
+        const useCache = resolved.cache
+            && isVideoFormat
+            && segments.length > 0
+            && !scene.hasActiveUpdaters();
 
         if (useCache) {
             await this.renderSegmented(

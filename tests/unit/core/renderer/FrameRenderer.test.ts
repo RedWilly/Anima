@@ -52,6 +52,22 @@ describe('FrameRenderer', () => {
             expect(canvas1).toBeDefined();
         });
 
+        test('evaluates updater-driven state at render time', () => {
+            const scene = new Scene({ width: 100, height: 100 });
+            const mobject = new Circle(1);
+            scene.add(mobject);
+            mobject.addUpdater((mob, ctx) => {
+                mob.pos(ctx.time, 0);
+            });
+
+            const renderer = new FrameRenderer(scene, 100, 100);
+            renderer.renderFrame(0.25);
+            expect(mobject.position.x).toBeCloseTo(0.25, 6);
+
+            renderer.renderFrame(1.5);
+            expect(mobject.position.x).toBeCloseTo(1.5, 6);
+        });
+
         test('renders empty scene', () => {
             const scene = new Scene({ width: 100, height: 100 });
             const renderer = new FrameRenderer(scene, 100, 100);

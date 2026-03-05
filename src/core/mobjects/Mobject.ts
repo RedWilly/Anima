@@ -1,5 +1,11 @@
 import { hashFloat32Array, hashNumber, hashCompose } from '../cache';
 import { Matrix4x4, Vector } from '../math';
+import type {
+  MobjectUpdaterRecord,
+  UpdaterFunction,
+  UpdaterHandle,
+  UpdaterOptions,
+} from '../updaters';
 import {
   Animation,
   type EasingFunction,
@@ -165,6 +171,10 @@ export class Mobject {
   private savedStates: MobjectState[] = [];
   private logicalRotation = 0;
   private logicalScale = new Vector(1, 1);
+  private updaters: MobjectUpdaterRecord[] = [];
+  private nextUpdaterId = 1;
+  private nextUpdaterOrder = 0;
+  private updatersEnabled = true;
 
   parent: Mobject | null = null;
 
@@ -425,6 +435,120 @@ export class Mobject {
 
   getSubmobjects(): Mobject[] {
     return [...this.submobjects];
+  }
+
+  // ========== Updaters ==========
+
+  addUpdater(fn: UpdaterFunction<this>, options: UpdaterOptions = {}): UpdaterHandle {
+    if (typeof fn !== 'function') {
+      throw new Error('addUpdater() requires a function');
+    }
+
+    const priority = options.priority ?? 0;
+    if (!Number.isFinite(priority)) {
+      throw new Error('Updater priority must be a finite number');
+    }
+
+    const record: MobjectUpdaterRecord = {
+      id: this.nextUpdaterId++,
+      order: this.nextUpdaterOrder++,
+      name: options.name,
+      fn: fn as UpdaterFunction<Mobject>,
+      priority,
+      enabled: options.enabled ?? true,
+    };
+
+    this.updaters.push(record);
+    return { id: record.id };
+  }
+
+  removeUpdater(handleOrFn: UpdaterHandle | UpdaterFunction<this>): this {
+    if (typeof handleOrFn === 'function') {
+      const fn = handleOrFn as UpdaterFunction<Mobject>;
+      this.updaters = this.updaters.filter((u) => u.fn !== fn);
+      return this;
+    }
+
+    this.updaters = this.updaters.filter((u) => u.id !== handleOrFn.id);
+    return this;
+  }
+
+  clearUpdaters(): this {
+    this.updaters = [];
+    return this;
+  }
+
+  suspendUpdaters(): this {
+    this.updatersEnabled = false;
+    return this;
+  }
+
+  resumeUpdaters(): this {
+    this.updatersEnabled = true;
+    return this;
+  }
+
+  enableUpdater(handleOrFn: UpdaterHandle | UpdaterFunction<this>): this {
+    this.setUpdaterEnabled(handleOrFn, true);
+    return this;
+  }
+
+  disableUpdater(handleOrFn: UpdaterHandle | UpdaterFunction<this>): this {
+    this.setUpdaterEnabled(handleOrFn, false);
+    return this;
+  }
+
+  hasActiveUpdaters(recursive = false): boolean {
+    if (this.updatersEnabled && this.updaters.some((u) => u.enabled)) {
+      return true;
+    }
+
+    if (!recursive) {
+      return false;
+    }
+
+    return this.submobjects.some((child) => child.hasActiveUpdaters(true));
+  }
+
+  /**
+   * Internal API used by UpdaterEngine.
+   * Returns a deterministic snapshot for current-frame execution.
+   */
+  getUpdaterRecordsSnapshot(): MobjectUpdaterRecord[] {
+    if (!this.updatersEnabled) {
+      return [];
+    }
+
+    const active = this.updaters.filter((u) => u.enabled);
+    active.sort((a, b) => {
+      if (a.priority !== b.priority) {
+        return b.priority - a.priority;
+      }
+      return a.order - b.order;
+    });
+
+    return active.map((u) => ({ ...u }));
+  }
+
+  private setUpdaterEnabled(
+    handleOrFn: UpdaterHandle | UpdaterFunction<this>,
+    enabled: boolean,
+  ): void {
+    if (typeof handleOrFn === 'function') {
+      const fn = handleOrFn as UpdaterFunction<Mobject>;
+      for (const updater of this.updaters) {
+        if (updater.fn === fn) {
+          updater.enabled = enabled;
+        }
+      }
+      return;
+    }
+
+    for (const updater of this.updaters) {
+      if (updater.id === handleOrFn.id) {
+        updater.enabled = enabled;
+      }
+    }
   }
 
   protected setPointCloud(points: Array<Vector>): void {
