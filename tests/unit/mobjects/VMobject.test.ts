@@ -2,7 +2,7 @@ import { describe, test, expect } from 'bun:test';
 import { VMobject } from '../../../src/core/mobjects/VMobject';
 import { BezierPath } from '../../../src/core/math/bezier/BezierPath';
 import { Color } from '../../../src/core/math/color/Color';
-import { Vector2 } from '../../../src/core/math/Vector2/Vector2';
+import { Vector } from '../../../src/core/math/vector/Vector';
 
 describe('VMobject', () => {
     test('initialization - nothing renders by default', () => {
@@ -20,8 +20,8 @@ describe('VMobject', () => {
     test('addPath and paths access', () => {
         const vmobject = new VMobject();
         const path = new BezierPath();
-        path.moveTo(new Vector2(0, 0));
-        path.lineTo(new Vector2(1, 1));
+        path.moveTo(new Vector(0, 0));
+        path.lineTo(new Vector(1, 1));
 
         vmobject.addPath(path);
         expect(vmobject.paths).toHaveLength(1);
@@ -63,9 +63,9 @@ describe('VMobject', () => {
     test('getPoints returns PathCommand[] from path', () => {
         const vmobject = new VMobject();
         const path = new BezierPath();
-        const p1 = new Vector2(0, 0);
-        const p2 = new Vector2(10, 10);
-        const p3 = new Vector2(20, 0);
+        const p1 = new Vector(0, 0);
+        const p2 = new Vector(10, 10);
+        const p3 = new Vector(20, 0);
 
         path.moveTo(p1);
         path.quadraticTo(p2, p3);
@@ -85,10 +85,10 @@ describe('VMobject', () => {
     test('setPoints/getPoints round-trip is lossless', () => {
         const vmobject = new VMobject();
         const path = new BezierPath();
-        path.moveTo(new Vector2(0, 0));
-        path.lineTo(new Vector2(10, 0));
-        path.quadraticTo(new Vector2(15, 5), new Vector2(20, 10));
-        path.cubicTo(new Vector2(25, 15), new Vector2(30, 15), new Vector2(35, 10));
+        path.moveTo(new Vector(0, 0));
+        path.lineTo(new Vector(10, 0));
+        path.quadraticTo(new Vector(15, 5), new Vector(20, 10));
+        path.cubicTo(new Vector(25, 15), new Vector(30, 15), new Vector(35, 10));
         path.closePath();
 
         vmobject.addPath(path);
@@ -115,3 +115,4 @@ describe('VMobject', () => {
         expect(vmobject.paths).toHaveLength(0);
     });
 });
+

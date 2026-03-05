@@ -1,6 +1,6 @@
 import { Mobject } from './Mobject';
 import { hashNumber, hashString, hashCompose } from '../cache';
-import { BezierPath, type PathCommand, Color, Matrix4x4, Vector2, Vector3 } from '../math';
+import { BezierPath, type PathCommand, Color, Matrix4x4, Vector } from '../math';
 import {
     type Animation,
     createDraw,
@@ -161,8 +161,8 @@ export class VMobject extends Mobject {
         return this;
     }
 
-    private getPointsAsVectors(): Vector2[] {
-        const points: Vector2[] = [];
+    private getPointsAsVectors(): Vector[] {
+        const points: Vector[] = [];
         for (const cmd of this.getPoints()) {
             if (cmd.control1) points.push(cmd.control1);
             if (cmd.control2) points.push(cmd.control2);
@@ -195,13 +195,13 @@ export class VMobject extends Mobject {
             const transformedCommands = path.getCommands().map((cmd) => {
                 const next: PathCommand = {
                     ...cmd,
-                    end: m.transformPoint(Vector3.fromVector2(cmd.end, 0)).toVector2(),
+                    end: m.transformPoint(Vector.fromPlanar(cmd.end, 0)).toPlanar(),
                 };
                 if (cmd.control1) {
-                    next.control1 = m.transformPoint(Vector3.fromVector2(cmd.control1, 0)).toVector2();
+                    next.control1 = m.transformPoint(Vector.fromPlanar(cmd.control1, 0)).toPlanar();
                 }
                 if (cmd.control2) {
-                    next.control2 = m.transformPoint(Vector3.fromVector2(cmd.control2, 0)).toVector2();
+                    next.control2 = m.transformPoint(Vector.fromPlanar(cmd.control2, 0)).toPlanar();
                 }
                 return next;
             });
@@ -305,14 +305,15 @@ export class VMobject extends Mobject {
     }
 
     private syncPointCloudFromPaths(): void {
-        const points: Vector3[] = [];
+        const points: Vector[] = [];
         for (const path of this.pathList) {
             for (const cmd of path.getCommands()) {
-                if (cmd.control1) points.push(Vector3.fromVector2(cmd.control1, 0));
-                if (cmd.control2) points.push(Vector3.fromVector2(cmd.control2, 0));
-                points.push(Vector3.fromVector2(cmd.end, 0));
+                if (cmd.control1) points.push(Vector.fromPlanar(cmd.control1, 0));
+                if (cmd.control2) points.push(Vector.fromPlanar(cmd.control2, 0));
+                points.push(Vector.fromPlanar(cmd.end, 0));
             }
         }
         this.setPointCloud(points);
     }
 }
+

@@ -1,7 +1,7 @@
-import { Vector2 } from '../Vector2';
+import { Vector } from '../vector';
 
 /** Evaluates a point on a quadratic Bezier curve at parameter t (0-1). */
-export function evaluateQuadratic(p0: Vector2, p1: Vector2, p2: Vector2, t: number): Vector2 {
+export function evaluateQuadratic(p0: Vector, p1: Vector, p2: Vector, t: number): Vector {
     const oneMinusT = 1 - t;
     // (1-t)^2 * p0 + 2(1-t)t * p1 + t^2 * p2
     return p0.multiply(oneMinusT * oneMinusT)
@@ -11,12 +11,12 @@ export function evaluateQuadratic(p0: Vector2, p1: Vector2, p2: Vector2, t: numb
 
 /** Evaluates a point on a cubic Bezier curve at parameter t (0-1). */
 export function evaluateCubic(
-    p0: Vector2,
-    p1: Vector2,
-    p2: Vector2,
-    p3: Vector2,
+    p0: Vector,
+    p1: Vector,
+    p2: Vector,
+    p3: Vector,
     t: number
-): Vector2 {
+): Vector {
     const oneMinusT = 1 - t;
     const oneMinusT2 = oneMinusT * oneMinusT;
     const oneMinusT3 = oneMinusT2 * oneMinusT;
@@ -32,11 +32,11 @@ export function evaluateCubic(
 
 /** Evaluates the derivative of a quadratic Bezier curve at parameter t (0-1). */
 export function evaluateQuadraticDerivative(
-    p0: Vector2,
-    p1: Vector2,
-    p2: Vector2,
+    p0: Vector,
+    p1: Vector,
+    p2: Vector,
     t: number
-): Vector2 {
+): Vector {
     // 2(1-t)(p1-p0) + 2t(p2-p1)
     const oneMinusT = 1 - t;
     return p1.subtract(p0).multiply(2 * oneMinusT)
@@ -45,15 +45,16 @@ export function evaluateQuadraticDerivative(
 
 /** Evaluates the derivative of a cubic Bezier curve at parameter t (0-1). */
 export function evaluateCubicDerivative(
-    p0: Vector2,
-    p1: Vector2,
-    p2: Vector2,
-    p3: Vector2,
+    p0: Vector,
+    p1: Vector,
+    p2: Vector,
+    p3: Vector,
     t: number
-): Vector2 {
+): Vector {
     // 3(1-t)^2(p1-p0) + 6(1-t)t(p2-p1) + 3t^2(p3-p2)
     const oneMinusT = 1 - t;
     return p1.subtract(p0).multiply(3 * oneMinusT * oneMinusT)
         .add(p2.subtract(p1).multiply(6 * oneMinusT * t))
         .add(p3.subtract(p2).multiply(3 * t * t));
 }
+

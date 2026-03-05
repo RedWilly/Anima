@@ -1,7 +1,6 @@
 # Source Code Structure
 
 This file is a physical map of the current src layout.
-Regenerate when files are added, moved, or removed.
 
 ## src files
 
@@ -23,16 +22,19 @@ src
 │  │  │  ├─ Follow.ts
 │  │  │  ├─ index.ts
 │  │  │  └─ Shake.ts
+│  │  │
 │  │  ├─ composition
 │  │  │  ├─ index.ts
 │  │  │  ├─ Parallel.ts
 │  │  │  └─ Sequence.ts
+│  │  │
 │  │  ├─ draw
 │  │  │  ├─ Draw.ts
 │  │  │  ├─ index.ts
 │  │  │  ├─ partialPath.ts
 │  │  │  ├─ Unwrite.ts
 │  │  │  └─ Write.ts
+│  │  │
 │  │  ├─ easing
 │  │  │  ├─ bounce.ts
 │  │  │  ├─ index.ts
@@ -40,23 +42,28 @@ src
 │  │  │  ├─ registry.ts
 │  │  │  ├─ standard.ts
 │  │  │  └─ types.ts
+│  │  │
 │  │  ├─ fade
 │  │  │  ├─ FadeIn.ts
 │  │  │  ├─ FadeOut.ts
 │  │  │  └─ index.ts
+│  │  │
 │  │  ├─ keyframes
 │  │  │  ├─ index.ts
 │  │  │  ├─ KeyframeAnimation.ts
 │  │  │  ├─ KeyframeTrack.ts
 │  │  │  └─ types.ts
+│  │  │
 │  │  ├─ morph
 │  │  │  ├─ index.ts
 │  │  │  └─ MorphTo.ts
+│  │  │
 │  │  ├─ transform
 │  │  │  ├─ index.ts
 │  │  │  ├─ MoveTo.ts
 │  │  │  ├─ Rotate.ts
 │  │  │  └─ Scale.ts
+│  │  │
 │  │  ├─ Animation.ts
 │  │  ├─ fluent.ts
 │  │  ├─ index.ts
@@ -94,19 +101,20 @@ src
 │  │  │  ├─ sampling.ts
 │  │  │  ├─ split.ts
 │  │  │  └─ types.ts
+│  │  │
 │  │  ├─ color
 │  │  │  ├─ Color.ts
 │  │  │  ├─ conversions.ts
 │  │  │  └─ index.ts
+│  │  │
 │  │  ├─ matrix
 │  │  │  ├─ index.ts
 │  │  │  └─ Matrix4x4.ts
-│  │  ├─ Vector2
+│  │  │
+│  │  ├─ vector
 │  │  │  ├─ index.ts
-│  │  │  └─ Vector2.ts
-│  │  ├─ Vector3
-│  │  │  ├─ index.ts
-│  │  │  └─ Vector3.ts
+│  │  │  └─ Vector.ts
+│  │  │
 │  │  └─ index.ts
 │  │
 │  ├─ mobjects
@@ -118,6 +126,7 @@ src
 │  │  │  ├─ Line.ts
 │  │  │  ├─ Polygon.ts
 │  │  │  └─ Rectangle.ts
+│  │  │
 │  │  ├─ graph
 │  │  │  ├─ layouts
 │  │  │  │  ├─ circular.ts
@@ -129,14 +138,17 @@ src
 │  │  │  ├─ GraphNode.ts
 │  │  │  ├─ index.ts
 │  │  │  └─ types.ts
+│  │  │
 │  │  ├─ text
 │  │  │  ├─ Glyph.ts
 │  │  │  ├─ index.ts
 │  │  │  └─ Text.ts
+│  │  │
 │  │  ├─ VGroup
 │  │  │  ├─ index.ts
 │  │  │  ├─ layout.ts
 │  │  │  └─ VGroup.ts
+│  │  │
 │  │  ├─ index.ts
 │  │  ├─ Mobject.ts
 │  │  └─ VMobject.ts
@@ -148,6 +160,7 @@ src
 │  │  │  ├─ png.ts
 │  │  │  ├─ sprite.ts
 │  │  │  └─ video.ts
+│  │  │
 │  │  ├─ drawMobject.ts
 │  │  ├─ FrameRenderer.ts
 │  │  ├─ index.ts
@@ -160,10 +173,10 @@ src
 │  │  ├─ Scene.ts
 │  │  └─ types.ts
 │  │
-│  └─ timeline
-│     ├─ index.ts
-│     ├─ Timeline.ts
-│     └─ types.ts
+│  ├─ timeline
+│  │  ├─ index.ts
+│  │  ├─ Timeline.ts
+│  │  └─ types.ts
 │
 └─ index.ts
 ```

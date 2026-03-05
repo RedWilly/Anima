@@ -1,5 +1,5 @@
 import { VMobject } from '../VMobject';
-import { BezierPath, Vector2 } from '../../math';
+import { BezierPath, Vector } from '../../math';
 
 export class Arc extends VMobject {
     constructor(
@@ -29,14 +29,14 @@ export class Arc extends VMobject {
         // Start point
         const startX = this.radius * Math.cos(currentAngle);
         const startY = this.radius * Math.sin(currentAngle);
-        path.moveTo(new Vector2(startX, startY));
+        path.moveTo(new Vector(startX, startY));
 
         for (let i = 0; i < numSegments; i++) {
             const alpha = currentAngle;
             const nextAngle = currentAngle + stepAngle;
 
             // P3 is next point
-            const p3 = new Vector2(
+            const p3 = new Vector(
                 this.radius * Math.cos(nextAngle),
                 this.radius * Math.sin(nextAngle)
             );
@@ -44,16 +44,16 @@ export class Arc extends VMobject {
             // Control points
             // P1 = P0 + tangent(alpha) * R * k
             // Tangent vector rotated 90 deg from radius: (-sin, cos)
-            const cp1 = new Vector2(
+            const cp1 = new Vector(
                 this.radius * Math.cos(alpha),
                 this.radius * Math.sin(alpha)
             ).add(
-                new Vector2(-Math.sin(alpha), Math.cos(alpha)).multiply(this.radius * k)
+                new Vector(-Math.sin(alpha), Math.cos(alpha)).multiply(this.radius * k)
             );
 
             // P2 = P3 - tangent(nextAngle) * R * k
             const cp2 = p3.subtract(
-                new Vector2(-Math.sin(nextAngle), Math.cos(nextAngle)).multiply(this.radius * k)
+                new Vector(-Math.sin(nextAngle), Math.cos(nextAngle)).multiply(this.radius * k)
             );
 
             path.cubicTo(cp1, cp2, p3);
@@ -63,3 +63,4 @@ export class Arc extends VMobject {
         this.paths = [path];
     }
 }
+

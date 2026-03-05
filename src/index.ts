@@ -59,7 +59,7 @@ export type {
     Keyframe
 } from './core/animations';
 
-export { Color, Vector2 } from './core/math';
+export { Color, Vector } from './core/math';
 
 export { Timeline } from './core/timeline';
 export type { ScheduledAnimation, TimelineConfig } from './core/timeline';
@@ -73,4 +73,5 @@ export type { Segment, Hashable } from './core/cache';
 
 // Easing Functions - Essential for animation control
 export * from './core/animations/easing';
+
 

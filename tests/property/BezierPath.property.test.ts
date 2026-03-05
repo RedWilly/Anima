@@ -1,16 +1,16 @@
 import { describe, test, expect } from 'bun:test';
 import * as fc from 'fast-check';
 import { BezierPath } from '../../src/core/math/bezier/BezierPath';
-import { Vector2 } from '../../src/core/math/Vector2/Vector2';
+import { Vector } from '../../src/core/math/vector/Vector';
 
-/** Arbitrary for Vector2 */
+/** Arbitrary for Vector */
 const arbVector2 = fc.tuple(
     fc.double({ min: -100, max: 100, noNaN: true }),
     fc.double({ min: -100, max: 100, noNaN: true })
-).map(([x, y]) => new Vector2(x, y));
+).map(([x, y]) => new Vector(x, y));
 
 /** Create a simple line path from start to end */
-function createLinePath(start: Vector2, end: Vector2): BezierPath {
+function createLinePath(start: Vector, end: Vector): BezierPath {
     const path = new BezierPath();
     path.moveTo(start);
     path.lineTo(end);
@@ -18,7 +18,7 @@ function createLinePath(start: Vector2, end: Vector2): BezierPath {
 }
 
 /** Create a simple triangle path */
-function createTrianglePath(p1: Vector2, p2: Vector2, p3: Vector2): BezierPath {
+function createTrianglePath(p1: Vector, p2: Vector, p3: Vector): BezierPath {
     const path = new BezierPath();
     path.moveTo(p1);
     path.lineTo(p2);
@@ -68,7 +68,7 @@ describe('BezierPath Property Tests', () => {
                 const p1 = createLinePath(s1, e1);
                 const p2 = new BezierPath();
                 p2.moveTo(s2);
-                p2.lineTo(new Vector2((s2.x + e2.x) / 2, (s2.y + e2.y) / 2));
+                p2.lineTo(new Vector((s2.x + e2.x) / 2, (s2.y + e2.y) / 2));
                 p2.lineTo(e2);
 
                 const [m1, m2] = BezierPath.matchPoints(p1, p2);
@@ -98,7 +98,7 @@ describe('BezierPath Property Tests', () => {
         fc.assert(fc.property(arbVector2, arbVector2, (start, end) => {
             const original = createLinePath(start, end);
             const cloned = original.clone();
-            original.lineTo(new Vector2(999, 999));
+            original.lineTo(new Vector(999, 999));
             return cloned.getPointCount() === 2 &&
                 original.getPointCount() === 3;
         }));
@@ -129,3 +129,4 @@ describe('BezierPath Property Tests', () => {
         }));
     });
 });
+

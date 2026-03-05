@@ -1,5 +1,5 @@
 import { VGroup } from '../VGroup';
-import { Vector2 } from '../../math';
+import { Vector } from '../../math';
 import { GraphNode } from './GraphNode';
 import { GraphEdge } from './GraphEdge';
 import { circularLayout, treeLayout, forceDirectedLayout } from './layouts';
@@ -125,7 +125,7 @@ export class Graph extends VGroup {
     /** Applies a layout algorithm to reposition all nodes. */
     layout(type: LayoutType, config: LayoutConfig = {}): this {
         const nodeArray = this.getNodes();
-        let positions: Map<string, Vector2>;
+        let positions: Map<string, Vector>;
 
         switch (type) {
             case 'circular':
@@ -160,3 +160,4 @@ export class Graph extends VGroup {
         return this;
     }
 }
+

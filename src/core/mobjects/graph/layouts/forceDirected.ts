@@ -1,4 +1,4 @@
-import { Vector2 } from '../../../math';
+import { Vector } from '../../../math';
 import type { GraphNode } from '../GraphNode';
 import type { GraphEdge } from '../GraphEdge';
 import type { LayoutConfig } from '../types';
@@ -11,8 +11,8 @@ const DEFAULT_DAMPING = 0.85;
 const DEFAULT_MIN_DISTANCE = 0.01;
 
 interface NodeState {
-    position: Vector2;
-    velocity: Vector2;
+    position: Vector;
+    velocity: Vector;
 }
 
 /**
@@ -23,8 +23,8 @@ export function forceDirectedLayout(
     nodes: GraphNode[],
     edges: GraphEdge[],
     config: LayoutConfig = {}
-): Map<string, Vector2> {
-    const positions = new Map<string, Vector2>();
+): Map<string, Vector> {
+    const positions = new Map<string, Vector>();
     const iterations = config.iterations ?? DEFAULT_ITERATIONS;
     const springLength = config.springLength ?? DEFAULT_SPRING_LENGTH;
     const repulsion = config.repulsion ?? DEFAULT_REPULSION;
@@ -41,13 +41,13 @@ export function forceDirectedLayout(
         if (node) {
             // Start with a circular distribution to avoid overlap
             const angle = (2 * Math.PI * i) / nodes.length;
-            const initialPos = new Vector2(
+            const initialPos = new Vector(
                 Math.cos(angle) * 2,
                 Math.sin(angle) * 2
             );
             states.set(node.id, {
                 position: initialPos,
-                velocity: Vector2.ZERO
+                velocity: Vector.ZERO
             });
         }
     }
@@ -61,11 +61,11 @@ export function forceDirectedLayout(
 
     // Run simulation
     for (let iter = 0; iter < iterations; iter++) {
-        const forces = new Map<string, Vector2>();
+        const forces = new Map<string, Vector>();
 
         // Initialize forces
         for (const node of nodes) {
-            forces.set(node.id, Vector2.ZERO);
+            forces.set(node.id, Vector.ZERO);
         }
 
         // Calculate repulsion forces between all node pairs
@@ -83,8 +83,8 @@ export function forceDirectedLayout(
                 const distance = Math.max(delta.length(), minDistance);
                 const force = delta.normalize().multiply(repulsion / (distance * distance));
 
-                const forceA = forces.get(nodeA.id) ?? Vector2.ZERO;
-                const forceB = forces.get(nodeB.id) ?? Vector2.ZERO;
+                const forceA = forces.get(nodeA.id) ?? Vector.ZERO;
+                const forceB = forces.get(nodeB.id) ?? Vector.ZERO;
                 forces.set(nodeA.id, forceA.add(force));
                 forces.set(nodeB.id, forceB.subtract(force));
             }
@@ -101,8 +101,8 @@ export function forceDirectedLayout(
             const displacement = distance - springLength;
             const force = delta.normalize().multiply(displacement * attraction);
 
-            const forceA = forces.get(edge.source) ?? Vector2.ZERO;
-            const forceB = forces.get(edge.target) ?? Vector2.ZERO;
+            const forceA = forces.get(edge.source) ?? Vector.ZERO;
+            const forceB = forces.get(edge.target) ?? Vector.ZERO;
             forces.set(edge.source, forceA.add(force));
             forces.set(edge.target, forceB.subtract(force));
         }
@@ -128,3 +128,4 @@ export function forceDirectedLayout(
 
     return positions;
 }
+

@@ -1,45 +1,48 @@
 import { TransformativeAnimation } from '../LifecycleAnimations';
 import type { Mobject } from '../../mobjects';
-import { Vector2 } from '../../math';
+import { Vector } from '../../math';
 
 /**
  * Animation that moves a Mobject from its current position to a destination.
  * Uses linear interpolation between start and end positions.
- * 
+ *
  * This is a transformative animation - the target must already be in the scene.
  * Start position is captured lazily when animation becomes active.
- * 
+ *
  * @example
  * scene.add(circle);  // or use FadeIn first
  * scene.play(new MoveTo(circle, 2, 0));  // Move to (2, 0)
  */
 export class MoveTo<T extends Mobject = Mobject> extends TransformativeAnimation<T> {
-    private startPosition!: Vector2;
-    private readonly endPosition: Vector2;
+  private startPosition!: Vector;
+  private readonly endPosition: Vector;
 
-    constructor(target: T, destination: Vector2);
-    constructor(target: T, x: number, y: number);
-    constructor(target: T, xOrDestination: number | Vector2, y?: number) {
-        super(target);
-        if (xOrDestination instanceof Vector2) {
-            this.endPosition = xOrDestination;
-        } else {
-            this.endPosition = new Vector2(xOrDestination, y ?? 0);
-        }
+  constructor(target: T, destination: Vector);
+  constructor(target: T, x: number, y: number, z?: number);
+  constructor(target: T, xOrDestination: number | Vector, y?: number, z?: number) {
+    super(target);
+
+    if (typeof xOrDestination !== 'number') {
+      this.endPosition = xOrDestination;
+      return;
     }
 
-    protected captureStartState(): void {
-        this.startPosition = this.target.position;
-    }
+    this.endPosition = new Vector(xOrDestination, y ?? 0, z ?? 0);
+  }
 
-    interpolate(progress: number): void {
-        this.ensureInitialized();
-        const newPosition = this.startPosition.lerp(this.endPosition, progress);
-        this.target.pos(newPosition.x, newPosition.y);
-    }
+  protected captureStartState(): void {
+    this.startPosition = this.target.position;
+  }
 
-    /** Returns the target position of the move animation. */
-    getDestination(): Vector2 {
-        return this.endPosition;
-    }
+  interpolate(progress: number): void {
+    this.ensureInitialized();
+    const newPosition = this.startPosition.lerp(this.endPosition, progress);
+    this.target.pos(newPosition.x, newPosition.y, newPosition.z);
+  }
+
+  /** Returns the target position of the move animation. */
+  getDestination(): Vector {
+    return this.endPosition;
+  }
 }
+

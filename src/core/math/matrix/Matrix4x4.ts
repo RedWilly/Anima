@@ -1,5 +1,4 @@
-import { Vector2 } from '../Vector2';
-import { Vector3 } from '../Vector3';
+import { Vector } from '../vector';
 
 /**
  * A 4x4 matrix class for 3D affine transforms and projection.
@@ -33,7 +32,7 @@ export class Matrix4x4 {
         return new Matrix4x4(out);
     }
 
-    transformPoint(point: Vector3): Vector3 {
+    transformPoint(point: Vector): Vector {
         const m = this.values;
         const x = point.x;
         const y = point.y;
@@ -45,15 +44,15 @@ export class Matrix4x4 {
         const tw = m[12]! * x + m[13]! * y + m[14]! * z + m[15]!;
 
         if (Math.abs(tw) < 1e-10 || Math.abs(tw - 1) < 1e-10) {
-            return new Vector3(tx, ty, tz);
+            return new Vector(tx, ty, tz);
         }
 
-        return new Vector3(tx / tw, ty / tw, tz / tw);
+        return new Vector(tx / tw, ty / tw, tz / tw);
     }
 
-    transformPoint2D(point: Vector2): Vector2 {
-        const transformed = this.transformPoint(Vector3.fromVector2(point, 0));
-        return transformed.toVector2();
+    transformPoint2D(point: Vector): Vector {
+        const transformed = this.transformPoint(Vector.fromPlanar(point, 0));
+        return transformed.toPlanar();
     }
 
     inverse(): Matrix4x4 {
@@ -166,3 +165,4 @@ export class Matrix4x4 {
         0, 0, 0, 1,
     ]);
 }
+

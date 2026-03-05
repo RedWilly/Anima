@@ -1,5 +1,5 @@
 import { VMobject } from '../VMobject';
-import { BezierPath, Color, Vector2 } from '../../math';
+import { BezierPath, Color, Vector } from '../../math';
 import type { GraphNodeId, EdgeConfig } from './types';
 import type { GraphNode } from './GraphNode';
 
@@ -50,7 +50,7 @@ export class GraphEdge extends VMobject {
             // Create a curved path using quadratic Bezier
             const mid = startPos.lerp(endPos, 0.5);
             const direction = endPos.subtract(startPos);
-            const perpendicular = new Vector2(-direction.y, direction.x).normalize();
+            const perpendicular = new Vector(-direction.y, direction.x).normalize();
             const curveOffset = direction.length() * 0.2;
             const controlPoint = mid.add(perpendicular.multiply(curveOffset));
 
@@ -76,3 +76,4 @@ export class GraphEdge extends VMobject {
         this.updatePath();
     }
 }
+

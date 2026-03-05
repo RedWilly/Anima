@@ -31,6 +31,17 @@ describe('Mobject Property Tests', () => {
         }));
     });
 
+    test('pos(x, y) preserves existing z position', () => {
+        fc.assert(fc.property(arbCoord, arbCoord, arbCoord, (x, y, z) => {
+            const obj = new Mobject();
+            obj.pos(0, 0, z);
+            obj.pos(x, y);
+            return Math.abs(obj.position.x - x) < 1e-3 &&
+                Math.abs(obj.position.y - y) < 1e-3 &&
+                Math.abs(obj.position.z - z) < 1e-3;
+        }));
+    });
+
     test('show() sets opacity to 1', () => {
         const obj = new Mobject();
         expect(obj.opacity).toBe(0);
@@ -106,6 +117,16 @@ describe('Mobject Property Tests', () => {
             obj.applyMatrix(Matrix4x4.translation(tx, ty, 0));
             return Math.abs(obj.position.x - tx) < 1e-3 &&
                 Math.abs(obj.position.y - ty) < 1e-3;
+        }));
+    });
+
+    test('3D translation via applyMatrix updates z position', () => {
+        fc.assert(fc.property(arbCoord, arbCoord, arbCoord, (x, y, z) => {
+            const obj = new Mobject();
+            obj.applyMatrix(Matrix4x4.translation(x, y, z));
+            return Math.abs(obj.position.x - x) < 1e-3 &&
+                Math.abs(obj.position.y - y) < 1e-3 &&
+                Math.abs(obj.position.z - z) < 1e-3;
         }));
     });
 });

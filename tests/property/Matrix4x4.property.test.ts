@@ -1,8 +1,7 @@
 import { describe, test, expect } from 'bun:test';
 import * as fc from 'fast-check';
 import { Matrix4x4 } from '../../src/core/math/matrix/Matrix4x4';
-import { Vector2 } from '../../src/core/math/Vector2/Vector2';
-import { Vector3 } from '../../src/core/math/Vector3/Vector3';
+import { Vector } from '../../src/core/math/vector/Vector';
 
 const arbMatrix4x4 = fc.array(
     fc.double({ min: -50, max: 50, noNaN: true }),
@@ -63,7 +62,7 @@ describe('Matrix4x4 Property Tests', () => {
             fc.double({ min: -1000, max: 1000, noNaN: true }),
             (tx, ty, tz, x, y, z) => {
                 const t = Matrix4x4.translation(tx, ty, tz);
-                const p = new Vector3(x, y, z);
+                const p = new Vector(x, y, z);
                 const out = t.transformPoint(p);
                 return (
                     Math.abs(out.x - (x + tx)) < 1e-5 &&
@@ -87,7 +86,7 @@ describe('Matrix4x4 Property Tests', () => {
                 const m4 = Matrix4x4.translation(tx, ty, 0)
                     .multiply(Matrix4x4.rotationZ(angle))
                     .multiply(Matrix4x4.scale(sx, sy, 1));
-                const p = new Vector3(x, y, 0);
+                const p = new Vector(x, y, 0);
                 const out4 = m4.transformPoint(p);
                 return (
                     Math.abs(out4.z) < 1e-8
@@ -100,11 +99,12 @@ describe('Matrix4x4 Property Tests', () => {
         const m4 = Matrix4x4.translation(3, -2, 0)
             .multiply(Matrix4x4.rotationZ(0.5))
             .multiply(Matrix4x4.scale(2, 4, 1));
-        const p2 = new Vector2(1.25, -0.75);
+        const p2 = new Vector(1.25, -0.75);
         const via2D = m4.transformPoint2D(p2);
-        const via3D = m4.transformPoint(new Vector3(p2.x, p2.y, 0));
+        const via3D = m4.transformPoint(new Vector(p2.x, p2.y, 0));
         expect(via2D.x).toBeCloseTo(via3D.x, 8);
         expect(via2D.y).toBeCloseTo(via3D.y, 8);
         expect(via3D.z).toBeCloseTo(0, 8);
     });
 });
+

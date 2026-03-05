@@ -2,7 +2,7 @@ import { Animation } from '../Animation';
 import type { AnimationLifecycle } from '../types';
 import type { CameraFrame } from '../../camera';
 import type { Mobject } from '../../mobjects';
-import { Vector2 } from '../../math';
+import { Vector } from '../../math';
 
 /**
  * Configuration options for the Follow animation.
@@ -11,9 +11,9 @@ interface FollowConfig {
     /**
      * Offset from the target's position. The camera will track
      * (target.position + offset) instead of the exact target position.
-     * @default Vector2.ZERO
+     * @default Vector.ZERO
      */
-    offset?: Vector2;
+    offset?: Vector;
     /**
      * Damping factor for smooth following (0 to 1).
      * - 0 = instant snap to target (no smoothing)
@@ -40,7 +40,7 @@ interface FollowConfig {
  * @example
  * // Follow with offset (camera leads the target)
  * this.play(new Follow(this.frame, car, {
- *   offset: new Vector2(2, 0),  // Camera 2 units ahead
+ *   offset: new Vector(2, 0),  // Camera 2 units ahead
  *   damping: 0.5
  * }).duration(10));
  */
@@ -48,7 +48,7 @@ export class Follow extends Animation<CameraFrame> {
     readonly lifecycle: AnimationLifecycle = 'transformative';
 
     private readonly followTarget: Mobject;
-    private readonly offset: Vector2;
+    private readonly offset: Vector;
     private readonly damping: number;
 
     /**
@@ -73,7 +73,7 @@ export class Follow extends Animation<CameraFrame> {
         }
         super(frame);
         this.followTarget = target;
-        this.offset = config.offset ?? Vector2.ZERO;
+        this.offset = config.offset ?? Vector.ZERO;
         this.damping = config.damping ?? 0;
     }
 
@@ -82,7 +82,7 @@ export class Follow extends Animation<CameraFrame> {
      * @param progress - Animation progress (0 to 1)
      */
     interpolate(progress: number): void {
-        const targetPos = this.followTarget.position.add(this.offset);
+        const targetPos = this.followTarget.position.add(Vector.fromPlanar(this.offset, 0));
         const currentPos = this.target.position;
 
         if (this.damping > 0 && this.damping < 1) {
@@ -94,3 +94,4 @@ export class Follow extends Animation<CameraFrame> {
         }
     }
 }
+

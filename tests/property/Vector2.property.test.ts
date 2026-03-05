@@ -1,12 +1,12 @@
 import { describe, test, expect } from 'bun:test';
 import * as fc from 'fast-check';
-import { Vector2 } from '../../src/core/math/Vector2/Vector2';
+import { Vector } from '../../src/core/math/vector/Vector';
 
-/** Arbitrary for generating Vector2 instances with finite values */
+/** Arbitrary for generating Vector instances with finite values */
 const arbVector2 = fc.tuple(
     fc.double({ min: -1e6, max: 1e6, noNaN: true }),
     fc.double({ min: -1e6, max: 1e6, noNaN: true })
-).map(([x, y]) => new Vector2(x, y));
+).map(([x, y]) => new Vector(x, y));
 
 /** Arbitrary for non-zero vectors (for normalization tests) */
 const arbNonZeroVector2 = arbVector2.filter(
@@ -16,7 +16,7 @@ const arbNonZeroVector2 = arbVector2.filter(
 /** Arbitrary for t values in [0, 1] */
 const arbT = fc.double({ min: 0, max: 1, noNaN: true });
 
-describe('Vector2 Property Tests', () => {
+describe('Vector Property Tests', () => {
     test('add is commutative: a + b == b + a', () => {
         fc.assert(fc.property(arbVector2, arbVector2, (a, b) => {
             const ab = a.add(b);
@@ -57,9 +57,9 @@ describe('Vector2 Property Tests', () => {
     });
 
     test('normalize of zero vector returns ZERO', () => {
-        const zero = new Vector2(0, 0);
+        const zero = new Vector(0, 0);
         const result = zero.normalize();
-        expect(result).toEqual(Vector2.ZERO);
+        expect(result).toEqual(Vector.ZERO);
     });
 
     test('dot product is commutative: a.dot(b) == b.dot(a)', () => {
@@ -108,3 +108,4 @@ describe('Vector2 Property Tests', () => {
         }));
     });
 });
+

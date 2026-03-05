@@ -3,7 +3,7 @@ import { MorphTo } from '../../../../src/core/animations';
 import { Circle } from '../../../../src/core/mobjects/geometry/Circle';
 import { Rectangle } from '../../../../src/core/mobjects/geometry/Rectangle';
 import { VMobject } from '../../../../src/core/mobjects/VMobject';
-import { Vector2 } from '../../../../src/core/math/Vector2/Vector2';
+import { Vector } from '../../../../src/core/math/vector/Vector';
 import { BezierPath } from '../../../../src/core/math/bezier/BezierPath';
 
 describe('MorphTo Animation', () => {
@@ -55,11 +55,11 @@ describe('MorphTo Animation', () => {
             const source = new VMobject();
             const target = new VMobject();
             const path1 = new BezierPath();
-            path1.moveTo(new Vector2(0, 0));
-            path1.lineTo(new Vector2(100, 0));
+            path1.moveTo(new Vector(0, 0));
+            path1.lineTo(new Vector(100, 0));
             const path2 = new BezierPath();
-            path2.moveTo(new Vector2(0, 0));
-            path2.lineTo(new Vector2(0, 100));
+            path2.moveTo(new Vector(0, 0));
+            path2.lineTo(new Vector(0, 100));
 
             source.addPath(path1);
             target.addPath(path2);
@@ -75,16 +75,16 @@ describe('MorphTo Animation', () => {
             const target = new VMobject();
 
             const path1 = new BezierPath();
-            path1.moveTo(new Vector2(0, 0));
-            path1.lineTo(new Vector2(100, 0));
+            path1.moveTo(new Vector(0, 0));
+            path1.lineTo(new Vector(100, 0));
 
             const path2 = new BezierPath();
-            path2.moveTo(new Vector2(0, 0));
-            path2.lineTo(new Vector2(0, 100));
+            path2.moveTo(new Vector(0, 0));
+            path2.lineTo(new Vector(0, 100));
 
             const path3 = new BezierPath();
-            path3.moveTo(new Vector2(50, 50));
-            path3.lineTo(new Vector2(100, 100));
+            path3.moveTo(new Vector(50, 50));
+            path3.lineTo(new Vector(100, 100));
 
             source.addPath(path1);
             target.addPath(path2);
@@ -120,3 +120,4 @@ describe('MorphTo Animation', () => {
         });
     });
 });
+

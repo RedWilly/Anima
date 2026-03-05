@@ -2,7 +2,7 @@ import { describe, it, expect } from 'bun:test';
 import { Follow } from '../../../../src/core/animations/camera/Follow';
 import { CameraFrame } from '../../../../src/core/camera/CameraFrame';
 import { Mobject } from '../../../../src/core/mobjects/Mobject';
-import { Vector2 } from '../../../../src/core/math/Vector2/Vector2';
+import { Vector } from '../../../../src/core/math/vector/Vector';
 
 describe('Follow Animation', () => {
     describe('Track Stationary Target', () => {
@@ -61,7 +61,7 @@ describe('Follow Animation', () => {
             const target = new Mobject();
             target.pos(5, 5);
 
-            const offset = new Vector2(2, 3);
+            const offset = new Vector(2, 3);
             const follow = new Follow(frame, target, { offset });
             follow.interpolate(0.5);
 
@@ -74,7 +74,7 @@ describe('Follow Animation', () => {
             const target = new Mobject();
             target.pos(0, 0);
 
-            const offset = new Vector2(-1, 2);
+            const offset = new Vector(-1, 2);
             const follow = new Follow(frame, target, { offset });
 
             follow.interpolate(0.25);
@@ -136,7 +136,7 @@ describe('Follow Animation', () => {
             const target = new Mobject();
             target.pos(20, 30);
 
-            const offset = new Vector2(5, -5);
+            const offset = new Vector(5, -5);
             const follow = new Follow(frame, target, { damping: 0, offset });
             follow.interpolate(0.1);
 
@@ -171,3 +171,4 @@ describe('Follow Animation', () => {
         });
     });
 });
+

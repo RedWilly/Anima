@@ -1,5 +1,5 @@
 import { hashFloat32Array, hashNumber, hashCompose } from '../cache';
-import { Matrix4x4, Vector2, Vector3 } from '../math';
+import { Matrix4x4, Vector } from '../math';
 import {
   Animation,
   type EasingFunction,
@@ -146,8 +146,8 @@ class AnimationQueue {
 }
 
 interface MobjectState {
-  position: Vector2;
-  scale: Vector2;
+  position: Vector;
+  scale: Vector;
   rotation: number;
 }
 
@@ -160,11 +160,11 @@ export class Mobject {
   protected localMatrix: Matrix4x4;
   protected opacityValue: number;
   protected animQueue: AnimationQueue | null = null;
-  protected pointCloud: Vector3[] = [];
+  protected pointCloud: Vector[] = [];
   protected submobjects: Mobject[] = [];
   private savedStates: MobjectState[] = [];
   private logicalRotation = 0;
-  private logicalScale = new Vector2(1, 1);
+  private logicalScale = new Vector(1, 1);
 
   parent: Mobject | null = null;
 
@@ -218,15 +218,15 @@ export class Mobject {
     return this.parent.getRenderMatrix().multiply(this.localMatrix);
   }
 
-  get position(): Vector2 {
+  get position(): Vector {
     if (this.usesGeometryTransforms()) {
       const center = this.getGeometryCenter();
       if (center) {
-        return center.toVector2();
+        return center;
       }
     }
     const m = this.localMatrix.values;
-    return new Vector2(m[3]!, m[7]!);
+    return new Vector(m[3]!, m[7]!, m[11]!);
   }
 
   get rotation(): number {
@@ -237,14 +237,14 @@ export class Mobject {
     return Math.atan2(m[4]!, m[0]!);
   }
 
-  get scale(): Vector2 {
+  get scale(): Vector {
     if (this.usesGeometryTransforms()) {
       return this.logicalScale;
     }
     const m = this.localMatrix.values;
     const sx = Math.sqrt(m[0]! * m[0]! + m[4]! * m[4]!);
     const sy = Math.sqrt(m[1]! * m[1]! + m[5]! * m[5]!);
-    return new Vector2(sx, sy);
+    return new Vector(sx, sy);
   }
 
   get opacity(): number {
@@ -253,13 +253,16 @@ export class Mobject {
 
   // ========== Immediate State Setters ==========
 
-  pos(x: number, y: number): this {
+  pos(x: number, y: number, z?: number): this {
+    const targetZ = z ?? this.position.z;
+
     if (this.usesGeometryTransforms()) {
       const current = this.position;
       const dx = x - current.x;
       const dy = y - current.y;
-      if (Math.abs(dx) > 1e-12 || Math.abs(dy) > 1e-12) {
-        this.applyMatrix(Matrix4x4.translation(dx, dy, 0));
+      const dz = targetZ - current.z;
+      if (Math.abs(dx) > 1e-12 || Math.abs(dy) > 1e-12 || Math.abs(dz) > 1e-12) {
+        this.applyMatrix(Matrix4x4.translation(dx, dy, dz));
       }
       return this;
     }
@@ -267,6 +270,7 @@ export class Mobject {
     const newValues = new Float32Array(this.localMatrix.values);
     newValues[3] = x;
     newValues[7] = y;
+    newValues[11] = targetZ;
     this.setLocalMatrix(new Matrix4x4(newValues));
     return this;
   }
@@ -294,9 +298,9 @@ export class Mobject {
       }
 
       const pivot = this.position;
-      const transform = Matrix4x4.translation(pivot.x, pivot.y, 0)
+      const transform = Matrix4x4.translation(pivot.x, pivot.y, pivot.z)
         .multiply(Matrix4x4.rotationZ(delta))
-        .multiply(Matrix4x4.translation(-pivot.x, -pivot.y, 0));
+        .multiply(Matrix4x4.translation(-pivot.x, -pivot.y, -pivot.z));
 
       this.applyMatrix(transform);
       this.logicalRotation = angle;
@@ -335,12 +339,12 @@ export class Mobject {
       }
 
       const pivot = this.position;
-      const transform = Matrix4x4.translation(pivot.x, pivot.y, 0)
+      const transform = Matrix4x4.translation(pivot.x, pivot.y, pivot.z)
         .multiply(Matrix4x4.scale(deltaX, deltaY, 1))
-        .multiply(Matrix4x4.translation(-pivot.x, -pivot.y, 0));
+        .multiply(Matrix4x4.translation(-pivot.x, -pivot.y, -pivot.z));
 
       this.applyMatrix(transform);
-      this.logicalScale = new Vector2(sx, sy);
+      this.logicalScale = new Vector(sx, sy);
       this.syncLocalMatrixFromGeometry();
       return this;
     }
@@ -423,15 +427,15 @@ export class Mobject {
     return [...this.submobjects];
   }
 
-  protected setPointCloud(points: Array<Vector2 | Vector3>): void {
+  protected setPointCloud(points: Array<Vector>): void {
     this.pointCloud = points.map((p) =>
-      p instanceof Vector3 ? new Vector3(p.x, p.y, p.z) : Vector3.fromVector2(p, 0),
+      p instanceof Vector ? new Vector(p.x, p.y, p.z) : Vector.fromPlanar(p, 0),
     );
     this.syncLocalMatrixFromGeometry();
   }
 
-  protected getPointCloud(): Vector3[] {
-    return this.pointCloud.map((p) => new Vector3(p.x, p.y, p.z));
+  protected getPointCloud(): Vector[] {
+    return this.pointCloud.map((p) => new Vector(p.x, p.y, p.z));
   }
 
   // ========== State Save/Restore ==========
@@ -440,8 +444,8 @@ export class Mobject {
     const pos = this.position;
     const scl = this.scale;
     this.savedStates.push({
-      position: new Vector2(pos.x, pos.y),
-      scale: new Vector2(scl.x, scl.y),
+      position: new Vector(pos.x, pos.y, pos.z),
+      scale: new Vector(scl.x, scl.y),
       rotation: this.rotation,
     });
     return this;
@@ -467,7 +471,7 @@ export class Mobject {
       throw new Error('restore() called but no state was saved. Call saveState() first.');
     }
 
-    const moveAnim = createMoveTo(this, state.position.x, state.position.y, durationSeconds);
+    const moveAnim = createMoveTo(this, state.position, durationSeconds);
     const scaleAnim = createScale(this, state.scale.x, state.scale.y, durationSeconds);
     const rotateAnim = createRotate(this, state.rotation - this.rotation, durationSeconds);
     const parallelAnim = createParallel([moveAnim, scaleAnim, rotateAnim]);
@@ -492,8 +496,31 @@ export class Mobject {
     return this;
   }
 
-  moveTo(x: number, y: number, durationSeconds?: number): this & { toAnimation(): Animation<Mobject> } {
-    const animation = createMoveTo(this, x, y, durationSeconds);
+  moveTo(destination: Vector, durationSeconds?: number): this & { toAnimation(): Animation<Mobject> };
+  moveTo(x: number, y: number, durationSeconds?: number): this & { toAnimation(): Animation<Mobject> };
+  moveTo(x: number, y: number, z: number, durationSeconds?: number): this & { toAnimation(): Animation<Mobject> };
+  moveTo(
+    xOrDestination: number | Vector,
+    yOrDuration?: number,
+    zOrDuration?: number,
+    durationSeconds?: number
+  ): this & { toAnimation(): Animation<Mobject> } {
+    let animation: Animation<Mobject>;
+
+    if (typeof xOrDestination !== 'number') {
+      animation = createMoveTo(this, xOrDestination, yOrDuration);
+    } else {
+      const x = xOrDestination;
+      const y = yOrDuration ?? 0;
+
+      if (durationSeconds !== undefined) {
+        const z = zOrDuration ?? this.position.z;
+        animation = createMoveTo(this, new Vector(x, y, z), durationSeconds);
+      } else {
+        animation = createMoveTo(this, x, y, zOrDuration);
+      }
+    }
+
     this.getQueue().enqueueAnimation(animation);
     return this;
   }
@@ -611,15 +638,15 @@ export class Mobject {
     return this.pointCloud.length > 0 || this.submobjects.length > 0;
   }
 
-  private collectGeometryPoints(out: Vector3[]): void {
+  private collectGeometryPoints(out: Vector[]): void {
     out.push(...this.pointCloud);
     for (const child of this.submobjects) {
       child.collectGeometryPoints(out);
     }
   }
 
-  private getGeometryCenter(): Vector3 | null {
-    const points: Vector3[] = [];
+  private getGeometryCenter(): Vector | null {
+    const points: Vector[] = [];
     this.collectGeometryPoints(points);
     if (points.length === 0) {
       return null;
@@ -641,7 +668,7 @@ export class Mobject {
       if (p.z > maxZ) maxZ = p.z;
     }
 
-    return new Vector3((minX + maxX) / 2, (minY + maxY) / 2, (minZ + maxZ) / 2);
+    return new Vector((minX + maxX) / 2, (minY + maxY) / 2, (minZ + maxZ) / 2);
   }
 
   private syncLocalMatrixFromGeometry(): void {
@@ -649,7 +676,7 @@ export class Mobject {
       return;
     }
 
-    const center = this.getGeometryCenter() ?? Vector3.ZERO;
+    const center = this.getGeometryCenter() ?? Vector.ZERO;
     const sx = this.logicalScale.x;
     const sy = this.logicalScale.y;
     const cos = Math.cos(this.logicalRotation);
@@ -675,7 +702,7 @@ export class Mobject {
     const sy = Math.sqrt(values[1]! * values[1]! + values[5]! * values[5]!);
     const rot = Math.atan2(values[4]!, values[0]!);
 
-    this.logicalScale = new Vector2(this.logicalScale.x * sx, this.logicalScale.y * sy);
+    this.logicalScale = new Vector(this.logicalScale.x * sx, this.logicalScale.y * sy);
     this.logicalRotation += rot;
   }
 
@@ -684,3 +711,4 @@ export class Mobject {
   }
 
 }
+

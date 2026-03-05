@@ -1,4 +1,4 @@
-import { Vector2 } from '../Vector2';
+import { Vector } from '../vector';
 import type { PathCommand } from './types';
 import { getTangentAtPath } from './sampling';
 import { getQuadraticLength, getCubicLength } from './length';
@@ -11,8 +11,8 @@ import { toCubicCommands, subdividePath } from './morphing';
  */
 export class BezierPath {
     private commands: PathCommand[] = [];
-    private currentPoint: Vector2 = Vector2.ZERO;
-    private startPoint: Vector2 = Vector2.ZERO;
+    private currentPoint: Vector = Vector.ZERO;
+    private startPoint: Vector = Vector.ZERO;
 
     // Caching for O(1) length and O(log N) point sampling
     private cachedLength: number | null = null;
@@ -33,8 +33,8 @@ export class BezierPath {
         this.segmentLengths = [];
         this.segmentCDF = [];
         let totalLength = 0;
-        let cursor = Vector2.ZERO;
-        let subpathStart = Vector2.ZERO;
+        let cursor = Vector.ZERO;
+        let subpathStart = Vector.ZERO;
 
         for (const cmd of this.commands) {
             let segmentLength = 0;
@@ -73,26 +73,26 @@ export class BezierPath {
     }
 
     /** Starts a new subpath at the specified point. */
-    moveTo(point: Vector2): void {
+    moveTo(point: Vector): void {
         this.invalidateCache();
         this.commands.push({ type: 'Move', end: point });
         this.currentPoint = point;
         this.startPoint = point;
     }
 
-    lineTo(point: Vector2): void {
+    lineTo(point: Vector): void {
         this.invalidateCache();
         this.commands.push({ type: 'Line', end: point });
         this.currentPoint = point;
     }
 
-    quadraticTo(control: Vector2, end: Vector2): void {
+    quadraticTo(control: Vector, end: Vector): void {
         this.invalidateCache();
         this.commands.push({ type: 'Quadratic', control1: control, end: end });
         this.currentPoint = end;
     }
 
-    cubicTo(control1: Vector2, control2: Vector2, end: Vector2): void {
+    cubicTo(control1: Vector, control2: Vector, end: Vector): void {
         this.invalidateCache();
         this.commands.push({
             type: 'Cubic',
@@ -119,12 +119,12 @@ export class BezierPath {
     }
 
     /** Returns the point on the path at the normalized position t (0-1). */
-    getPointAt(t: number): Vector2 {
+    getPointAt(t: number): Vector {
         this.ensureCache();
         const totalLength = this.cachedLength!;
 
         if (totalLength === 0 || this.commands.length === 0) {
-            return this.commands.length > 0 ? this.commands[this.commands.length - 1]!.end : Vector2.ZERO;
+            return this.commands.length > 0 ? this.commands[this.commands.length - 1]!.end : Vector.ZERO;
         }
 
         t = Math.max(0, Math.min(1, t));
@@ -144,11 +144,11 @@ export class BezierPath {
 
         const segmentIndex = low;
         const cmd = this.commands[segmentIndex];
-        if (!cmd) return Vector2.ZERO;
+        if (!cmd) return Vector.ZERO;
 
         // Calculate the starting cursor for this segment
-        let cursor = Vector2.ZERO;
-        let subpathStart = Vector2.ZERO;
+        let cursor = Vector.ZERO;
+        let subpathStart = Vector.ZERO;
         for (let i = 0; i < segmentIndex; i++) {
             const c = this.commands[i]!;
             if (c.type === 'Move') {
@@ -189,12 +189,12 @@ export class BezierPath {
         }
     }
 
-    getTangentAt(t: number): Vector2 {
+    getTangentAt(t: number): Vector {
         return getTangentAtPath(this.commands, t);
     }
 
-    getPoints(count: number): Vector2[] {
-        const points: Vector2[] = [];
+    getPoints(count: number): Vector[] {
+        const points: Vector[] = [];
         if (count <= 0) return points;
         if (count === 1) return [this.getPointAt(0)];
 
@@ -293,3 +293,4 @@ export class BezierPath {
         return path;
     }
 }
+

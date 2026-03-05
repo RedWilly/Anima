@@ -1,6 +1,5 @@
 import { describe, expect, test } from 'bun:test';
 import { Mobject } from '../../../src/core/mobjects/Mobject';
-import { Vector2 } from '../../../src/core/math/Vector2/Vector2';
 import { Matrix4x4 } from '../../../src/core/math/matrix/Matrix4x4';
 
 describe('Mobject', () => {
@@ -26,6 +25,15 @@ describe('Mobject', () => {
 
     obj.hide();
     expect(obj.opacity).toBe(0);
+  });
+
+  test('position exposes xyz translation for matrix-backed mobjects', () => {
+    const obj = new Mobject();
+    obj.pos(1, 2, 3);
+
+    expect(obj.position.x).toBe(1);
+    expect(obj.position.y).toBe(2);
+    expect(obj.position.z).toBe(3);
   });
 
   test('matrix transformation - translation', () => {
@@ -71,5 +79,17 @@ describe('Mobject', () => {
     expect(obj.position.x).toBeCloseTo(0);
     expect(obj.position.y).toBeCloseTo(10);
     expect(obj.rotation).toBeCloseTo(Math.PI / 2);
+  });
+
+  test('3D translation matrix updates z position', () => {
+    const obj = new Mobject();
+    obj.pos(0, 0, 1);
+
+    const translation = Matrix4x4.translation(0, 0, 4);
+    obj.applyMatrix(translation);
+
+    expect(obj.position.x).toBe(0);
+    expect(obj.position.y).toBe(0);
+    expect(obj.position.z).toBe(5);
   });
 });

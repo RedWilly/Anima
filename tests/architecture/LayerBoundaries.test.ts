@@ -73,7 +73,7 @@ function isFacadeImportTarget(absTargetPath: string, targetModule: string): bool
 }
 
 describe('Architecture boundaries', () => {
-  test('math internals import Vector2 through submodule facade', () => {
+  test('math internals import Vector through submodule facade', () => {
     const violations: string[] = [];
 
     for (const file of mathFiles) {
@@ -81,8 +81,8 @@ describe('Architecture boundaries', () => {
       const imports = Array.from(content.matchAll(importRegex), (match) => match[1]);
 
       for (const specifier of imports) {
-        if (specifier === '../Vector2/Vector2') {
-          violations.push(`${file}: use '../Vector2' instead of '${specifier}'`);
+        if (specifier === '../Vector/Vector' || specifier === '../Vector' || specifier === '../vector/Vector') {
+          violations.push(`${file}: use '../vector' instead of '${specifier}'`);
         }
       }
     }
@@ -198,3 +198,4 @@ describe('Architecture boundaries', () => {
     expect(violations).toEqual([]);
   });
 });
+

@@ -1,4 +1,4 @@
-import { Vector2 } from '../../../math';
+import { Vector } from '../../../math';
 import type { GraphNode } from '../GraphNode';
 import type { GraphEdge } from '../GraphEdge';
 import type { LayoutConfig } from '../types';
@@ -104,9 +104,9 @@ function assignPositions(
 function collectPositions(
     node: TreeNode,
     levelHeight: number,
-    positions: Map<string, Vector2>
+    positions: Map<string, Vector>
 ): void {
-    positions.set(node.id, new Vector2(node.x, node.depth * levelHeight));
+    positions.set(node.id, new Vector(node.x, node.depth * levelHeight));
     for (const child of node.children) {
         collectPositions(child, levelHeight, positions);
     }
@@ -120,8 +120,8 @@ export function treeLayout(
     nodes: GraphNode[],
     edges: GraphEdge[],
     config: LayoutConfig = {}
-): Map<string, Vector2> {
-    const positions = new Map<string, Vector2>();
+): Map<string, Vector> {
+    const positions = new Map<string, Vector>();
     const levelHeight = config.levelHeight ?? DEFAULT_LEVEL_HEIGHT;
     const siblingSpacing = config.siblingSpacing ?? DEFAULT_SIBLING_SPACING;
 
@@ -138,8 +138,9 @@ export function treeLayout(
     const centerOffset = (minX + maxX) / 2;
 
     for (const [id, pos] of positions) {
-        positions.set(id, new Vector2(pos.x - centerOffset, pos.y));
+        positions.set(id, new Vector(pos.x - centerOffset, pos.y));
     }
 
     return positions;
 }
+
