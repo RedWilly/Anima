@@ -19,6 +19,6 @@ export class Polygon extends VMobject {
             path.lineTo(this.vertices[i]!);
         }
         path.closePath();
-        this.pathList = [path];
+        this.paths = [path];
     }
 }

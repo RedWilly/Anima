@@ -1,6 +1,6 @@
 import { Mobject } from './Mobject';
 import { hashNumber, hashString, hashCompose } from '../cache';
-import { BezierPath, type PathCommand, Color, Vector2 } from '../math';
+import { BezierPath, type PathCommand, Color, Matrix3x3, Vector2 } from '../math';
 import {
     type Animation,
     createDraw,
@@ -46,6 +46,7 @@ export class VMobject extends Mobject {
 
     set paths(value: BezierPath[]) {
         this.pathList = value;
+        this.syncPointCloudFromPaths();
     }
 
     /**
@@ -83,6 +84,7 @@ export class VMobject extends Mobject {
      */
     addPath(path: BezierPath): this {
         this.pathList.push(path);
+        this.syncPointCloudFromPaths();
         return this;
     }
 
@@ -127,6 +129,7 @@ export class VMobject extends Mobject {
     setPoints(commands: PathCommand[]): this {
         if (commands.length === 0) {
             this.pathList = [];
+            this.setPointCloud([]);
             return this;
         }
         const path = new BezierPath();
@@ -154,6 +157,7 @@ export class VMobject extends Mobject {
             }
         }
         this.pathList = [path];
+        this.syncPointCloudFromPaths();
         return this;
     }
 
@@ -169,7 +173,6 @@ export class VMobject extends Mobject {
 
     getBoundingBox(): { minX: number; maxX: number; minY: number; maxY: number } {
         const points = this.getPointsAsVectors();
-        const worldMatrix = this.getWorldMatrix();
         if (points.length === 0) {
             const pos = this.position;
             return { minX: pos.x, maxX: pos.x, minY: pos.y, maxY: pos.y };
@@ -179,13 +182,59 @@ export class VMobject extends Mobject {
         let minY = Infinity;
         let maxY = -Infinity;
         for (const point of points) {
-            const transformed = worldMatrix.transformPoint(point);
-            if (transformed.x < minX) minX = transformed.x;
-            if (transformed.x > maxX) maxX = transformed.x;
-            if (transformed.y < minY) minY = transformed.y;
-            if (transformed.y > maxY) maxY = transformed.y;
+            if (point.x < minX) minX = point.x;
+            if (point.x > maxX) maxX = point.x;
+            if (point.y < minY) minY = point.y;
+            if (point.y > maxY) maxY = point.y;
         }
         return { minX, maxX, minY, maxY };
+    }
+
+    protected override applyMatrixToOwnGeometry(m: Matrix3x3): void {
+        this.pathList = this.pathList.map((path) => {
+            const transformedCommands = path.getCommands().map((cmd) => {
+                const next: PathCommand = {
+                    ...cmd,
+                    end: m.transformPoint(cmd.end),
+                };
+                if (cmd.control1) {
+                    next.control1 = m.transformPoint(cmd.control1);
+                }
+                if (cmd.control2) {
+                    next.control2 = m.transformPoint(cmd.control2);
+                }
+                return next;
+            });
+
+            const transformedPath = new BezierPath();
+            for (const cmd of transformedCommands) {
+                switch (cmd.type) {
+                    case 'Move':
+                        transformedPath.moveTo(cmd.end);
+                        break;
+                    case 'Line':
+                        transformedPath.lineTo(cmd.end);
+                        break;
+                    case 'Quadratic':
+                        if (cmd.control1) {
+                            transformedPath.quadraticTo(cmd.control1, cmd.end);
+                        }
+                        break;
+                    case 'Cubic':
+                        if (cmd.control1 && cmd.control2) {
+                            transformedPath.cubicTo(cmd.control1, cmd.control2, cmd.end);
+                        }
+                        break;
+                    case 'Close':
+                        transformedPath.closePath();
+                        break;
+                }
+            }
+
+            return transformedPath;
+        });
+
+        this.syncPointCloudFromPaths();
     }
 
     // ========== VMobject-Specific Fluent Animation API ==========
@@ -253,5 +302,17 @@ export class VMobject extends Mobject {
             hashNumber(this.fillOpacity),
             pathHash,
         );
+    }
+
+    private syncPointCloudFromPaths(): void {
+        const points: Vector2[] = [];
+        for (const path of this.pathList) {
+            for (const cmd of path.getCommands()) {
+                if (cmd.control1) points.push(cmd.control1);
+                if (cmd.control2) points.push(cmd.control2);
+                points.push(cmd.end);
+            }
+        }
+        this.setPointCloud(points);
     }
 }

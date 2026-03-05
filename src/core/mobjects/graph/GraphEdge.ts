@@ -60,7 +60,7 @@ export class GraphEdge extends VMobject {
             path.lineTo(endPos);
         }
 
-        this.pathList = [path];
+        this.paths = [path];
     }
 
     getPath(): BezierPath | undefined {

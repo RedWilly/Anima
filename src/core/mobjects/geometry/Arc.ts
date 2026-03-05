@@ -60,6 +60,6 @@ export class Arc extends VMobject {
             currentAngle += stepAngle;
         }
 
-        this.pathList = [path];
+        this.paths = [path];
     }
 }

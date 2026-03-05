@@ -17,11 +17,6 @@ export class GraphNode extends VMobject {
         this.id = id;
         this.nodeRadius = config.radius ?? DEFAULT_RADIUS;
 
-        // Apply initial position
-        if (config.position) {
-            this.pos(config.position.x, config.position.y);
-        }
-
         // Apply styling only if explicitly provided in config
         // If not provided, VMobject defaults apply (no stroke, no fill)
         if (config.strokeColor !== undefined) {
@@ -38,6 +33,11 @@ export class GraphNode extends VMobject {
         }
 
         this.generateCirclePath();
+
+        // Apply initial position after geometry exists so transforms mutate points.
+        if (config.position) {
+            this.pos(config.position.x, config.position.y);
+        }
     }
 
     get radius(): number {
@@ -85,7 +85,7 @@ export class GraphNode extends VMobject {
         );
 
         path.closePath();
-        this.pathList = [path];
+        this.paths = [path];
     }
 
     getCenter(): Vector2 {

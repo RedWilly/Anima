@@ -160,7 +160,11 @@ export class Mobject {
   protected localMatrix: Matrix3x3;
   protected opacityValue: number;
   protected animQueue: AnimationQueue | null = null;
+  protected pointCloud: Vector2[] = [];
+  protected submobjects: Mobject[] = [];
   private savedStates: MobjectState[] = [];
+  private logicalRotation = 0;
+  private logicalScale = new Vector2(1, 1);
 
   parent: Mobject | null = null;
 
@@ -189,17 +193,48 @@ export class Mobject {
     return this.parent.getWorldMatrix().multiply(this.localMatrix);
   }
 
+  /**
+   * Matrix used by renderer.
+   * Geometry-driven mobjects bake their own transform into points,
+   * so only ancestor matrix transforms should be applied at draw time.
+   */
+  getRenderMatrix(): Matrix3x3 {
+    if (this.usesGeometryTransforms()) {
+      if (this.parent === null) {
+        return Matrix3x3.identity();
+      }
+      return this.parent.getRenderMatrix();
+    }
+
+    if (this.parent === null) {
+      return this.localMatrix;
+    }
+    return this.parent.getRenderMatrix().multiply(this.localMatrix);
+  }
+
   get position(): Vector2 {
+    if (this.usesGeometryTransforms()) {
+      const center = this.getGeometryCenter();
+      if (center) {
+        return center;
+      }
+    }
     const m = this.localMatrix.values;
     return new Vector2(m[2]!, m[5]!);
   }
 
   get rotation(): number {
+    if (this.usesGeometryTransforms()) {
+      return this.logicalRotation;
+    }
     const m = this.localMatrix.values;
     return Math.atan2(m[3]!, m[0]!);
   }
 
   get scale(): Vector2 {
+    if (this.usesGeometryTransforms()) {
+      return this.logicalScale;
+    }
     const m = this.localMatrix.values;
     const sx = Math.sqrt(m[0]! * m[0]! + m[3]! * m[3]!);
     const sy = Math.sqrt(m[1]! * m[1]! + m[4]! * m[4]!);
@@ -213,6 +248,16 @@ export class Mobject {
   // ========== Immediate State Setters ==========
 
   pos(x: number, y: number): this {
+    if (this.usesGeometryTransforms()) {
+      const current = this.position;
+      const dx = x - current.x;
+      const dy = y - current.y;
+      if (Math.abs(dx) > 1e-12 || Math.abs(dy) > 1e-12) {
+        this.applyMatrix(Matrix3x3.translation(dx, dy));
+      }
+      return this;
+    }
+
     const newValues = new Float32Array(this.localMatrix.values);
     newValues[2] = x;
     newValues[5] = y;
@@ -236,6 +281,23 @@ export class Mobject {
   }
 
   setRotation(angle: number): this {
+    if (this.usesGeometryTransforms()) {
+      const delta = angle - this.logicalRotation;
+      if (Math.abs(delta) < 1e-12) {
+        return this;
+      }
+
+      const pivot = this.position;
+      const transform = Matrix3x3.translation(pivot.x, pivot.y)
+        .multiply(Matrix3x3.rotation(delta))
+        .multiply(Matrix3x3.translation(-pivot.x, -pivot.y));
+
+      this.applyMatrix(transform);
+      this.logicalRotation = angle;
+      this.syncLocalMatrixFromGeometry();
+      return this;
+    }
+
     const m = this.localMatrix.values;
     const posX = m[2]!;
     const posY = m[5]!;
@@ -255,6 +317,25 @@ export class Mobject {
   }
 
   setScale(sx: number, sy: number): this {
+    if (this.usesGeometryTransforms()) {
+      const current = this.logicalScale;
+      const deltaX = current.x === 0 ? sx : sx / current.x;
+      const deltaY = current.y === 0 ? sy : sy / current.y;
+      if (Math.abs(deltaX - 1) < 1e-12 && Math.abs(deltaY - 1) < 1e-12) {
+        return this;
+      }
+
+      const pivot = this.position;
+      const transform = Matrix3x3.translation(pivot.x, pivot.y)
+        .multiply(Matrix3x3.scale(deltaX, deltaY))
+        .multiply(Matrix3x3.translation(-pivot.x, -pivot.y));
+
+      this.applyMatrix(transform);
+      this.logicalScale = new Vector2(sx, sy);
+      this.syncLocalMatrixFromGeometry();
+      return this;
+    }
+
     const m = this.localMatrix.values;
     const posX = m[2]!;
     const posY = m[5]!;
@@ -274,8 +355,69 @@ export class Mobject {
   }
 
   applyMatrix(m: Matrix3x3): this {
+    if (this.usesGeometryTransforms()) {
+      this.applyMatrixToOwnGeometry(m);
+      for (const child of this.submobjects) {
+        child.applyMatrix(m);
+      }
+
+      this.updateLogicalStateFromMatrix(m);
+      this.syncLocalMatrixFromGeometry();
+      return this;
+    }
+
     this.localMatrix = m.multiply(this.localMatrix);
     return this;
+  }
+
+  // ========== Scene Graph / Geometry Primitives ==========
+
+  addSubmobjects(...mobjects: Mobject[]): this {
+    for (const mob of mobjects) {
+      if (mob === this) continue;
+      if (this.submobjects.includes(mob)) continue;
+
+      if (mob.parent) {
+        mob.parent.removeSubmobject(mob);
+      }
+
+      mob.parent = this;
+      this.submobjects.push(mob);
+    }
+    this.syncLocalMatrixFromGeometry();
+    return this;
+  }
+
+  removeSubmobject(mobject: Mobject): this {
+    const index = this.submobjects.indexOf(mobject);
+    if (index >= 0) {
+      this.submobjects.splice(index, 1);
+      mobject.parent = null;
+    }
+    this.syncLocalMatrixFromGeometry();
+    return this;
+  }
+
+  clearSubmobjects(): this {
+    for (const child of this.submobjects) {
+      child.parent = null;
+    }
+    this.submobjects = [];
+    this.syncLocalMatrixFromGeometry();
+    return this;
+  }
+
+  getSubmobjects(): Mobject[] {
+    return [...this.submobjects];
+  }
+
+  protected setPointCloud(points: Vector2[]): void {
+    this.pointCloud = points.map((p) => new Vector2(p.x, p.y));
+    this.syncLocalMatrixFromGeometry();
+  }
+
+  protected getPointCloud(): Vector2[] {
+    return this.pointCloud.map((p) => new Vector2(p.x, p.y));
   }
 
   // ========== State Save/Restore ==========
@@ -428,9 +570,92 @@ export class Mobject {
    * Used by the segment cache to detect changes.
    */
   computeHash(): number {
+    const pointData = new Float32Array(this.pointCloud.length * 2);
+    for (let i = 0; i < this.pointCloud.length; i++) {
+      const p = this.pointCloud[i]!;
+      pointData[i * 2] = p.x;
+      pointData[i * 2 + 1] = p.y;
+    }
+
+    const childHashes = this.submobjects.map((child) => child.computeHash());
+
     return hashCompose(
       hashFloat32Array(this.localMatrix.values),
       hashNumber(this.opacityValue),
+      hashFloat32Array(pointData),
+      ...childHashes,
     );
   }
+
+  protected applyMatrixToOwnGeometry(m: Matrix3x3): void {
+    if (this.pointCloud.length === 0) return;
+    this.pointCloud = this.pointCloud.map((point) => m.transformPoint(point));
+  }
+
+  protected usesGeometryTransforms(): boolean {
+    return this.pointCloud.length > 0 || this.submobjects.length > 0;
+  }
+
+  private collectGeometryPoints(out: Vector2[]): void {
+    out.push(...this.pointCloud);
+    for (const child of this.submobjects) {
+      child.collectGeometryPoints(out);
+    }
+  }
+
+  private getGeometryCenter(): Vector2 | null {
+    const points: Vector2[] = [];
+    this.collectGeometryPoints(points);
+    if (points.length === 0) {
+      return null;
+    }
+
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+
+    for (const p of points) {
+      if (p.x < minX) minX = p.x;
+      if (p.x > maxX) maxX = p.x;
+      if (p.y < minY) minY = p.y;
+      if (p.y > maxY) maxY = p.y;
+    }
+
+    return new Vector2((minX + maxX) / 2, (minY + maxY) / 2);
+  }
+
+  private syncLocalMatrixFromGeometry(): void {
+    if (!this.usesGeometryTransforms()) {
+      return;
+    }
+
+    const center = this.getGeometryCenter() ?? Vector2.ZERO;
+    const sx = this.logicalScale.x;
+    const sy = this.logicalScale.y;
+    const cos = Math.cos(this.logicalRotation);
+    const sin = Math.sin(this.logicalRotation);
+    const values = new Float32Array(9);
+
+    values[0] = cos * sx;
+    values[1] = -sin * sy;
+    values[2] = center.x;
+    values[3] = sin * sx;
+    values[4] = cos * sy;
+    values[5] = center.y;
+    values[8] = 1;
+
+    this.localMatrix = new Matrix3x3(values);
+  }
+
+  private updateLogicalStateFromMatrix(m: Matrix3x3): void {
+    const values = m.values;
+    const sx = Math.sqrt(values[0]! * values[0]! + values[3]! * values[3]!);
+    const sy = Math.sqrt(values[1]! * values[1]! + values[4]! * values[4]!);
+    const rot = Math.atan2(values[3]!, values[0]!);
+
+    this.logicalScale = new Vector2(this.logicalScale.x * sx, this.logicalScale.y * sy);
+    this.logicalRotation += rot;
+  }
+
 }

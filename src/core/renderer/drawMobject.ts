@@ -1,10 +1,10 @@
 import type { SKRSContext2D } from '@napi-rs/canvas';
-import { Mobject, VGroup, VMobject } from '../mobjects';
+import { Mobject, VMobject } from '../mobjects';
 import { Matrix3x3, type PathCommand } from '../math';
 
 /**
  * Draws a Mobject to a canvas context.
- * Handles VMobject path rendering and VGroup recursion.
+ * Handles VMobject path rendering and generic submobject recursion.
  */
 export function drawMobject(
     ctx: SKRSContext2D,
@@ -14,29 +14,14 @@ export function drawMobject(
     // Skip invisible mobjects
     if (mobject.opacity <= 0) return;
 
-    if (mobject instanceof VGroup) {
-        drawVGroup(ctx, mobject, worldToScreen);
-    } else if (mobject instanceof VMobject) {
+    ctx.save();
+    ctx.globalAlpha *= mobject.opacity;
+
+    if (mobject instanceof VMobject) {
         drawVMobject(ctx, mobject, worldToScreen);
     }
-    // Base Mobject has no visual representation
-}
 
-/**
- * Draws a VGroup by recursively drawing its children.
- */
-function drawVGroup(
-    ctx: SKRSContext2D,
-    vgroup: VGroup,
-    worldToScreen: Matrix3x3
-): void {
-    // VGroup opacity affects all children
-    if (vgroup.opacity <= 0) return;
-
-    ctx.save();
-    ctx.globalAlpha *= vgroup.opacity;
-
-    for (const child of vgroup.getChildren()) {
+    for (const child of mobject.getSubmobjects()) {
         drawMobject(ctx, child, worldToScreen);
     }
 
@@ -53,13 +38,7 @@ function drawVMobject(
 ): void {
     const paths = vmobject.paths;
     if (paths.length === 0) return;
-
-    // Combine mobject's world matrix with world-to-screen transform
-    const mobjectWorld = vmobject.getWorldMatrix();
-    const transform = worldToScreen.multiply(mobjectWorld);
-
-    ctx.save();
-    ctx.globalAlpha *= vmobject.opacity;
+    const transform = worldToScreen.multiply(vmobject.getRenderMatrix());
 
     // Draw each path
     for (const path of paths) {
@@ -86,8 +65,6 @@ function drawVMobject(
             ctx.stroke();
         }
     }
-
-    ctx.restore();
 }
 
 /**
