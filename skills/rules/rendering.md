@@ -1,5 +1,7 @@
 # Rendering and CLI
 
+The examples below use `bunx anima ...`, which works cleanly in a Bun-based workflow.
+
 ## Programmatic Rendering
 
 ```ts
@@ -131,16 +133,16 @@ The CLI uses `bun` and the `commander` package.
 ### Render
 
 ```bash
-anima render <file> [options]
+bunx anima render <file> [options]
 
 # Examples — output defaults to media/{SceneName}.{format}
-anima render examples/basic.ts --scene MyScene --format mp4
+bunx anima render examples/basic.ts --scene MyScene --format mp4
 # → media/MyScene.mp4
 
-anima render examples/pol.ts -s Pol1 -o test-output/Pol1.mp4
+bunx anima render examples/pol.ts -s Pol1 -o test-output/Pol1.mp4
 # → test-output/Pol1.mp4
 
-anima render examples/GraphShowcase.ts -s SocialNetworkScene -f webp -q preview
+bunx anima render examples/GraphShowcase.ts -s SocialNetworkScene -f webp -q preview
 # → media/SocialNetworkScene.webp
 ```
 
@@ -158,8 +160,8 @@ Options:
 ### Preview (Quick Low-Quality Render)
 
 ```bash
-anima preview <file> -s MyScene
-anima preview examples/basic.ts -s MyScene -f mp4
+bunx anima preview <file> -s MyScene
+bunx anima preview examples/basic.ts -s MyScene -f mp4
 # → media/MyScene.mp4 (at half resolution)
 ```
 
@@ -168,14 +170,14 @@ Renders at half resolution for faster iteration.
 ### Export Single Frame
 
 ```bash
-anima export-frame <file> -s MyScene --frame last
-anima export-frame <file> -s MyScene --frame 42 -o frame.png
+bunx anima export-frame <file> -s MyScene --frame last
+bunx anima export-frame <file> -s MyScene --frame 42 -o frame.png
 ```
 
 ### List Scenes
 
 ```bash
-anima list-scenes <file>
+bunx anima list-scenes <file>
 ```
 
 Lists all exported Scene subclasses in a file.

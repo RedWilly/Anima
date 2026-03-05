@@ -69,6 +69,30 @@ describe('Follow Animation', () => {
             expect(frame.position.y).toBe(8);
         });
 
+        it('should accept tuple offset [x, y] and normalize internally', () => {
+            const frame = new CameraFrame({ pixelWidth: 1920, pixelHeight: 1080 });
+            const target = new Mobject();
+            target.pos(5, 5);
+
+            const follow = new Follow(frame, target, { offset: [2, 3] });
+            follow.interpolate(0.5);
+
+            expect(frame.position.x).toBe(7);
+            expect(frame.position.y).toBe(8);
+        });
+
+        it('should accept tuple offset [x, y, z] and use x/y for camera position', () => {
+            const frame = new CameraFrame({ pixelWidth: 1920, pixelHeight: 1080 });
+            const target = new Mobject();
+            target.pos(1, 2, 3);
+
+            const follow = new Follow(frame, target, { offset: [4, -1, 9] });
+            follow.interpolate(0.5);
+
+            expect(frame.position.x).toBe(5);
+            expect(frame.position.y).toBe(1);
+        });
+
         it('should maintain offset as target moves', () => {
             const frame = new CameraFrame({ pixelWidth: 1920, pixelHeight: 1080 });
             const target = new Mobject();

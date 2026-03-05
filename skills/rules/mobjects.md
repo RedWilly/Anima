@@ -14,7 +14,6 @@ Mobject          — base: position, rotation, scale, opacity, fluent animation 
      ├─ Rectangle — rectangle (extends Polygon)
      ├─ Line     — straight line
      ├─ Arrow    — line with arrowhead tip
-     ├─ Point    — tiny filled circle
      ├─ Text     — vectorized text (extends VGroup)
      ├─ Graph    — node/edge graph (extends VGroup)
      ├─ Glyph    — single text character
@@ -27,13 +26,13 @@ Mobject          — base: position, rotation, scale, opacity, fluent animation 
 These apply **instantly** (no animation). Use them during scene setup.
 
 ```ts
-mobject.pos(x, y)           // Set position in world coordinates
+mobject.pos(x, y, z?)       // Set position in world coordinates
 mobject.show()              // Set opacity to 1
 mobject.hide()              // Set opacity to 0
 mobject.setOpacity(0.5)     // Set opacity to any value (0–1)
 mobject.setRotation(angle)  // Set rotation in radians
 mobject.setScale(sx, sy)    // Set scale factors
-mobject.applyMatrix(m)      // Apply a Matrix3x3 transformation
+mobject.applyMatrix(m)      // Apply a Matrix4x4 transformation
 ```
 
 These all return `this` for chaining:
@@ -75,9 +74,9 @@ this.play(circle.restore(1));  // duration in seconds
 ## Properties (read-only)
 
 ```ts
-mobject.position   // Vector2 { x, y }
+mobject.position   // Vector { x, y, z }
 mobject.rotation   // number (radians)
-mobject.scale      // Vector2 { x, y }
+mobject.scale      // Vector { x, y, z }
 mobject.opacity    // number (0–1)
-mobject.matrix     // local Matrix3x3
+mobject.matrix     // local Matrix4x4
 ```

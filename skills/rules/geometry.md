@@ -5,7 +5,7 @@ All geometry classes extend `VMobject`. They support `.stroke()`, `.fill()`, `.p
 **Import** any shape directly from `'anima'`:
 
 ```ts
-import { Circle, Rectangle, Line, Arrow, Arc, Polygon, Point } from 'anima';
+import { Circle, Rectangle, Line, Arrow, Arc, Polygon } from 'anima';
 ```
 
 ## Circle
@@ -83,33 +83,19 @@ const arc = new Arc(2, 0, Math.PI).stroke(Color.GREEN, 3);
 ## Polygon
 
 ```ts
-import { Polygon, Vector2 } from 'anima';
+import { Polygon } from 'anima';
 
-new Polygon(vertices: Vector2[])
+new Polygon(...points: Array<[number, number]>)
 ```
 
-A closed polygon from an array of `Vector2` points.
+A closed polygon from planar point tuples.
 
 ```ts
-const triangle = new Polygon([
-  new Vector2(0, 1),
-  new Vector2(-1, -0.5),
-  new Vector2(1, -0.5)
-]).fill(Color.RED);
-```
-
-## Point
-
-```ts
-import { Point, Vector2 } from 'anima';
-
-new Point(location?: Vector2)   // default: origin (0,0)
-```
-
-A tiny filled white circle (radius 0.05). Useful as a marker.
-
-```ts
-const p = new Point(new Vector2(1, 1));
+const triangle = new Polygon(
+  [0, 1],
+  [-1, -0.5],
+  [1, -0.5]
+).fill(Color.RED);
 ```
 
 ## Common Patterns
