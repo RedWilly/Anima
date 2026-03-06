@@ -1,4 +1,4 @@
-import { Vector2 } from '../Vector2';
+import { Vector } from '../vector';
 import type { PathCommand } from './types';
 
 /**
@@ -7,8 +7,8 @@ import type { PathCommand } from './types';
  */
 export function toCubicCommands(commands: PathCommand[]): PathCommand[] {
     const result: PathCommand[] = [];
-    let cursor = new Vector2(0, 0);
-    let subpathStart = new Vector2(0, 0);
+    let cursor = new Vector(0, 0);
+    let subpathStart = new Vector(0, 0);
 
     for (const cmd of commands) {
         switch (cmd.type) {
@@ -67,10 +67,10 @@ export function toCubicCommands(commands: PathCommand[]): PathCommand[] {
  * Splits a cubic Bezier curve at parameter t using De Casteljau's algorithm.
  */
 export function splitCubic(
-    p0: Vector2,
-    p1: Vector2,
-    p2: Vector2,
-    p3: Vector2,
+    p0: Vector,
+    p1: Vector,
+    p2: Vector,
+    p3: Vector,
     t: number
 ): [PathCommand, PathCommand] {
     const p01 = p0.lerp(p1, t);
@@ -133,7 +133,7 @@ export function subdividePath(commands: PathCommand[], targetCount: number): Pat
         }
 
         let splitsPerformed = 0;
-        let cursor = new Vector2(0, 0);
+        let cursor = new Vector(0, 0);
 
         for (let i = 0; i < currentCommands.length; i++) {
             const cmd = currentCommands[i]!;
@@ -170,3 +170,4 @@ export function subdividePath(commands: PathCommand[], targetCount: number): Pat
 
     return currentCommands;
 }
+

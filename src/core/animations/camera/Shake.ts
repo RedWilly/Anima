@@ -1,6 +1,6 @@
 import { TransformativeAnimation } from '../LifecycleAnimations';
 import { CameraFrame } from '../../camera';
-import { Vector2 } from '../../math';
+import { Vector } from '../../math';
 
 /**
  * Configuration options for the Shake animation.
@@ -56,7 +56,7 @@ interface ShakeConfig {
  * }).duration(3));
  */
 export class Shake extends TransformativeAnimation<CameraFrame> {
-    private originalPosition!: Vector2;
+    private originalPosition!: Vector;
     private readonly intensity: number;
     private readonly frequency: number;
     private readonly decay: number;
@@ -127,3 +127,4 @@ export class Shake extends TransformativeAnimation<CameraFrame> {
                Math.sin(t * 7.1 + seed * 0.7) * 0.2;
     }
 }
+

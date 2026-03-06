@@ -2,7 +2,7 @@ import { describe, it, expect } from 'bun:test';
 import * as fc from 'fast-check';
 import { Camera } from '../../../../src/core/camera';
 import { CameraFrame } from '../../../../src/core/camera/CameraFrame';
-import { Vector2 } from '../../../../src/core/math/Vector2/Vector2';
+import { Vector } from '../../../../src/core/math/vector/Vector';
 
 describe('Camera', () => {
     describe('Constructor and Defaults', () => {
@@ -73,30 +73,30 @@ describe('Camera', () => {
     describe('Pan Operations', () => {
         it('pan() should move camera by delta', () => {
             const camera = new Camera();
-            camera.pan(new Vector2(5, 3));
+            camera.pan(new Vector(5, 3));
             expect(camera.position.x).toBe(5);
             expect(camera.position.y).toBe(3);
         });
 
         it('pan() should be cumulative', () => {
             const camera = new Camera();
-            camera.pan(new Vector2(2, 1));
-            camera.pan(new Vector2(3, 4));
+            camera.pan(new Vector(2, 1));
+            camera.pan(new Vector(3, 4));
             expect(camera.position.x).toBe(5);
             expect(camera.position.y).toBe(5);
         });
 
         it('panTo() should set absolute position', () => {
             const camera = new Camera();
-            camera.pan(new Vector2(10, 10));
-            camera.panTo(new Vector2(3, 2));
+            camera.pan(new Vector(10, 10));
+            camera.panTo(new Vector(3, 2));
             expect(camera.position.x).toBe(3);
             expect(camera.position.y).toBe(2);
         });
 
         it('pan() should return this for chaining', () => {
             const camera = new Camera();
-            const result = camera.pan(new Vector2(1, 1));
+            const result = camera.pan(new Vector(1, 1));
             expect(result).toBe(camera);
         });
     });
@@ -141,17 +141,17 @@ describe('Camera', () => {
             const matrix = camera.getViewMatrix();
             // Default camera: no pan, zoom 1, no rotation
             // Transforming origin should give origin
-            const origin = matrix.transformPoint(new Vector2(0, 0));
+            const origin = matrix.transformPoint2D(new Vector(0, 0));
             expect(origin.x).toBeCloseTo(0, 5);
             expect(origin.y).toBeCloseTo(0, 5);
         });
 
         it('should apply pan to view matrix', () => {
             const camera = new Camera();
-            camera.panTo(new Vector2(10, 5));
+            camera.panTo(new Vector(10, 5));
             const matrix = camera.getViewMatrix();
             // Point at (10, 5) should transform to origin
-            const point = matrix.transformPoint(new Vector2(10, 5));
+            const point = matrix.transformPoint2D(new Vector(10, 5));
             expect(point.x).toBeCloseTo(0, 5);
             expect(point.y).toBeCloseTo(0, 5);
         });
@@ -161,7 +161,7 @@ describe('Camera', () => {
             camera.zoomTo(2);
             const matrix = camera.getViewMatrix();
             // Point at (1, 1) should transform to (2, 2) with 2x zoom
-            const point = matrix.transformPoint(new Vector2(1, 1));
+            const point = matrix.transformPoint2D(new Vector(1, 1));
             expect(point.x).toBeCloseTo(2, 5);
             expect(point.y).toBeCloseTo(2, 5);
         });
@@ -170,7 +170,7 @@ describe('Camera', () => {
     describe('Reset', () => {
         it('should reset camera to default state', () => {
             const camera = new Camera();
-            camera.panTo(new Vector2(10, 10));
+            camera.panTo(new Vector(10, 10));
             camera.zoomTo(3);
             camera.rotateTo(Math.PI);
 
@@ -220,10 +220,10 @@ describe('Camera', () => {
                     fc.double({ min: -100, max: 100, noNaN: true, noDefaultInfinity: true }),
                     (x1, y1, x2, y2) => {
                         const camera1 = new Camera();
-                        camera1.pan(new Vector2(x1, y1)).pan(new Vector2(x2, y2));
+                        camera1.pan(new Vector(x1, y1)).pan(new Vector(x2, y2));
 
                         const camera2 = new Camera();
-                        camera2.pan(new Vector2(x2, y2)).pan(new Vector2(x1, y1));
+                        camera2.pan(new Vector(x2, y2)).pan(new Vector(x1, y1));
 
                         return (
                             Math.abs(camera1.position.x - camera2.position.x) < 0.0001 &&
@@ -249,7 +249,7 @@ describe('Camera', () => {
             camera.frame.setRotation(Math.PI / 4);
 
             const matrix = camera.getViewMatrix();
-            const point = matrix.transformPoint(new Vector2(5, 3));
+            const point = matrix.transformPoint2D(new Vector(5, 3));
             expect(point.x).toBeCloseTo(0, 5);
             expect(point.y).toBeCloseTo(0, 5);
         });
@@ -263,7 +263,7 @@ describe('Camera', () => {
 
         it('panTo proxies to frame correctly', () => {
             const camera = new Camera();
-            camera.panTo(new Vector2(10, -5));
+            camera.panTo(new Vector(10, -5));
             expect(camera.frame.position.x).toBe(10);
             expect(camera.frame.position.y).toBe(-5);
         });
@@ -278,14 +278,14 @@ describe('Camera', () => {
     describe('Coordinate Transforms', () => {
         it('worldToScreen transforms correctly', () => {
             const camera = new Camera({ pixelWidth: 1920, pixelHeight: 1080 });
-            const screenPos = camera.worldToScreen(new Vector2(0, 0));
+            const screenPos = camera.worldToScreen(new Vector(0, 0));
             expect(screenPos.x).toBeCloseTo(960, 1);
             expect(screenPos.y).toBeCloseTo(540, 1);
         });
 
         it('worldToScreen transforms off-center point correctly', () => {
             const camera = new Camera({ pixelWidth: 1920, pixelHeight: 1080 });
-            const worldPos = new Vector2(2, 0);
+            const worldPos = new Vector(2, 0);
             const screenPos = camera.worldToScreen(worldPos);
             expect(screenPos.x).toBeGreaterThan(960);
             expect(screenPos.y).toBeCloseTo(540, 1);
@@ -293,7 +293,7 @@ describe('Camera', () => {
 
         it('screenToWorld is inverse of worldToScreen', () => {
             const camera = new Camera({ pixelWidth: 1920, pixelHeight: 1080 });
-            const originalWorld = new Vector2(3, -2);
+            const originalWorld = new Vector(3, -2);
             const screen = camera.worldToScreen(originalWorld);
             const backToWorld = camera.screenToWorld(screen);
             expect(backToWorld.x).toBeCloseTo(originalWorld.x, 4);
@@ -302,10 +302,10 @@ describe('Camera', () => {
 
         it('screenToWorld and worldToScreen are inverses with pan and zoom', () => {
             const camera = new Camera({ pixelWidth: 1920, pixelHeight: 1080 });
-            camera.panTo(new Vector2(5, 5));
+            camera.panTo(new Vector(5, 5));
             camera.zoomTo(2);
 
-            const originalWorld = new Vector2(7, 3);
+            const originalWorld = new Vector(7, 3);
             const screen = camera.worldToScreen(originalWorld);
             const backToWorld = camera.screenToWorld(screen);
             expect(backToWorld.x).toBeCloseTo(originalWorld.x, 4);
@@ -316,30 +316,31 @@ describe('Camera', () => {
     describe('isInView', () => {
         it('returns true for points within frame', () => {
             const camera = new Camera();
-            expect(camera.isInView(new Vector2(0, 0))).toBe(true);
-            expect(camera.isInView(new Vector2(1, 1))).toBe(true);
-            expect(camera.isInView(new Vector2(-1, -1))).toBe(true);
+            expect(camera.isInView(new Vector(0, 0))).toBe(true);
+            expect(camera.isInView(new Vector(1, 1))).toBe(true);
+            expect(camera.isInView(new Vector(-1, -1))).toBe(true);
         });
 
         it('returns false for points outside frame', () => {
             const camera = new Camera();
-            expect(camera.isInView(new Vector2(100, 0))).toBe(false);
-            expect(camera.isInView(new Vector2(0, 100))).toBe(false);
-            expect(camera.isInView(new Vector2(-100, -100))).toBe(false);
+            expect(camera.isInView(new Vector(100, 0))).toBe(false);
+            expect(camera.isInView(new Vector(0, 100))).toBe(false);
+            expect(camera.isInView(new Vector(-100, -100))).toBe(false);
         });
 
         it('respects camera pan position', () => {
             const camera = new Camera();
-            camera.panTo(new Vector2(50, 50));
-            expect(camera.isInView(new Vector2(0, 0))).toBe(false);
-            expect(camera.isInView(new Vector2(50, 50))).toBe(true);
+            camera.panTo(new Vector(50, 50));
+            expect(camera.isInView(new Vector(0, 0))).toBe(false);
+            expect(camera.isInView(new Vector(50, 50))).toBe(true);
         });
 
         it('respects camera zoom level', () => {
             const camera = new Camera();
             camera.zoomTo(4);
-            expect(camera.isInView(new Vector2(1, 1))).toBe(true);
-            expect(camera.isInView(new Vector2(3, 3))).toBe(false);
+            expect(camera.isInView(new Vector(1, 1))).toBe(true);
+            expect(camera.isInView(new Vector(3, 3))).toBe(false);
         });
     });
 });
+

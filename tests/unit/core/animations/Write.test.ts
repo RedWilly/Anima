@@ -4,7 +4,7 @@ import { Circle } from '../../../../src/core/mobjects/geometry/Circle';
 import { Rectangle } from '../../../../src/core/mobjects/geometry/Rectangle';
 import { VMobject } from '../../../../src/core/mobjects/VMobject';
 import { Color } from '../../../../src/core/math/color/Color';
-import { Vector2 } from '../../../../src/core/math/Vector2/Vector2';
+import { Vector } from '../../../../src/core/math/vector/Vector';
 import { BezierPath } from '../../../../src/core/math/bezier/BezierPath';
 
 describe('Write Animation', () => {
@@ -60,8 +60,8 @@ describe('Write Animation', () => {
         it('should handle simple line path', () => {
             const vmob = new VMobject();
             const path = new BezierPath();
-            path.moveTo(new Vector2(0, 0));
-            path.lineTo(new Vector2(100, 0));
+            path.moveTo(new Vector(0, 0));
+            path.lineTo(new Vector(100, 0));
             vmob.addPath(path);
 
             const anim = new Write(vmob);
@@ -75,11 +75,11 @@ describe('Write Animation', () => {
         it('should handle multiple paths', () => {
             const vmob = new VMobject();
             const path1 = new BezierPath();
-            path1.moveTo(new Vector2(0, 0));
-            path1.lineTo(new Vector2(100, 0));
+            path1.moveTo(new Vector(0, 0));
+            path1.lineTo(new Vector(100, 0));
             const path2 = new BezierPath();
-            path2.moveTo(new Vector2(0, 50));
-            path2.lineTo(new Vector2(100, 50));
+            path2.moveTo(new Vector(0, 50));
+            path2.lineTo(new Vector(100, 50));
 
             vmob.addPath(path1);
             vmob.addPath(path2);
@@ -169,3 +169,4 @@ describe('Write Animation', () => {
         });
     });
 });
+

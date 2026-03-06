@@ -1,4 +1,4 @@
-import { Matrix3x3, Vector2 } from '../math';
+import { Matrix4x4, Vector } from '../math';
 import { CameraFrame } from './CameraFrame';
 import { hashNumber, hashFloat32Array, hashCompose } from '../cache';
 import { MANIM_FRAME_HEIGHT, type CameraConfig, type ResolvedCameraConfig } from './types';
@@ -13,7 +13,7 @@ import { MANIM_FRAME_HEIGHT, type CameraConfig, type ResolvedCameraConfig } from
  * @example
  * // Instant camera manipulation
  * camera.zoomTo(2);
- * camera.panTo(new Vector2(5, 3));
+ * camera.panTo(new Vector(5, 3));
  *
  * @example
  * // Animated camera movement via frame
@@ -74,7 +74,7 @@ export class Camera {
 
     // ========== Camera Transform Properties (read from frame) ==========
 
-    get position(): Vector2 {
+    get position(): Vector {
         return this.frame.position;
     }
 
@@ -88,13 +88,13 @@ export class Camera {
 
     // ========== Pan Operations (proxy to frame) ==========
 
-    pan(delta: Vector2): this {
+    pan(delta: Vector): this {
         const current = this.frame.position;
         this.frame.pos(current.x + delta.x, current.y + delta.y);
         return this;
     }
 
-    panTo(position: Vector2): this {
+    panTo(position: Vector): this {
         this.frame.pos(position.x, position.y);
         return this;
     }
@@ -119,7 +119,7 @@ export class Camera {
 
     // ========== View Matrix ==========
 
-    getViewMatrix(): Matrix3x3 {
+    getViewMatrix(): Matrix4x4 {
         const framePos = this.frame.position;
         const frameScale = this.frame.scale;
         const frameRotation = this.frame.rotation;
@@ -127,9 +127,9 @@ export class Camera {
         const zoomX = 1 / frameScale.x;
         const zoomY = 1 / frameScale.y;
 
-        const translate = Matrix3x3.translation(-framePos.x, -framePos.y);
-        const rotate = Matrix3x3.rotation(-frameRotation);
-        const scale = Matrix3x3.scale(zoomX, zoomY);
+        const translate = Matrix4x4.translation(-framePos.x, -framePos.y, 0);
+        const rotate = Matrix4x4.rotationZ(-frameRotation);
+        const scale = Matrix4x4.scale(zoomX, zoomY, 1);
 
         return scale.multiply(rotate).multiply(translate);
     }
@@ -149,12 +149,12 @@ export class Camera {
      * const screenPos = camera.worldToScreen(circle.position);
      * console.log(`Circle is at pixel (${screenPos.x}, ${screenPos.y})`);
      */
-    worldToScreen(pos: Vector2): Vector2 {
+    worldToScreen(pos: Vector): Vector {
         const viewMatrix = this.getViewMatrix();
-        const transformed = viewMatrix.transformPoint(pos);
+        const transformed = viewMatrix.transformPoint2D(pos);
         const screenX = (transformed.x + 1) * 0.5 * this.config.pixelWidth;
         const screenY = (1 - transformed.y) * 0.5 * this.config.pixelHeight;
-        return new Vector2(screenX, screenY);
+        return new Vector(screenX, screenY);
     }
 
     /**
@@ -166,14 +166,14 @@ export class Camera {
      *
      * @example
      * // Convert a mouse click position to world coordinates
-     * const worldPos = camera.screenToWorld(new Vector2(mouseX, mouseY));
+     * const worldPos = camera.screenToWorld(new Vector(mouseX, mouseY));
      */
-    screenToWorld(pos: Vector2): Vector2 {
+    screenToWorld(pos: Vector): Vector {
         const ndcX = (pos.x / this.config.pixelWidth) * 2 - 1;
         const ndcY = 1 - (pos.y / this.config.pixelHeight) * 2;
         const viewMatrix = this.getViewMatrix();
         const inverseView = viewMatrix.inverse();
-        return inverseView.transformPoint(new Vector2(ndcX, ndcY));
+        return inverseView.transformPoint2D(new Vector(ndcX, ndcY));
     }
 
     /**
@@ -187,7 +187,7 @@ export class Camera {
      *   console.log('Object is visible');
      * }
      */
-    isInView(pos: Vector2): boolean {
+    isInView(pos: Vector): boolean {
         const framePos = this.frame.position;
         const halfWidth = this.frame.width / 2;
         const halfHeight = this.frame.height / 2;
@@ -218,3 +218,4 @@ export class Camera {
         );
     }
 }
+

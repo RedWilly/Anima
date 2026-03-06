@@ -1,6 +1,6 @@
 import { TransformativeAnimation } from '../LifecycleAnimations';
 import type { Mobject } from '../../mobjects';
-import { Vector2 } from '../../math';
+import { Vector } from '../../math';
 
 /**
  * Animation that scales a Mobject to a target scale factor.
@@ -14,8 +14,8 @@ import { Vector2 } from '../../math';
  * scene.play(new Scale(circle, 2));  // Scale to 2x
  */
 export class Scale<T extends Mobject = Mobject> extends TransformativeAnimation<T> {
-    private startScale!: Vector2;
-    private readonly endScale: Vector2;
+    private startScale!: Vector;
+    private readonly endScale: Vector;
 
     constructor(target: T, factor: number);
     constructor(target: T, factorX: number, factorY: number);
@@ -23,7 +23,7 @@ export class Scale<T extends Mobject = Mobject> extends TransformativeAnimation<
         super(target);
         const endX = factorX;
         const endY = factorY ?? factorX;
-        this.endScale = new Vector2(endX, endY);
+        this.endScale = new Vector(endX, endY);
     }
 
     protected captureStartState(): void {
@@ -41,3 +41,4 @@ export class Scale<T extends Mobject = Mobject> extends TransformativeAnimation<
         return this.endScale.x;
     }
 }
+

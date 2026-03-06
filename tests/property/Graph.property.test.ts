@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'bun:test';
 import * as fc from 'fast-check';
 import { Graph } from '../../src/core/mobjects/graph/Graph';
-import { Vector2 } from '../../src/core/math/Vector2/Vector2';
+import { Vector } from '../../src/core/math/vector/Vector';
 
 /** Generates a valid node ID string. */
 const nodeIdArb = fc.stringMatching(/^[a-z][a-z0-9]{0,4}$/);
@@ -66,7 +66,7 @@ describe('Graph Property Tests', () => {
                 fc.double({ min: -100, max: 100, noNaN: true }),
                 (id, x, y) => {
                     const graph = new Graph();
-                    const node = graph.addNode(id, { position: new Vector2(x, y) });
+                    const node = graph.addNode(id, { position: new Vector(x, y) });
                     return Math.abs(node.position.x - x) < 1e-5 &&
                         Math.abs(node.position.y - y) < 1e-5;
                 }
@@ -152,8 +152,8 @@ describe('Graph Property Tests', () => {
                 (id1, id2, x, y) => {
                     if (id1 === id2) return true;
                     const graph = new Graph();
-                    graph.addNode(id1, { position: new Vector2(0, 0) });
-                    graph.addNode(id2, { position: new Vector2(x, y) });
+                    graph.addNode(id1, { position: new Vector(0, 0) });
+                    graph.addNode(id2, { position: new Vector(x, y) });
                     graph.addEdge(id1, id2);
                     const path = graph.getEdgePath(id1, id2);
                     return path !== undefined && path.getCommands().length > 0;
@@ -215,7 +215,7 @@ describe('Graph Property Tests', () => {
                     const graph = new Graph();
                     // Place all nodes at origin
                     for (const id of ids) {
-                        graph.addNode(id, { position: new Vector2(0, 0) });
+                        graph.addNode(id, { position: new Vector(0, 0) });
                     }
 
                     graph.layout('force-directed', { iterations: 20, repulsion: 1 });
@@ -277,3 +277,4 @@ describe('Graph Property Tests', () => {
         });
     });
 });
+

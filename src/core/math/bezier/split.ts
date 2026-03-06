@@ -1,21 +1,21 @@
-import { Vector2 } from '../Vector2';
+import { Vector } from '../vector';
 
 /**
  * Result of splitting a cubic Bezier curve at parameter t.
  */
 export interface CubicSegment {
-    start: Vector2;
-    control1: Vector2;
-    control2: Vector2;
-    end: Vector2;
+    start: Vector;
+    control1: Vector;
+    control2: Vector;
+    end: Vector;
 }
 
 /** Splits a cubic Bezier curve at t using de Casteljau's algorithm into two segments. */
 export function splitCubicAt(
-    p0: Vector2,
-    p1: Vector2,
-    p2: Vector2,
-    p3: Vector2,
+    p0: Vector,
+    p1: Vector,
+    p2: Vector,
+    p3: Vector,
     t: number
 ): [CubicSegment, CubicSegment] {
     // de Casteljau's algorithm - first level
@@ -51,15 +51,15 @@ export function splitCubicAt(
 
 /** Splits a quadratic Bezier curve at t into two segments. */
 export interface QuadraticSegment {
-    start: Vector2;
-    control: Vector2;
-    end: Vector2;
+    start: Vector;
+    control: Vector;
+    end: Vector;
 }
 
 export function splitQuadraticAt(
-    p0: Vector2,
-    p1: Vector2,
-    p2: Vector2,
+    p0: Vector,
+    p1: Vector,
+    p2: Vector,
     t: number
 ): [QuadraticSegment, QuadraticSegment] {
     // de Casteljau for quadratic
@@ -81,3 +81,4 @@ export function splitQuadraticAt(
 
     return [first, second];
 }
+

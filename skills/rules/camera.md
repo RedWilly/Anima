@@ -1,6 +1,6 @@
 # Camera
 
-The camera controls what portion of the world is visible. It uses a `CameraFrame` (which is a `Mobject`) so all camera movements can be animated with the fluent API.
+The camera controls what portion of the world is visible. It uses a `CameraFrame` (which is a `Mobject`) so camera motion fits naturally into Anima's `play()` + fluent/Pro animation model.
 
 ## Accessing the Camera
 
@@ -108,7 +108,7 @@ The shake automatically returns to the original position when complete.
 Camera follows a moving target over time. **Must import:**
 
 ```ts
-import { Follow } from 'anima';
+import { Follow, Vector } from 'anima';
 
 // Basic follow — camera snaps to target each frame for 5 seconds
 this.play(new Follow(this.frame, movingCircle).duration(5));
@@ -116,14 +116,27 @@ this.play(new Follow(this.frame, movingCircle).duration(5));
 // Smooth follow with damping (0 = instant snap, 0.9 = very laggy)
 this.play(new Follow(this.frame, player, { damping: 0.8 }).duration(10));
 
-// Follow with offset (camera stays 2 units ahead of target)
+// Follow with tuple offset (camera stays 2 units ahead of target)
 this.play(new Follow(this.frame, car, {
-  offset: new Vector2(2, 0),  // offset in world units
+  offset: [2, 0],  // [x, y] offset in world units
+  damping: 0.5
+}).duration(10));
+
+// Vector offset is also supported
+this.play(new Follow(this.frame, car, {
+  offset: new Vector(2, 0),
+  damping: 0.5
+}).duration(10));
+
+// 3D tuple is accepted for consistency; z is ignored by camera follow
+this.play(new Follow(this.frame, car, {
+  offset: [2, 0, 1],  // [x, y, z]
   damping: 0.5
 }).duration(10));
 ```
 
 Unlike `centerOn` which captures position once, `Follow` reads the target position **every frame**.
+`Follow` is planar camera movement, so only offset x/y affect frame position.
 
 ## Camera Bounds
 
@@ -143,8 +156,8 @@ For non-animated camera changes (useful during setup):
 
 ```ts
 this.camera.zoomTo(2);                      // Instant zoom
-this.camera.panTo(new Vector2(5, 3));       // Instant pan
-this.camera.pan(new Vector2(1, 0));         // Instant relative pan
+this.camera.panTo(new Vector(5, 3));        // Instant pan
+this.camera.pan(new Vector(1, 0));          // Instant relative pan
 this.camera.rotateTo(Math.PI / 4);          // Instant rotation
 this.camera.reset();                        // Reset to origin, zoom 1×, no rotation
 ```
@@ -152,8 +165,8 @@ this.camera.reset();                        // Reset to origin, zoom 1×, no rot
 ## Coordinate Conversion
 
 ```ts
-this.camera.worldToScreen(worldPos)   // Vector2 → pixel coordinates
-this.camera.screenToWorld(screenPos)  // pixel coordinates → Vector2
+this.camera.worldToScreen(worldPos)   // Vector → pixel coordinates
+this.camera.screenToWorld(screenPos)  // pixel coordinates → Vector
 this.camera.isInView(worldPos)        // true if position is visible
 ```
 

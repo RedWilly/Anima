@@ -1,4 +1,4 @@
-import { Vector2 } from '../Vector2';
+import { Vector } from '../vector';
 import type { PathCommand } from './types';
 import { evaluateQuadratic, evaluateCubic } from './evaluators';
 import { evaluateQuadraticDerivative, evaluateCubicDerivative } from './evaluators';
@@ -6,8 +6,8 @@ import { getQuadraticLength, getCubicLength } from './length';
 
 export function getPathLength(commands: PathCommand[]): number {
     let length = 0;
-    let cursor = new Vector2(0, 0);
-    let subpathStart = new Vector2(0, 0);
+    let cursor = new Vector(0, 0);
+    let subpathStart = new Vector(0, 0);
 
     for (const cmd of commands) {
         switch (cmd.type) {
@@ -41,18 +41,18 @@ export function getPathLength(commands: PathCommand[]): number {
 }
 
 /** Point on the path at normalized position t (0-1). */
-export function getPointAtPath(commands: PathCommand[], t: number): Vector2 {
+export function getPointAtPath(commands: PathCommand[], t: number): Vector {
     const totalLength = getPathLength(commands);
     if (totalLength === 0) {
-        return commands.length > 0 ? commands[commands.length - 1]!.end : Vector2.ZERO;
+        return commands.length > 0 ? commands[commands.length - 1]!.end : Vector.ZERO;
     }
 
     t = Math.max(0, Math.min(1, t));
     const targetDistance = t * totalLength;
 
     let currentDistance = 0;
-    let cursor = new Vector2(0, 0);
-    let subpathStart = new Vector2(0, 0);
+    let cursor = new Vector(0, 0);
+    let subpathStart = new Vector(0, 0);
 
     for (const cmd of commands) {
         let segmentLength = 0;
@@ -105,16 +105,16 @@ export function getPointAtPath(commands: PathCommand[], t: number): Vector2 {
 }
 
 /** Tangent vector on the path at normalized position t (0-1). */
-export function getTangentAtPath(commands: PathCommand[], t: number): Vector2 {
+export function getTangentAtPath(commands: PathCommand[], t: number): Vector {
     const totalLength = getPathLength(commands);
-    if (totalLength === 0) return Vector2.RIGHT;
+    if (totalLength === 0) return Vector.RIGHT;
 
     t = Math.max(0, Math.min(1, t));
     const targetDistance = t * totalLength;
 
     let currentDistance = 0;
-    let cursor = new Vector2(0, 0);
-    let subpathStart = new Vector2(0, 0);
+    let cursor = new Vector(0, 0);
+    let subpathStart = new Vector(0, 0);
 
     for (const cmd of commands) {
         let segmentLength = 0;
@@ -163,5 +163,6 @@ export function getTangentAtPath(commands: PathCommand[], t: number): Vector2 {
         currentDistance += segmentLength;
     }
 
-    return Vector2.RIGHT;
+    return Vector.RIGHT;
 }
+

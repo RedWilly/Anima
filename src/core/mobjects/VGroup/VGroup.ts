@@ -1,5 +1,4 @@
 import { VMobject } from '../VMobject';
-import { hashCompose } from '../../cache';
 import { Color } from '../../math';
 import {
     centerGroup,
@@ -11,67 +10,44 @@ import type { CornerPosition, Direction, Edge } from './layout';
 
 /**
  * A collection of VMobjects that can be manipulated as a single unit.
- * Uses Scene Graph hierarchy: transforms on parent are inherited by children
- * via getWorldMatrix() calculation, not by mutating child matrices.
+ * Uses Mobject's submobject hierarchy and recursive geometry transforms.
  */
 export class VGroup extends VMobject {
-    protected children: VMobject[] = [];
-
     constructor(...mobjects: VMobject[]) {
         super();
         this.add(...mobjects);
     }
 
     get length(): number {
-        return this.children.length;
+        return this.getSubmobjects().length;
     }
 
     add(...mobjects: VMobject[]): this {
-        for (const mob of mobjects) {
-            if (!this.children.includes(mob)) {
-                mob.parent = this;
-                this.children.push(mob);
-            }
-        }
+        this.addSubmobjects(...mobjects);
         return this;
     }
 
     remove(mobject: VMobject): this {
-        const index = this.children.indexOf(mobject);
-        if (index > -1) {
-            mobject.parent = null;
-            this.children.splice(index, 1);
-        }
+        this.removeSubmobject(mobject);
         return this;
     }
 
     clear(): this {
-        for (const child of this.children) {
-            child.parent = null;
-        }
-        this.children = [];
+        this.clearSubmobjects();
         return this;
     }
 
     getChildren(): VMobject[] {
-        return [...this.children];
+        return this.getSubmobjects().filter((m): m is VMobject => m instanceof VMobject);
     }
 
     get(index: number): VMobject | undefined {
-        return this.children[index];
-    }
-
-    // Note: applyMatrix is NOT overridden - transforms stay on this group's local matrix.
-    // Children inherit via getWorldMatrix() during rendering.
-
-    override pos(x: number, y: number): this {
-        // Directly set position on local matrix, don't propagate to children
-        return super.pos(x, y);
+        return this.getChildren()[index];
     }
 
     override show(): this {
         super.show();
-        for (const child of this.children) {
+        for (const child of this.getChildren()) {
             child.show();
         }
         return this;
@@ -79,7 +55,7 @@ export class VGroup extends VMobject {
 
     override hide(): this {
         super.hide();
-        for (const child of this.children) {
+        for (const child of this.getChildren()) {
             child.hide();
         }
         return this;
@@ -92,7 +68,7 @@ export class VGroup extends VMobject {
      */
     override setOpacity(value: number): this {
         super.setOpacity(value);
-        for (const child of this.children) {
+        for (const child of this.getChildren()) {
             child.setOpacity(value);
         }
         return this;
@@ -106,7 +82,7 @@ export class VGroup extends VMobject {
      */
     override stroke(color: Color, width: number = 2): this {
         super.stroke(color, width);
-        for (const child of this.children) {
+        for (const child of this.getChildren()) {
             child.stroke(color, width);
         }
         return this;
@@ -120,14 +96,15 @@ export class VGroup extends VMobject {
      */
     override fill(color: Color, opacity: number = 1): this {
         super.fill(color, opacity);
-        for (const child of this.children) {
+        for (const child of this.getChildren()) {
             child.fill(color, opacity);
         }
         return this;
     }
 
     override getBoundingBox(): { minX: number; maxX: number; minY: number; maxY: number } {
-        if (this.children.length === 0) {
+        const children = this.getChildren();
+        if (children.length === 0) {
             return super.getBoundingBox();
         }
 
@@ -136,7 +113,7 @@ export class VGroup extends VMobject {
         let minY = Infinity;
         let maxY = -Infinity;
 
-        for (const child of this.children) {
+        for (const child of children) {
             const bounds = child.getBoundingBox();
             if (bounds.minX < minX) minX = bounds.minX;
             if (bounds.maxX > maxX) maxX = bounds.maxX;
@@ -167,12 +144,7 @@ export class VGroup extends VMobject {
         return this;
     }
 
-    /**
-     * Recursively hashes this VGroup and all children.
-     * Any child state change invalidates segments containing this group.
-     */
     override computeHash(): number {
-        const childHashes = this.children.map(c => c.computeHash());
-        return hashCompose(super.computeHash(), ...childHashes);
+        return super.computeHash();
     }
 }

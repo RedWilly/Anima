@@ -1,6 +1,6 @@
 import {
     BezierPath,
-    Vector2,
+    Vector,
     type PathCommand,
     getQuadraticLength,
     getCubicLength,
@@ -30,8 +30,8 @@ export function getPartialPath(path: BezierPath, t: number): BezierPath {
     const result = new BezierPath();
 
     let accumulatedLength = 0;
-    let cursor = Vector2.ZERO;
-    let subpathStart = Vector2.ZERO;
+    let cursor = Vector.ZERO;
+    let subpathStart = Vector.ZERO;
 
     for (const cmd of commands) {
         const segmentLength = getSegmentLength(cmd, cursor, subpathStart);
@@ -59,8 +59,8 @@ export function getPartialPath(path: BezierPath, t: number): BezierPath {
 
 function getSegmentLength(
     cmd: PathCommand,
-    cursor: Vector2,
-    subpathStart: Vector2
+    cursor: Vector,
+    subpathStart: Vector
 ): number {
     switch (cmd.type) {
         case 'Move':
@@ -86,9 +86,9 @@ function getSegmentLength(
 
 function updateCursor(
     cmd: PathCommand,
-    _cursor: Vector2,
-    subpathStart: Vector2,
-    update: (cursor: Vector2, subpathStart: Vector2) => void
+    _cursor: Vector,
+    subpathStart: Vector,
+    update: (cursor: Vector, subpathStart: Vector) => void
 ): void {
     switch (cmd.type) {
         case 'Move':
@@ -106,8 +106,8 @@ function updateCursor(
 function appendCommand(
     result: BezierPath,
     cmd: PathCommand,
-    _cursor: Vector2,
-    _subpathStart: Vector2
+    _cursor: Vector,
+    _subpathStart: Vector
 ): void {
     switch (cmd.type) {
         case 'Move':
@@ -135,8 +135,8 @@ function appendCommand(
 function appendPartialCommand(
     result: BezierPath,
     cmd: PathCommand,
-    cursor: Vector2,
-    subpathStart: Vector2,
+    cursor: Vector,
+    subpathStart: Vector,
     localT: number
 ): void {
     switch (cmd.type) {
@@ -170,3 +170,4 @@ function appendPartialCommand(
         }
     }
 }
+

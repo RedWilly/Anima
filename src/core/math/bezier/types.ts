@@ -1,10 +1,11 @@
-import type { Vector2 } from '../Vector2';
+import type { Vector } from '../vector';
 
 export type PathCommandType = 'Move' | 'Line' | 'Quadratic' | 'Cubic' | 'Close';
 
 export interface PathCommand {
     type: PathCommandType;
-    end: Vector2;
-    control1?: Vector2;
-    control2?: Vector2;
+    end: Vector;
+    control1?: Vector;
+    control2?: Vector;
 }
+

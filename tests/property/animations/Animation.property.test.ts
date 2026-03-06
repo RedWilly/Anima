@@ -5,7 +5,7 @@ import { Mobject } from '../../../src/core/mobjects/Mobject';
 import { VMobject } from '../../../src/core/mobjects/VMobject';
 import { Circle } from '../../../src/core/mobjects/geometry/Circle';
 import { Rectangle } from '../../../src/core/mobjects/geometry/Rectangle';
-import { Vector2 } from '../../../src/core/math/Vector2/Vector2';
+import { Vector } from '../../../src/core/math/vector/Vector';
 import { BezierPath } from '../../../src/core/math/bezier/BezierPath';
 
 /** Arbitrary for progress values in [0, 1] */
@@ -381,3 +381,4 @@ describe('Animation Property Tests', () => {
         });
     });
 });
+

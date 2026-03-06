@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'bun:test';
 import { MoveTo } from '../../../../src/core/animations';
 import { Mobject } from '../../../../src/core/mobjects/Mobject';
-import { Vector2 } from '../../../../src/core/math/Vector2/Vector2';
+import { Vector } from '../../../../src/core/math/vector/Vector';
 
 describe('MoveTo Animation', () => {
     describe('PRD Requirements', () => {
@@ -34,9 +34,9 @@ describe('MoveTo Animation', () => {
     });
 
     describe('Constructor Overloads', () => {
-        it('should accept Vector2 as destination', () => {
+        it('should accept Vector as destination', () => {
             const mobject = new Mobject();
-            const destination = new Vector2(200, 100);
+            const destination = new Vector(200, 100);
             const anim = new MoveTo(mobject, destination);
 
             anim.interpolate(1);
@@ -51,6 +51,17 @@ describe('MoveTo Animation', () => {
             anim.interpolate(1);
             expect(mobject.position.x).toBe(150);
             expect(mobject.position.y).toBe(75);
+        });
+
+        it('should accept Vector as destination and preserve z', () => {
+            const mobject = new Mobject();
+            const destination = new Vector(150, 75, 6);
+            const anim = new MoveTo(mobject, destination);
+
+            anim.interpolate(1);
+            expect(mobject.position.x).toBe(150);
+            expect(mobject.position.y).toBe(75);
+            expect(mobject.position.z).toBe(6);
         });
     });
 
@@ -114,3 +125,4 @@ describe('MoveTo Animation', () => {
         });
     });
 });
+

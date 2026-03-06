@@ -1,5 +1,5 @@
 import { VMobject } from '../VMobject';
-import { BezierPath, Vector2 } from '../../math';
+import { BezierPath, Vector } from '../../math';
 import type { Glyph as FontkitGlyph } from 'fontkit';
 
 /**
@@ -27,18 +27,18 @@ function convertFontkitPath(
         if (type === 'moveTo' && args.length >= 2) {
             const x = args[0] ?? 0;
             const y = args[1] ?? 0;
-            path.moveTo(new Vector2(transformX(x), transformY(y)));
+            path.moveTo(new Vector(transformX(x), transformY(y)));
         } else if (type === 'lineTo' && args.length >= 2) {
             const x = args[0] ?? 0;
             const y = args[1] ?? 0;
-            path.lineTo(new Vector2(transformX(x), transformY(y)));
+            path.lineTo(new Vector(transformX(x), transformY(y)));
         } else if (type === 'quadraticCurveTo' && args.length >= 4) {
             const cpx = args[0] ?? 0;
             const cpy = args[1] ?? 0;
             const x = args[2] ?? 0;
             const y = args[3] ?? 0;
-            const cp = new Vector2(transformX(cpx), transformY(cpy));
-            const end = new Vector2(transformX(x), transformY(y));
+            const cp = new Vector(transformX(cpx), transformY(cpy));
+            const end = new Vector(transformX(x), transformY(y));
             path.quadraticTo(cp, end);
         } else if (type === 'bezierCurveTo' && args.length >= 6) {
             const cp1x = args[0] ?? 0;
@@ -47,9 +47,9 @@ function convertFontkitPath(
             const cp2y = args[3] ?? 0;
             const x = args[4] ?? 0;
             const y = args[5] ?? 0;
-            const cp1 = new Vector2(transformX(cp1x), transformY(cp1y));
-            const cp2 = new Vector2(transformX(cp2x), transformY(cp2y));
-            const end = new Vector2(transformX(x), transformY(y));
+            const cp1 = new Vector(transformX(cp1x), transformY(cp1y));
+            const cp2 = new Vector(transformX(cp2x), transformY(cp2y));
+            const end = new Vector(transformX(x), transformY(y));
             path.cubicTo(cp1, cp2, end);
         } else if (type === 'closePath') {
             path.closePath();
@@ -85,3 +85,4 @@ export class Glyph extends VMobject {
         }
     }
 }
+

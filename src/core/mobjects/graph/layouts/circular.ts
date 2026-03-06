@@ -1,4 +1,4 @@
-import { Vector2 } from '../../../math';
+import { Vector } from '../../../math';
 import type { GraphNode } from '../GraphNode';
 import type { LayoutConfig } from '../types';
 
@@ -11,8 +11,8 @@ const DEFAULT_RADIUS = 3;
 export function circularLayout(
     nodes: GraphNode[],
     config: LayoutConfig = {}
-): Map<string, Vector2> {
-    const positions = new Map<string, Vector2>();
+): Map<string, Vector> {
+    const positions = new Map<string, Vector>();
     const radius = config.radius ?? DEFAULT_RADIUS;
     const count = nodes.length;
 
@@ -24,9 +24,10 @@ export function circularLayout(
         const y = radius * Math.sin(angle);
         const node = nodes[i];
         if (node) {
-            positions.set(node.id, new Vector2(x, y));
+            positions.set(node.id, new Vector(x, y));
         }
     }
 
     return positions;
 }
+

@@ -2,7 +2,9 @@ import { Animation } from '../Animation';
 import type { AnimationLifecycle } from '../types';
 import type { CameraFrame } from '../../camera';
 import type { Mobject } from '../../mobjects';
-import { Vector2 } from '../../math';
+import { Vector } from '../../math';
+
+type FollowOffsetInput = Vector | readonly [number, number] | readonly [number, number, number];
 
 /**
  * Configuration options for the Follow animation.
@@ -11,9 +13,16 @@ interface FollowConfig {
     /**
      * Offset from the target's position. The camera will track
      * (target.position + offset) instead of the exact target position.
-     * @default Vector2.ZERO
+     * Accepts:
+     * - `Vector`
+     * - `[x, y]`
+     * - `[x, y, z]`
+     *
+     * Note: camera follow movement is planar, so only x/y affect the CameraFrame position.
+     * If provided, z is accepted for API consistency but ignored by this animation.
+     * @default Vector.ZERO
      */
-    offset?: Vector2;
+    offset?: FollowOffsetInput;
     /**
      * Damping factor for smooth following (0 to 1).
      * - 0 = instant snap to target (no smoothing)
@@ -40,7 +49,14 @@ interface FollowConfig {
  * @example
  * // Follow with offset (camera leads the target)
  * this.play(new Follow(this.frame, car, {
- *   offset: new Vector2(2, 0),  // Camera 2 units ahead
+ *   offset: [2, 0],  // Camera 2 units ahead
+ *   damping: 0.5
+ * }).duration(10));
+ *
+ * @example
+ * // 3D tuple offset is accepted for consistency, but z is ignored by camera follow
+ * this.play(new Follow(this.frame, car, {
+ *   offset: [2, 0, 1],
  *   damping: 0.5
  * }).duration(10));
  */
@@ -48,7 +64,7 @@ export class Follow extends Animation<CameraFrame> {
     readonly lifecycle: AnimationLifecycle = 'transformative';
 
     private readonly followTarget: Mobject;
-    private readonly offset: Vector2;
+    private readonly offset: Vector;
     private readonly damping: number;
 
     /**
@@ -73,7 +89,7 @@ export class Follow extends Animation<CameraFrame> {
         }
         super(frame);
         this.followTarget = target;
-        this.offset = config.offset ?? Vector2.ZERO;
+        this.offset = Follow.normalizeOffset(config.offset);
         this.damping = config.damping ?? 0;
     }
 
@@ -93,4 +109,21 @@ export class Follow extends Animation<CameraFrame> {
             this.target.pos(targetPos.x, targetPos.y);
         }
     }
+
+    private static normalizeOffset(offset: FollowOffsetInput | undefined): Vector {
+        if (!offset) {
+            return Vector.ZERO;
+        }
+
+        if (offset instanceof Vector) {
+            return offset;
+        }
+
+        if (offset.length === 2) {
+            return new Vector(offset[0], offset[1], 0);
+        }
+
+        return new Vector(offset[0], offset[1], offset[2]);
+    }
 }
+

@@ -1,5 +1,5 @@
 import { Line } from './Line';
-import { BezierPath, Vector2 } from '../../math';
+import { BezierPath, Vector } from '../../math';
 
 export class Arrow extends Line {
     constructor(
@@ -26,8 +26,8 @@ export class Arrow extends Line {
         const angle1 = angle + Math.PI - this.tipAngle;
         const angle2 = angle + Math.PI + this.tipAngle;
 
-        const p1 = this.end.add(new Vector2(Math.cos(angle1), Math.sin(angle1)).multiply(this.tipLength));
-        const p2 = this.end.add(new Vector2(Math.cos(angle2), Math.sin(angle2)).multiply(this.tipLength));
+        const p1 = this.end.add(new Vector(Math.cos(angle1), Math.sin(angle1)).multiply(this.tipLength));
+        const p2 = this.end.add(new Vector(Math.cos(angle2), Math.sin(angle2)).multiply(this.tipLength));
 
         const tipPath = new BezierPath();
         tipPath.moveTo(this.end);
@@ -38,3 +38,4 @@ export class Arrow extends Line {
         this.addPath(tipPath);
     }
 }
+

@@ -1,12 +1,12 @@
 import { VMobject } from '../VMobject';
-import { BezierPath, Vector2 } from '../../math';
+import { BezierPath, Vector } from '../../math';
 
 export class Polygon extends VMobject {
-    readonly vertices: Vector2[];
+    readonly vertices: Vector[];
 
     constructor(...points: Array<[number, number]>) {
         super();
-        this.vertices = points.map(([x, y]) => new Vector2(x, y));
+        this.vertices = points.map(([x, y]) => new Vector(x, y));
         this.generatePath();
     }
 
@@ -19,6 +19,7 @@ export class Polygon extends VMobject {
             path.lineTo(this.vertices[i]!);
         }
         path.closePath();
-        this.pathList = [path];
+        this.paths = [path];
     }
 }
+

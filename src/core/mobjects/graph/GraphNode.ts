@@ -1,5 +1,5 @@
 import { VMobject } from '../VMobject';
-import { BezierPath, Color, Vector2 } from '../../math';
+import { BezierPath, Color, Vector } from '../../math';
 import type { GraphNodeId, NodeConfig } from './types';
 
 const DEFAULT_RADIUS = 0.25;
@@ -17,11 +17,6 @@ export class GraphNode extends VMobject {
         this.id = id;
         this.nodeRadius = config.radius ?? DEFAULT_RADIUS;
 
-        // Apply initial position
-        if (config.position) {
-            this.pos(config.position.x, config.position.y);
-        }
-
         // Apply styling only if explicitly provided in config
         // If not provided, VMobject defaults apply (no stroke, no fill)
         if (config.strokeColor !== undefined) {
@@ -38,6 +33,11 @@ export class GraphNode extends VMobject {
         }
 
         this.generateCirclePath();
+
+        // Apply initial position after geometry exists so transforms mutate points.
+        if (config.position) {
+            this.pos(config.position.x, config.position.y);
+        }
     }
 
     get radius(): number {
@@ -54,41 +54,42 @@ export class GraphNode extends VMobject {
         const k = 0.5522847498; // Magic number for circle approximation
 
         // Start at the right-most point
-        path.moveTo(new Vector2(r, 0));
+        path.moveTo(new Vector(r, 0));
 
         // Top-right quadrant
         path.cubicTo(
-            new Vector2(r, r * k),
-            new Vector2(r * k, r),
-            new Vector2(0, r)
+            new Vector(r, r * k),
+            new Vector(r * k, r),
+            new Vector(0, r)
         );
 
         // Top-left quadrant
         path.cubicTo(
-            new Vector2(-r * k, r),
-            new Vector2(-r, r * k),
-            new Vector2(-r, 0)
+            new Vector(-r * k, r),
+            new Vector(-r, r * k),
+            new Vector(-r, 0)
         );
 
         // Bottom-left quadrant
         path.cubicTo(
-            new Vector2(-r, -r * k),
-            new Vector2(-r * k, -r),
-            new Vector2(0, -r)
+            new Vector(-r, -r * k),
+            new Vector(-r * k, -r),
+            new Vector(0, -r)
         );
 
         // Bottom-right quadrant
         path.cubicTo(
-            new Vector2(r * k, -r),
-            new Vector2(r, -r * k),
-            new Vector2(r, 0)
+            new Vector(r * k, -r),
+            new Vector(r, -r * k),
+            new Vector(r, 0)
         );
 
         path.closePath();
-        this.pathList = [path];
+        this.paths = [path];
     }
 
-    getCenter(): Vector2 {
+    getCenter(): Vector {
         return this.position;
     }
 }
+

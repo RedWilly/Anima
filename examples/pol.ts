@@ -1,4 +1,4 @@
-import { Scene, Rectangle, Color, FadeIn, Text, VGroup, Circle, Parallel, Rotate, MoveTo, Line, Arrow } from '../src/';
+import { Scene, Rectangle, Color, FadeIn, Text, VGroup, Circle, Parallel, Rotate, MoveTo, Line, Arrow, MorphTo } from '../src/';
 
 export class Pol extends Scene {
     constructor() {
@@ -67,6 +67,9 @@ export class Poll extends Scene {
 
         const tx2 = new Text("stroke").pos(0, 0).stroke(Color.WHITE, 1).pos(0, 2);
         this.play(tx2.write(1));
+
+        const morph = new MorphTo(line, new Circle(0.4).pos(0, 2.8).fill(Color.RED).stroke(Color.YELLOW, 3));
+        this.play(morph);
 
 
     }

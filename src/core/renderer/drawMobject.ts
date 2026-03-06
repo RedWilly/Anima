@@ -1,42 +1,27 @@
 import type { SKRSContext2D } from '@napi-rs/canvas';
-import { Mobject, VGroup, VMobject } from '../mobjects';
-import { Matrix3x3, type PathCommand } from '../math';
+import { Mobject, VMobject } from '../mobjects';
+import { Matrix4x4, type PathCommand } from '../math';
 
 /**
  * Draws a Mobject to a canvas context.
- * Handles VMobject path rendering and VGroup recursion.
+ * Handles VMobject path rendering and generic submobject recursion.
  */
 export function drawMobject(
     ctx: SKRSContext2D,
     mobject: Mobject,
-    worldToScreen: Matrix3x3
+    worldToScreen: Matrix4x4
 ): void {
     // Skip invisible mobjects
     if (mobject.opacity <= 0) return;
 
-    if (mobject instanceof VGroup) {
-        drawVGroup(ctx, mobject, worldToScreen);
-    } else if (mobject instanceof VMobject) {
+    ctx.save();
+    ctx.globalAlpha *= mobject.opacity;
+
+    if (mobject instanceof VMobject) {
         drawVMobject(ctx, mobject, worldToScreen);
     }
-    // Base Mobject has no visual representation
-}
 
-/**
- * Draws a VGroup by recursively drawing its children.
- */
-function drawVGroup(
-    ctx: SKRSContext2D,
-    vgroup: VGroup,
-    worldToScreen: Matrix3x3
-): void {
-    // VGroup opacity affects all children
-    if (vgroup.opacity <= 0) return;
-
-    ctx.save();
-    ctx.globalAlpha *= vgroup.opacity;
-
-    for (const child of vgroup.getChildren()) {
+    for (const child of mobject.getSubmobjects()) {
         drawMobject(ctx, child, worldToScreen);
     }
 
@@ -49,17 +34,11 @@ function drawVGroup(
 function drawVMobject(
     ctx: SKRSContext2D,
     vmobject: VMobject,
-    worldToScreen: Matrix3x3
+    worldToScreen: Matrix4x4
 ): void {
     const paths = vmobject.paths;
     if (paths.length === 0) return;
-
-    // Combine mobject's world matrix with world-to-screen transform
-    const mobjectWorld = vmobject.getWorldMatrix();
-    const transform = worldToScreen.multiply(mobjectWorld);
-
-    ctx.save();
-    ctx.globalAlpha *= vmobject.opacity;
+    const transform = worldToScreen.multiply(vmobject.getRenderMatrix());
 
     // Draw each path
     for (const path of paths) {
@@ -86,8 +65,6 @@ function drawVMobject(
             ctx.stroke();
         }
     }
-
-    ctx.restore();
 }
 
 /**
@@ -96,33 +73,33 @@ function drawVMobject(
 function applyPathCommands(
     ctx: SKRSContext2D,
     commands: PathCommand[],
-    transform: Matrix3x3
+    transform: Matrix4x4
 ): void {
     for (const cmd of commands) {
         switch (cmd.type) {
             case 'Move': {
-                const p = transform.transformPoint(cmd.end);
+                const p = transform.transformPoint2D(cmd.end);
                 ctx.moveTo(p.x, p.y);
                 break;
             }
             case 'Line': {
-                const p = transform.transformPoint(cmd.end);
+                const p = transform.transformPoint2D(cmd.end);
                 ctx.lineTo(p.x, p.y);
                 break;
             }
             case 'Quadratic': {
                 if (cmd.control1) {
-                    const cp = transform.transformPoint(cmd.control1);
-                    const ep = transform.transformPoint(cmd.end);
+                    const cp = transform.transformPoint2D(cmd.control1);
+                    const ep = transform.transformPoint2D(cmd.end);
                     ctx.quadraticCurveTo(cp.x, cp.y, ep.x, ep.y);
                 }
                 break;
             }
             case 'Cubic': {
                 if (cmd.control1 && cmd.control2) {
-                    const cp1 = transform.transformPoint(cmd.control1);
-                    const cp2 = transform.transformPoint(cmd.control2);
-                    const ep = transform.transformPoint(cmd.end);
+                    const cp1 = transform.transformPoint2D(cmd.control1);
+                    const cp2 = transform.transformPoint2D(cmd.control2);
+                    const ep = transform.transformPoint2D(cmd.end);
                     ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, ep.x, ep.y);
                 }
                 break;

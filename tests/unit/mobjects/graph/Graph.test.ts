@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'bun:test';
 import { Graph } from '../../../../src/core/mobjects/graph/Graph';
-import { Vector2 } from '../../../../src/core/math/Vector2/Vector2';
+import { Vector } from '../../../../src/core/math/vector/Vector';
 import { Color } from '../../../../src/core/math/color/Color';
 
 describe('Graph', () => {
@@ -16,7 +16,7 @@ describe('Graph', () => {
 
         test('addNode with position sets node position', () => {
             const graph = new Graph();
-            const node = graph.addNode('A', { position: new Vector2(10, 20) });
+            const node = graph.addNode('A', { position: new Vector(10, 20) });
 
             expect(node.position.x).toBeCloseTo(10);
             expect(node.position.y).toBeCloseTo(20);
@@ -109,8 +109,8 @@ describe('Graph', () => {
 
         test('getEdgePath returns BezierPath for edge', () => {
             const graph = new Graph();
-            graph.addNode('A', { position: new Vector2(0, 0) });
-            graph.addNode('B', { position: new Vector2(10, 0) });
+            graph.addNode('A', { position: new Vector(0, 0) });
+            graph.addNode('B', { position: new Vector(10, 0) });
             graph.addEdge('A', 'B');
 
             const path = graph.getEdgePath('A', 'B');
@@ -179,8 +179,8 @@ describe('Graph', () => {
 
         test('curved edge creates quadratic bezier', () => {
             const graph = new Graph();
-            graph.addNode('A', { position: new Vector2(0, 0) });
-            graph.addNode('B', { position: new Vector2(10, 0) });
+            graph.addNode('A', { position: new Vector(0, 0) });
+            graph.addNode('B', { position: new Vector(10, 0) });
             const edge = graph.addEdge('A', 'B', { curved: true });
 
             const path = edge?.getPath();
@@ -229,9 +229,9 @@ describe('Graph', () => {
 
         test('force-directed layout repositions nodes', () => {
             const graph = new Graph();
-            graph.addNode('A', { position: new Vector2(0, 0) });
-            graph.addNode('B', { position: new Vector2(0, 0) });
-            graph.addNode('C', { position: new Vector2(0, 0) });
+            graph.addNode('A', { position: new Vector(0, 0) });
+            graph.addNode('B', { position: new Vector(0, 0) });
+            graph.addNode('C', { position: new Vector(0, 0) });
 
             const initialPositions = graph.getNodes().map(n => n.position);
 
@@ -249,8 +249,8 @@ describe('Graph', () => {
 
         test('layout updates edge paths', () => {
             const graph = new Graph();
-            graph.addNode('A', { position: new Vector2(0, 0) });
-            graph.addNode('B', { position: new Vector2(1, 0) });
+            graph.addNode('A', { position: new Vector(0, 0) });
+            graph.addNode('B', { position: new Vector(1, 0) });
             graph.addEdge('A', 'B');
 
             graph.layout('circular', { radius: 5 });
@@ -277,3 +277,4 @@ describe('Graph', () => {
         });
     });
 });
+

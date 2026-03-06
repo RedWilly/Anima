@@ -9,6 +9,7 @@ import { FadeOut } from './fade/FadeOut';
 import { MoveTo } from './transform/MoveTo';
 import { Rotate } from './transform/Rotate';
 import { Scale } from './transform/Scale';
+import { Vector } from '../math';
 import type { Mobject, VMobject } from '../mobjects';
 
 function withDuration<T extends Animation<Mobject>>(animation: T, durationSeconds?: number): T {
@@ -31,8 +32,23 @@ export function createMoveTo(
   x: number,
   y: number,
   durationSeconds?: number
+): MoveTo<Mobject>;
+export function createMoveTo(
+  target: Mobject,
+  destination: Vector,
+  durationSeconds?: number
+): MoveTo<Mobject>;
+export function createMoveTo(
+  target: Mobject,
+  xOrDestination: number | Vector,
+  yOrDuration?: number,
+  durationSeconds?: number
 ): MoveTo<Mobject> {
-  return withDuration(new MoveTo(target, x, y), durationSeconds);
+  if (typeof xOrDestination !== 'number') {
+    return withDuration(new MoveTo(target, xOrDestination), yOrDuration);
+  }
+
+  return withDuration(new MoveTo(target, xOrDestination, yOrDuration ?? 0), durationSeconds);
 }
 
 export function createRotate(target: Mobject, angle: number, durationSeconds?: number): Rotate<Mobject> {
@@ -67,3 +83,4 @@ export function createUnwrite(target: VMobject, durationSeconds?: number): Unwri
 export function createDraw(target: VMobject, durationSeconds?: number): Draw<VMobject> {
   return withDuration(new Draw(target), durationSeconds);
 }
+

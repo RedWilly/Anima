@@ -46,15 +46,3 @@ export class ComplexSequenceScene extends Scene {
         this.play(complexSequence);
     }
 }
-
-// Run the scene directly if this file is executed
-if (import.meta.main) {
-    async function run(): Promise<void> {
-        const scene = new ComplexSequenceScene();
-
-        console.log('Animation sequence created!');
-        console.log('Use `bun run render examples/ComplexSequenceScene.ts` to render it');
-    }
-
-    run().catch(console.error);
-}

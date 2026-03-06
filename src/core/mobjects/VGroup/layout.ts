@@ -1,6 +1,6 @@
 import { VGroup } from './VGroup';
 import { VMobject } from '../VMobject';
-import { Matrix3x3 } from '../../math';
+import { Matrix4x4 } from '../../math';
 import { Camera } from '../../camera';
 
 export type CornerPosition = 'TOP_LEFT' | 'TOP_RIGHT' | 'BOTTOM_LEFT' | 'BOTTOM_RIGHT';
@@ -15,12 +15,9 @@ export function centerGroup(group: VGroup): VGroup {
     const bounds = group.getBoundingBox();
     const centerX = (bounds.minX + bounds.maxX) / 2;
     const centerY = (bounds.minY + bounds.maxY) / 2;
-    const translation = Matrix3x3.translation(-centerX, -centerY);
+    const translation = Matrix4x4.translation(-centerX, -centerY, 0);
 
-    // Apply translation to all children directly (not to group)
-    for (const child of group.getChildren()) {
-        child.applyMatrix(translation);
-    }
+    group.applyMatrix(translation);
     return group;
 }
 
@@ -70,12 +67,9 @@ export function toCorner(
     const currentCenterY = (bounds.minY + bounds.maxY) / 2;
     const shiftX = targetX - currentCenterX;
     const shiftY = targetY - currentCenterY;
-    const translation = Matrix3x3.translation(shiftX, shiftY);
+    const translation = Matrix4x4.translation(shiftX, shiftY, 0);
 
-    // Apply translation to all children directly
-    for (const child of group.getChildren()) {
-        child.applyMatrix(translation);
-    }
+    group.applyMatrix(translation);
     return group;
 }
 
@@ -129,7 +123,7 @@ export function arrangeChildren(
             shiftX = prevCenterX - childCenterX;
         }
 
-        child.applyMatrix(Matrix3x3.translation(shiftX, shiftY));
+        child.applyMatrix(Matrix4x4.translation(shiftX, shiftY, 0));
         previousChild = child;
     }
 
@@ -163,11 +157,8 @@ export function alignToTarget(group: VGroup, target: VMobject, edge: Edge): VGro
             break;
     }
 
-    const translation = Matrix3x3.translation(shiftX, shiftY);
+    const translation = Matrix4x4.translation(shiftX, shiftY, 0);
 
-    // Apply translation to all children directly
-    for (const child of group.getChildren()) {
-        child.applyMatrix(translation);
-    }
+    group.applyMatrix(translation);
     return group;
 }
